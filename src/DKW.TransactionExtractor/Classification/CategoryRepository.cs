@@ -35,7 +35,7 @@ public class CategoryRepository : ICategoryRepository
                 PropertyNameCaseInsensitive = true
             };
             _config = JsonSerializer.Deserialize<CategoryConfig>(json, options) ?? new CategoryConfig();
-            _logger.LogInformation("Loaded {Count} categories from {Path}", _config.Categories.Count, _categoryFilePath);
+            _logger.LogDebug("Loaded {Count} categories from {Path}", _config.Categories.Count, _categoryFilePath);
         }
         catch (Exception ex)
         {
@@ -56,7 +56,7 @@ public class CategoryRepository : ICategoryRepository
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             var json = JsonSerializer.Serialize(config, options);
-            
+
             var directory = Path.GetDirectoryName(_categoryFilePath);
             if (!String.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
@@ -114,17 +114,17 @@ public class CategoryRepository : ICategoryRepository
 
         // ExactMatch and Contains can be merged with existing matchers
         var merged = TryMergeWithExistingMatcher(category, request);
-        
+
         if (merged)
         {
-            _logger.LogInformation("Merged {MatcherType} values into existing matcher for category '{CategoryId}'", 
+            _logger.LogInformation("Merged {MatcherType} values into existing matcher for category '{CategoryId}'",
                 request.MatcherType, categoryId);
         }
         else
         {
             var newMatcher = CreateMatcherFromRequest(request);
             category.Matchers.Add(newMatcher);
-            _logger.LogInformation("Added new {MatcherType} matcher to category '{CategoryId}'", 
+            _logger.LogInformation("Added new {MatcherType} matcher to category '{CategoryId}'",
                 request.MatcherType, categoryId);
         }
 
@@ -133,7 +133,7 @@ public class CategoryRepository : ICategoryRepository
 
     private Boolean TryMergeWithExistingMatcher(Category category, MatcherCreationRequest request)
     {
-        var caseSensitive = request.Parameters.TryGetValue("caseSensitive", out var csValue) 
+        var caseSensitive = request.Parameters.TryGetValue("caseSensitive", out var csValue)
             && Convert.ToBoolean(csValue);
 
         // Find existing matcher of the same type with matching case sensitivity
@@ -174,11 +174,13 @@ public class CategoryRepository : ICategoryRepository
             {
                 return true;
             }
+
             if (csObj is Boolean boolValue)
             {
                 return boolValue;
             }
         }
+
         return false;
     }
 
@@ -198,6 +200,7 @@ public class CategoryRepository : ICategoryRepository
         {
             return stringList.ToArray();
         }
+
         return Array.Empty<String>();
     }
 

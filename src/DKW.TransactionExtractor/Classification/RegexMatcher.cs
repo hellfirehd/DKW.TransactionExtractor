@@ -13,6 +13,7 @@ public class RegexMatcher : ITransactionMatcher
         {
             options |= RegexOptions.IgnoreCase;
         }
+
         _regex = new Regex(pattern, options);
     }
 

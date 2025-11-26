@@ -34,6 +34,7 @@ public class CsvFormatter : ITransactionFormatter
         {
             return value.Replace("\"", "\"\"");
         }
+
         return value;
     }
 }

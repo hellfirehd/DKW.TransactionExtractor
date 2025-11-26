@@ -5,18 +5,26 @@ namespace DKW.TransactionExtractor.Classification;
 /// </summary>
 public class MatcherBuilderService : IMatcherBuilder
 {
+    // ToDo: Technical Debg: Matchers should be discovered dynamically via reflection or DI container and not hardcoded.
+    // ToDo: Matcher UI should be extensible via plugins. e.g. Each Matcher must have a corresponding UI builder class.
     public MatcherCreationRequest? BuildMatcher(String transactionDescription)
     {
         Console.WriteLine();
         Console.WriteLine("Select matcher type:");
-        Console.WriteLine("  1. ExactMatch - Match this exact description (fastest, recommended)");
+        Console.WriteLine("  0. Cancel");
+        Console.WriteLine("  1. ExactMatch - Match this exact description (fastest, recommended) [default]");
         Console.WriteLine("  2. Contains - Match descriptions containing a substring");
         Console.WriteLine("  3. Regex - Match using a regular expression pattern");
-        Console.WriteLine("  0. Cancel");
         Console.WriteLine();
-        Console.Write("Your choice [0-3]: ");
+        Console.Write("Your choice [1-3, default=1]: ");
 
         var choice = Console.ReadLine()?.Trim();
+
+        // Default to ExactMatch if user just presses Enter
+        if (String.IsNullOrEmpty(choice))
+        {
+            choice = "1";
+        }
 
         return choice switch
         {

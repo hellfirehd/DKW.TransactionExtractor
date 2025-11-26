@@ -64,6 +64,10 @@ public class TransactionClassifier : ITransactionClassifier
                     _logger.LogDebug("Matched transaction '{Description}' to category '{Category}'", 
                         context.Transaction.Description, category.Name);
                     
+                    // Show summary for automatically classified transaction
+                    Console.WriteLine($"  [{context.CurrentIndex}/{context.TotalCount}] {context.Transaction.TransactionDate:MMM dd} | " +
+                                    $"{context.Transaction.Description,-40} | {context.Transaction.Amount,10:C} ? {category.Name}");
+                    
                     return (new ClassifiedTransaction
                     {
                         Transaction = context.Transaction,
