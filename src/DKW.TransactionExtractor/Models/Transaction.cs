@@ -13,4 +13,7 @@ public class Transaction
     /// Indicates whether this transaction should be included in purchases total calculations.
     /// </summary>
     public TransactionInclusionStatus InclusionStatus { get; set; } = TransactionInclusionStatus.Undetermined;
+
+    // The date of the statement this transaction came from
+    public DateTime StatementDate { get; set; }
 }
