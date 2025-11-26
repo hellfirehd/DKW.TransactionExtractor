@@ -11,10 +11,13 @@ internal static partial class LogMessages
     [LoggerMessage(EventId = 1010, Level = LogLevel.Error, Message = "Folder does not exist: {FolderPath}")]
     public static partial void LogFolderDoesNotExist(this ILogger logger, String folderPath);
 
-    [LoggerMessage(EventId = 1020, Level = LogLevel.Error, Message = "No years configured in appsettings.json")]
-    public static partial void LogNoYearsConfigured(this ILogger logger);
+    [LoggerMessage(EventId = 1020, Level = LogLevel.Warning, Message = "No date range configured. All PDF files will be processed.")]
+    public static partial void LogNoDateRangeConfigured(this ILogger logger);
 
-    [LoggerMessage(EventId = 1030, Level = LogLevel.Information, Message = "Found {Count} PDF file(s) matching configured years in {Folder}")]
+    [LoggerMessage(EventId = 1025, Level = LogLevel.Information, Message = "Filtering statements: StartDate={StartDate}, EndDate={EndDate}")]
+    public static partial void LogDateRangeFilter(this ILogger logger, DateTime? startDate, DateTime? endDate);
+
+    [LoggerMessage(EventId = 1030, Level = LogLevel.Information, Message = "Found {Count} PDF file(s) matching configured date range in {Folder}")]
     public static partial void LogFoundFiles(this ILogger logger, Int32 count, String folder);
 
     [LoggerMessage(EventId = 1050, Level = LogLevel.Information, Message = "Declared Purchases: {Declared}")]

@@ -54,10 +54,13 @@ internal class TransactionExtractor(
             return false;
         }
 
-        if (_appConfig.Years == null || _appConfig.Years.Length == 0)
+        if (_appConfig.StartDate == null && _appConfig.EndDate == null)
         {
-            LogMessages.LogNoYearsConfigured(_logger);
-            return false;
+            LogMessages.LogNoDateRangeConfigured(_logger);
+        }
+        else
+        {
+            LogMessages.LogDateRangeFilter(_logger, _appConfig.StartDate, _appConfig.EndDate);
         }
 
         if (!Directory.Exists(_appConfig.OutputPath))
@@ -75,9 +78,28 @@ internal class TransactionExtractor(
         var filteredFiles = pdfFiles.Where(file =>
         {
             var fileName = Path.GetFileName(file);
-            if (fileName.Length >= 4 && Int32.TryParse(fileName.AsSpan(0, 4), out var fileYear))
+            
+            // Try to parse date from filename (expecting YYYY-MM-DD format at start)
+            if (fileName.Length >= 10 && DateTime.TryParseExact(
+                fileName.AsSpan(0, 10), 
+                "yyyy-MM-dd", 
+                System.Globalization.CultureInfo.InvariantCulture, 
+                System.Globalization.DateTimeStyles.None, 
+                out var fileDate))
             {
-                return _appConfig.Years.Contains(fileYear);
+                // Apply start date filter (inclusive)
+                if (_appConfig.StartDate.HasValue && fileDate < _appConfig.StartDate.Value)
+                {
+                    return false;
+                }
+                
+                // Apply end date filter (exclusive)
+                if (_appConfig.EndDate.HasValue && fileDate >= _appConfig.EndDate.Value)
+                {
+                    return false;
+                }
+                
+                return true;
             }
 
             return false;
