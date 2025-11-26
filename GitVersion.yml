@@ -1,0 +1,42 @@
+# GitVersion Configuration
+# See: https://gitversion.net/docs/reference/configuration
+
+# Use Continuous Delivery mode
+mode: ContinuousDelivery
+
+# Version format: YYYY.MINOR.PATCH
+# Example: 2025.1.0, 2025.1.1, 2025.2.0
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
+assembly-informational-format: '{MajorMinorPatch}+{ShortSha}'
+
+# Major version from tag (YYYY format)
+next-version: 2025.1.0
+
+# Tag prefix (empty means no prefix required)
+tag-prefix: ''
+
+# Version increment strategy
+increment: Patch
+
+# Branch configuration
+branches:
+  main:
+    label: ''
+    increment: Patch
+    regex: ^main$|^master$
+    is-release-branch: true
+    is-main-branch: true
+
+  feature:
+    label: alpha
+    increment: Patch
+    regex: ^features?[/-]
+
+# Major and minor version bump
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+
+# Commit message increment mode
+commit-message-incrementing: Enabled

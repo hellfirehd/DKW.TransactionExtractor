@@ -7,6 +7,7 @@ using DKW.TransactionExtractor.Providers.CTFS;
 using DKW.TransactionExtractor.EncodingProviders;
 using DKW.TransactionExtractor.Classification;
 using DKW.TransactionExtractor.Formatting;
+using System.Reflection;
 
 namespace DKW.TransactionExtractor;
 
@@ -25,7 +26,11 @@ internal class Program
 
         try
         {
-            Log.Information("Starting Transaction Extractor application");
+            var version = Assembly.GetExecutingAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion ?? "Unknown";
+            
+            Log.Information("Starting Transaction Extractor v{Version}", version);
 
             var host = Host.CreateDefaultBuilder(args)
                 .UseSerilog()
