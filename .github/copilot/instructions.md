@@ -223,6 +223,7 @@ public record CategorySelectionResult(
 
 ### Documentation
 
+0. **Only create documentation when necessary!** Prefer self-documenting code, XML comments (///), meaningful names, and unit tests over excessive docs.
 1. **Markdown Files**
    - **Save all documentation in `./docs/`**
    - **DO NOT** put documentation files in the solution root (except README.md, LICENSE.md, CHANGELOG.md)
@@ -235,6 +236,7 @@ public record CategorySelectionResult(
      - `./docs/architecture/` - Design documents and refactoring notes
      - `./docs/development/` - Bug fixes and technical changes
      - `./docs/features/` - Feature documentation
+     - `./docs/notes/` - Research notes and reference materials
 
 2. **Code Comments**
    - Use XML comments (`///`) for public APIs
