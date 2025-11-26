@@ -10,15 +10,15 @@ public class CsvFormatter : ITransactionFormatter
         var timestamp = output.GeneratedAt.ToString("yyyyMMdd-HHmmss");
         var directory = Path.GetDirectoryName(baseOutputPath) ?? String.Empty;
         var baseFileName = Path.GetFileNameWithoutExtension(baseOutputPath);
-        
+
         // Write transactions file
         var transactionsPath = Path.Combine(directory, $"{baseFileName}-{timestamp}.csv");
         WriteTransactions(output.Transactions, transactionsPath);
-        
+
         // Write summary file if summaries exist
         if (output.CategorySummaries.Count > 0)
         {
-            var summaryPath = Path.Combine(directory, $"{baseFileName}-summary-{timestamp}.csv");
+            var summaryPath = Path.Combine(directory, $"{baseFileName}-{timestamp}-summary.csv");
             WriteSummary(output.CategorySummaries, summaryPath);
         }
     }
