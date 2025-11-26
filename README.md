@@ -11,7 +11,8 @@ A .NET 10 console application for extracting and validating credit card transact
 - **Flexible Output Formats**: Export classified transactions as CSV or JSON
 - **Automatic Validation**: Compares computed purchase totals against declared statement totals
 - **Transaction Filtering**: Excludes fees, interest charges, and refunds from purchase calculations
-- **Year-based Filtering**: Process only statements from specified years
+- **Date Range Filtering**: Process statements within a configurable date range (start/end dates)
+- **Automatic Versioning**: Uses GitVersion for automatic version management
 - **Multi-line Transaction Support**: Handles transactions that span multiple lines in the PDF
 - **Supplemental Details Detection**: Skips itemized purchase details to avoid double-counting
 - **Configurable Logging**: Uses Serilog for structured logging to console and file
@@ -43,11 +44,13 @@ Edit `appsettings.json` to configure the application:
 {
   "AppOptions": {
     "FolderPath": "C:\\path\\to\\statements",
-    "Years": [ 2023, 2024, 2025 ],
+    "StartDate": "2024-10-01",
+    "EndDate": null,
     "WriteExtractedText": false,
     "CategoryConfigPath": "categories.json",
     "OutputFormat": "Csv",
-    "OutputPath": "output"
+    "OutputPath": "output",
+    "OutputUncategorized": true
   },
   "ParserOptions": {
     "DifferenceTolerance": 0.01,
@@ -66,11 +69,13 @@ Edit `appsettings.json` to configure the application:
 #### AppOptions
 
 - **FolderPath**: Directory containing PDF statement files
-- **Years**: Array of years to process (filters by YYYY prefix in filename)
+- **StartDate**: Optional start date to filter statements (inclusive). Format: `"YYYY-MM-DD"`. If `null`, no start date filtering is applied.
+- **EndDate**: Optional end date to filter statements (exclusive). Format: `"YYYY-MM-DD"`. If `null`, no end date filtering is applied.
 - **WriteExtractedText**: When `true`, saves extracted text to `.txt` files for debugging
 - **CategoryConfigPath**: Path to the category configuration JSON file
 - **OutputFormat**: Output format for classified transactions (`"Csv"` or `"Json"`)
 - **OutputPath**: Directory where classified transaction files will be written
+- **OutputUncategorized**: When `true`, includes uncategorized transactions in output. When `false`, filters them out.
 
 #### ParserOptions
 
@@ -91,15 +96,17 @@ Edit `appsettings.json` to configure the application:
 ### Example Output
 
 ```
-[2025-01-15 10:30:45.123] [INF] Starting Transaction Extractor application
-[2025-01-15 10:30:45.234] [INF] Found 12 PDF files in D:\statements
-[2025-01-15 10:30:45.345] [INF] Filename: 2024-10-21-statement.pdf
-[2025-01-15 10:30:45.456] [INF] Declared Purchases: $2,348.84
-[2025-01-15 10:30:45.567] [INF] Computed Purchases: $2,348.84
-[2025-01-15 10:30:45.678] [INF] Transaction Count: 42
-[2025-01-15 10:30:45.789] [INF] Excluded Transactions: 3
-[2025-01-15 10:30:45.890] [INF] Classifying 42 transactions...
-[2025-01-15 10:30:46.000] [INF] Wrote 42 classified transactions to D:\output\2024-10-21-statement.csv
+[2025-11-27 10:30:45.123] [INF] Starting Transaction Extractor v2025.1.0+abc1234
+[2025-11-27 10:30:45.234] [INF] Filtering statements: StartDate=2024-10-01, EndDate=<null>
+[2025-11-27 10:30:45.345] [INF] Found 12 PDF file(s) matching configured date range in D:\statements
+[2025-11-27 10:30:45.456] [INF] Processed File: 2024-10-21-statement.pdf
+[2025-11-27 10:30:45.567] [INF] Declared Purchases: $2,348.84
+[2025-11-27 10:30:45.678] [INF] Computed Purchases: $2,348.84
+[2025-11-27 10:30:45.789] [INF] Transaction Count: 42
+[2025-11-27 10:30:45.890] [INF] Excluded Transactions: 3
+[2025-11-27 10:30:45.991] [INF] Classifying 42 transactions...
+[2025-11-27 10:30:46.100] [INF] Wrote 42 classified transactions to output
+[2025-11-27 10:30:46.200] [INF] Generated summary for 15 categories
 ```
 
 ### Transaction Classification
@@ -120,17 +127,25 @@ For complete documentation, visit the **[Documentation Index](docs/README.md)**.
 When totals don't match, the application logs detailed transaction information:
 
 ```
-[2025-01-15 10:30:50.123] [WRN] Mismatch detected! Declared: $1,234.56, Computed: $1,230.21, Difference: $4.35
-[2025-01-15 10:30:50.234] [WRN] Please investigate the following transactions:
-[2025-01-15 10:30:50.345] [INF] Oct 15 | CANADIAN TIRE #123 | $75.00 | Include
-[2025-01-15 10:30:50.456] [INF] Oct 16 | ANNUAL FEE | $50.00 | Exclude
+[2025-11-27 10:30:50.123] [WRN] Declared: $1,234.56 | Computed: $1,230.21 | Difference: $4.35
+[2025-11-27 10:30:50.234] [WRN] Investigate this file and update parser logic if necessary.
+[2025-11-27 10:30:50.345] [INF] 2024-10-15 | CANADIAN TIRE #123 | 75.00 | Excluded: Include
+[2025-11-27 10:30:50.456] [INF] 2024-10-16 | ANNUAL FEE | 50.00 | Excluded: Exclude
 ```
 
 ## Development
 
+### Versioning
+
+This project uses [GitVersion](https://gitversion.net/) for automatic version management. See **[Versioning Workflow](docs/development/VERSIONING_WORKFLOW.md)** for details on:
+- Version format (YYYY.MINOR.PATCH)
+- Creating releases with Git tags
+- Pre-release versioning
+- Version increment guidelines
+
 ### Coding Standards
 
-Before contributing, please review our coding standards documented in **[GitHub Copilot Instructions](.github/copilot/instructions.md)** which include:
+Before contributing, please review our coding standards documented in **[GitHub Copilot Instructions](.github/copilot-instructions.md)** which include:
 - Naming conventions (use `String`, `Boolean`, `Int32`)
 - Architecture patterns (Service Layer, DI, Immutability)
 - Code organization guidelines
@@ -140,8 +155,9 @@ Before contributing, please review our coding standards documented in **[GitHub 
 
 Visit the **[Documentation Index](docs/README.md)** for:
 - [Transaction Classification Guide](docs/CLASSIFICATION_GUIDE.md)
-- [Architecture & Design Decisions](docs/architecture/)
-- Development guides and best practices
+- [Versioning Workflow](docs/development/VERSIONING_WORKFLOW.md)
+- Feature documentation in `docs/features/`
+- Development guides in `docs/development/`
 
 ### Testing
 
@@ -160,7 +176,7 @@ The test project includes:
 ### Contributing
 
 Contributions are welcome! Please:
-1. Read the **[Coding Standards](.github/copilot/instructions.md)**
+1. Read the **[Coding Standards](.github/copilot-instructions.md)**
 2. Review the **[Documentation](docs/README.md)**
 3. Fork the repository
 4. Create a feature branch
@@ -230,6 +246,7 @@ The application follows a clean, modular architecture with dependency injection:
 ## Dependencies
 
 - **iText 9.4.0**: PDF text extraction
+- **GitVersion.MsBuild 6.5.0**: Automatic version management
 - **Microsoft.Extensions.Configuration**: Configuration management
 - **Microsoft.Extensions.DependencyInjection**: Dependency injection
 - **Serilog**: Structured logging
@@ -265,6 +282,8 @@ Logs are written to:
 
 Log levels can be adjusted in `appsettings.json` under the `Serilog` section.
 
+See **[Serilog File Logging](docs/features/SERILOG_FILE_LOGGING.md)** for detailed configuration options.
+
 ## Troubleshooting
 
 ### No transactions found
@@ -278,23 +297,21 @@ Log levels can be adjusted in `appsettings.json` under the `Serilog` section.
 - Review logged transaction details for exclusion status
 - Add missing exclusion patterns to `ParserOptions.ExclusionPatterns`
 - Verify multi-line transactions are being combined correctly
+- See **[Transaction Exclusion Feature](docs/features/TRANSACTION_EXCLUSION_FEATURE.md)**
 
 ### Classification issues
 
 - Check that `categories.json` exists and is valid JSON
 - Review category matcher patterns for accuracy
 - Enable debug logging to see matching attempts
+- See **[Transaction Classification Guide](docs/CLASSIFICATION_GUIDE.md)**
 
 ### Encoding issues
 
 The application includes custom PDF encoding providers. If you encounter unusual characters, check `PdfAliasEncodingProvider.cs`.
 
-## License
+### Date filtering issues
 
-This project is available under the [AGPL License](LICENSE).
-
-## Acknowledgments
-
-- iText library for PDF processing
-- Serilog for structured logging
-- Microsoft Extensions for configuration and dependency injection
+- Ensure PDF filenames start with `YYYY-MM-DD` format (e.g., `2024-10-21-statement.pdf`)
+- Verify `StartDate` and `EndDate` are in `YYYY-MM-DD` format
+- StartDate is inclusive (>=), EndDate is exclusive (<)

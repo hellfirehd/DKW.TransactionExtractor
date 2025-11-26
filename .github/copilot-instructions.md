@@ -1,4 +1,4 @@
-﻿# GitHub Copilot Workspace Instructions
+# GitHub Copilot Workspace Instructions
 
 This file provides context and coding standards for GitHub Copilot when working with the DKW Transaction Extractor project.
 
@@ -348,13 +348,13 @@ Before submitting a PR, verify:
 
 ## References
 
-- [Main Documentation](../../docs/README.md)
-- [Classification Guide](../../docs/CLASSIFICATION_GUIDE.md)
-- [Architecture Decisions](../../docs/architecture/)
+- [Main Documentation](../docs/README.md)
+- [Classification Guide](../docs/CLASSIFICATION_GUIDE.md)
+- [Architecture Decisions](../docs/architecture/)
 - [Microsoft C# Coding Conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
 - [Clean Code by Robert C. Martin](https://www.oreilly.com/library/view/clean-code-a/9780136083238/)
 
 ---
 
-**Last Updated**: 2025-01-26  
+**Last Updated**: 2025-11-27  
 **Maintainer**: GitHub Copilot Workspace Configuration
