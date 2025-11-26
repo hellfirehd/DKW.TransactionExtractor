@@ -1,4 +1,4 @@
-# GitHub Copilot Workspace Instructions
+﻿# GitHub Copilot Workspace Instructions
 
 This file provides context and coding standards for GitHub Copilot when working with the DKW Transaction Extractor project.
 
@@ -61,7 +61,7 @@ This file provides context and coding standards for GitHub Copilot when working 
 
 ### Control Flow Best Practices
 
-#### ?? Avoid Recursion for Retry Logic
+#### Avoid Recursion for Retry Logic
 
 **Never use recursion for:**
 - Retry logic
@@ -73,7 +73,7 @@ This file provides context and coding standards for GitHub Copilot when working 
 
 **Use Instead:** Loops with sentinel values or explicit exit conditions.
 
-**? Bad Example (Recursion Risk):**
+**Bad Example (Recursion Risk):**
 ```csharp
 public CategorySelectionResult PromptForCategory()
 {
@@ -84,7 +84,7 @@ public CategorySelectionResult PromptForCategory()
 }
 ```
 
-**? Good Example (Loop with Sentinel):**
+**Good Example (Loop with Sentinel):**
 ```csharp
 public CategorySelectionResult PromptForCategory()
 {
@@ -224,8 +224,12 @@ public record CategorySelectionResult(
 ### Documentation
 
 1. **Markdown Files**
-   - **Place all documentation in `./docs/`**
-   - Never put documentation in the solution root (except README.md, LICENSE.md, CHANGELOG.md)
+   - **Save all documentation in `./docs/`**
+   - **DO NOT** put documentation files in the solution root (except README.md, LICENSE.md, CHANGELOG.md)
+   - **DO NOT** use extended characters and emojis because they do not display correctly in all environments. Use HTML Entity Codes instead.
+   - **IMPORTANT**: HTML Entity Codes do NOT work inside code blocks (fenced code blocks with `` ``` ``). Use text descriptions like `[OK]`, `[FAIL]`, `[WARN]` or actual code comments inside code blocks.
+   - Use UTF-8 with BOM for all markdown files
+   - Reference: `docs/development/EMOJI_ENTITY_CODE_MAP.md` for all entity code mappings and usage rules
    - Organize by purpose:
      - `./docs/` - User guides and general docs
      - `./docs/architecture/` - Design documents and refactoring notes

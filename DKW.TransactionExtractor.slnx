@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/docs/notes/">
+    <File Path="docs/notes/Full Emoji List, v17.0.html" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
@@ -6,6 +9,10 @@
     <File Path="categories.json" />
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
+  </Folder>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/copilot/">
+    <File Path=".github/copilot/instructions.md" />
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs\CLASSIFICATION_GUIDE.md" />
@@ -15,6 +22,18 @@
     <File Path="docs\architecture\CATEGORY_SERVICE_REFACTORING.md" />
   </Folder>
   <Folder Name="/docs/development/">
+    <File Path="docs/development/ANALYSIS_INDEX.md" />
+    <File Path="docs/development/ANALYSIS_SUMMARY.md" />
+    <File Path="docs/development/CODE_BLOCK_EXCEPTION_RULE.md" />
+    <File Path="docs/development/EMOJI_ENTITY_CODE_MAP.md" />
+    <File Path="docs/development/ENTITY_CODE_CORRECTIONS.md" />
+    <File Path="docs/development/FILENAME_TYPO_FIX_SUMMARY.md" />
+    <File Path="docs/development/HTML_ENTITY_CONVERSION_COMPLETE.md" />
+    <File Path="docs/development/STATUS_COMPLETE.md" />
+    <File Path="docs/development/TECHNICAL_ANALYSIS_REPORT.md" />
+    <File Path="docs/development/TECHNICAL_DEBT_ANALYSIS.md" />
+    <File Path="docs/development/TECHNICAL_DEBT_DASHBOARD.md" />
+    <File Path="docs/development/TECHNICAL_DEBT_REMEDIATION_GUIDE.md" />
     <File Path="docs\development\LEAP_YEAR_FIX.md" />
     <File Path="docs\development\LINE_ENDING_NORMALIZATION_FIX.md" />
     <File Path="docs\development\PARSECONTEXT_REFACTORING.md" />

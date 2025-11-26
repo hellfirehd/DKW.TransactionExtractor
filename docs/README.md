@@ -2,9 +2,9 @@
 
 Welcome to the DKW Transaction Extractor documentation. This directory contains all technical and user-facing documentation for the project.
 
-## ?? Documentation Index
+## Documentation Index
 
-### ?? User Guides
+### User Guides
 - **[Classification Guide](CLASSIFICATION_GUIDE.md)** - Complete guide to the transaction classification system
   - Configuration and setup
   - Matcher types (ExactMatch, Contains, Regex)
@@ -12,22 +12,36 @@ Welcome to the DKW Transaction Extractor documentation. This directory contains 
   - Smart merging behavior
   - Output formats
 
-### ?? Features
+### Features
 - **[Extracted Text Feature](features/EXTRACTED_TEXT_FEATURE.md)** - Debug feature for viewing raw PDF text
 - **[Logging Quick Reference](features/LOGGING_QUICK_REFERENCE.md)** - Quick guide to logging configuration
 - **[Serilog File Logging](features/SERILOG_FILE_LOGGING.md)** - File-based logging setup and configuration
 - **[Supplemental Details Filtering](features/SUPPLEMENTAL_DETAILS_FILTERING.md)** - Handling itemized purchase details
 - **[Transaction Exclusion Feature](features/TRANSACTION_EXCLUSION_FEATURE.md)** - Excluding fees, interest, and refunds
 
-### ??? Architecture & Design
+### Architecture & Design
 - **[Category Service Refactoring](architecture/CATEGORY_SERVICE_REFACTORING.md)** - Service layer design and dependency injection
 
-### ?? Development & Bug Fixes
+### Development & Bug Fixes
 - **[Leap Year Fix](development/LEAP_YEAR_FIX.md)** - Handling February 29th transactions
 - **[Line Ending Normalization Fix](development/LINE_ENDING_NORMALIZATION_FIX.md)** - PDF text extraction normalization
 - **[ParseContext Refactoring](development/PARSECONTEXT_REFACTORING.md)** - Parser context improvements
 
-## ?? Quick Links
+### Technical Debt
+- **[Technical Debt Analysis](TECHNICAL_DEBT_ANALYSIS.md)** - Comprehensive analysis of 8 technical debt items
+  - High priority issues (extensibility, type safety)
+  - Medium priority issues (complexity, coupling)
+  - Low priority issues (documentation, testing)
+- **[Technical Debt Dashboard](TECHNICAL_DEBT_DASHBOARD.md)** - Visual summary with implementation roadmap
+  - Priority matrix
+  - 4-phase remediation plan
+  - Risk assessment
+- **[Remediation Guide](TECHNICAL_DEBT_REMEDIATION_GUIDE.md)** - Code examples and implementation details
+  - Specific code changes
+  - Before/after comparisons
+  - Testing examples
+
+## Quick Links
 
 ### For Users
 - [Getting Started](../README.md) - Project overview and quick start
@@ -41,7 +55,7 @@ Welcome to the DKW Transaction Extractor documentation. This directory contains 
 - [Extensibility](CLASSIFICATION_GUIDE.md#extensibility) - Adding new matcher types
 - [Testing Guidelines](../.github/copilot/instructions.md#testing) - Unit test standards
 
-## ?? Documentation Standards
+## Documentation Standards
 
 All documentation in this workspace follows these standards:
 
@@ -54,28 +68,32 @@ All documentation in this workspace follows these standards:
 3. **Formatting**: Use clear headers, code examples, and tables where appropriate
 4. **Examples**: Include working examples for all configuration options
 5. **Updates**: Keep documentation in sync with code changes
+6. **Characters**: Use UTF-8 encoding for all markdown files. Avoid the use of non-standard characters.
 
-## ??? Complete Directory Structure
+## Complete Directory Structure
 
 ```
 docs/
-??? README.md                                    # This file - documentation index
-??? CLASSIFICATION_GUIDE.md                      # User guide for classification system
-??? features/                                    # Feature documentation
-?   ??? EXTRACTED_TEXT_FEATURE.md
-?   ??? LOGGING_QUICK_REFERENCE.md
-?   ??? SERILOG_FILE_LOGGING.md
-?   ??? SUPPLEMENTAL_DETAILS_FILTERING.md
-?   ??? TRANSACTION_EXCLUSION_FEATURE.md
-??? architecture/                                # Design documents
-?   ??? CATEGORY_SERVICE_REFACTORING.md
-??? development/                                 # Bug fixes and technical notes
-    ??? LEAP_YEAR_FIX.md
-    ??? LINE_ENDING_NORMALIZATION_FIX.md
-    ??? PARSECONTEXT_REFACTORING.md
+- README.md                                    # This file - documentation index
+- CLASSIFICATION_GUIDE.md                      # User guide for classification system
+- features/                                    # Feature documentation
+  - EXTRACTED_TEXT_FEATURE.md
+  - LOGGING_QUICK_REFERENCE.md
+  - SERILOG_FILE_LOGGING.md
+  - SUPPLEMENTAL_DETAILS_FILTERING.md
+  - TRANSACTION_EXCLUSION_FEATURE.md
+- architecture/                                # Design documents
+  - CATEGORY_SERVICE_REFACTORING.md
+- development/                                 # Bug fixes and technical notes
+  - LEAP_YEAR_FIX.md
+  - LINE_ENDING_NORMALIZATION_FIX.md
+  - PARSECONTEXT_REFACTORING.md
+  - TECHNICAL_DEBT_ANALYSIS.md                 # Comprehensive technical debt analysis
+  - TECHNICAL_DEBT_DASHBOARD.md                # Visual dashboard and roadmap
+  - TECHNICAL_DEBT_REMEDIATION_GUIDE.md        # Code examples for fixes
 ```
 
-## ?? Contributing to Documentation
+## Contributing to Documentation
 
 When adding new features or making changes:
 
@@ -112,7 +130,7 @@ How to verify it works.
 Links to related docs or external resources.
 ```
 
-## ?? Additional Resources
+## Additional Resources
 
 - [GitHub Repository](https://github.com/hellfirehd/DKW.TransactionExtractor)
 - [Issue Tracker](https://github.com/hellfirehd/DKW.TransactionExtractor/issues)
