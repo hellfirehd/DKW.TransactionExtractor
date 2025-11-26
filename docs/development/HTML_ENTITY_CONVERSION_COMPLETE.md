@@ -12,7 +12,7 @@
 Replace all emojis and extended characters in markdown files with HTML entity codes to ensure consistent cross-platform rendering and compliance with coding standards.
 
 ### Standard Applied
-Per `.github/copilot/instructions.md`:
+Per `.github/copilot-instructions.md`:
 > **DO NOT** use extended characters and emojis because they do not display correctly in all environments. Use HTML Entity Codes instead.
 
 ---
@@ -133,7 +133,7 @@ Rendering Consistency:      ? Guaranteed
 ## &#128229; Standards Compliance
 
 ### Coding Standards Met
-? **From `.github/copilot/instructions.md`:**
+? **From `.github/copilot-instructions.md`:**
 - &#10004; "DO NOT use extended characters and emojis"
 - &#10004; "Use HTML Entity Codes instead"
 - &#10004; "Use UTF-8 with BOM for all markdown files"

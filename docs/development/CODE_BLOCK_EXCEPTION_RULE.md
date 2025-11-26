@@ -19,7 +19,7 @@ HTML Entity Codes **do NOT render** inside code blocks (fenced code blocks with 
    - Provided text description alternatives
    - Updated usage guidelines with code block rules
 
-2. **.github/copilot/instructions.md**
+2. **.github/copilot-instructions.md**
    - Updated markdown documentation section
    - Added rule about code blocks
    - Added reference to EMOJI_ENTITY_CODE_MAP.md

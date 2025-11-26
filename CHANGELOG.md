@@ -202,7 +202,7 @@ _No unreleased changes at this time._
   - Feature documentation in `docs/features/`
   - Development documentation in `docs/development/`
   - Classification guide: `docs/CLASSIFICATION_GUIDE.md`
-  - GitHub Copilot instructions for coding standards: `.github/copilot/instructions.md`
+  - GitHub Copilot instructions for coding standards: `.github/copilot-instructions.md`
   - README with architecture, usage, and contributing guidelines
 
 ### Technical

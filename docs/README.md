@@ -50,10 +50,10 @@ Welcome to the DKW Transaction Extractor documentation. This directory contains 
 - [Troubleshooting](../README.md#troubleshooting) - Common issues and solutions
 
 ### For Developers
-- [Coding Standards](../.github/copilot/instructions.md) - Naming conventions and best practices
+- [Coding Standards](../.github/copilot-instructions.md) - Naming conventions and best practices
 - [Matcher System](CLASSIFICATION_GUIDE.md#matcher-types) - Understanding the matcher architecture
 - [Extensibility](CLASSIFICATION_GUIDE.md#extensibility) - Adding new matcher types
-- [Testing Guidelines](../.github/copilot/instructions.md#testing) - Unit test standards
+- [Testing Guidelines](../.github/copilot-instructions.md#testing) - Unit test standards
 
 ## Documentation Standards
 
@@ -70,27 +70,16 @@ All documentation in this workspace follows these standards:
 5. **Updates**: Keep documentation in sync with code changes
 6. **Characters**: Use UTF-8 encoding for all markdown files. Avoid the use of non-standard characters.
 
-## Complete Directory Structure
+## Documentation Structure
 
 ```
 docs/
 - README.md                                    # This file - documentation index
 - CLASSIFICATION_GUIDE.md                      # User guide for classification system
 - features/                                    # Feature documentation
-  - EXTRACTED_TEXT_FEATURE.md
-  - LOGGING_QUICK_REFERENCE.md
-  - SERILOG_FILE_LOGGING.md
-  - SUPPLEMENTAL_DETAILS_FILTERING.md
-  - TRANSACTION_EXCLUSION_FEATURE.md
 - architecture/                                # Design documents
-  - CATEGORY_SERVICE_REFACTORING.md
 - development/                                 # Bug fixes and technical notes
-  - LEAP_YEAR_FIX.md
-  - LINE_ENDING_NORMALIZATION_FIX.md
-  - PARSECONTEXT_REFACTORING.md
-  - TECHNICAL_DEBT_ANALYSIS.md                 # Comprehensive technical debt analysis
-  - TECHNICAL_DEBT_DASHBOARD.md                # Visual dashboard and roadmap
-  - TECHNICAL_DEBT_REMEDIATION_GUIDE.md        # Code examples for fixes
+- notes/                                       # Research and References
 ```
 
 ## Contributing to Documentation
@@ -134,7 +123,7 @@ Links to related docs or external resources.
 
 - [GitHub Repository](https://github.com/hellfirehd/DKW.TransactionExtractor)
 - [Issue Tracker](https://github.com/hellfirehd/DKW.TransactionExtractor/issues)
-- [Coding Standards](../.github/copilot/instructions.md)
+- [Coding Standards](../.github/copilot-instructions.md)
 - [Project README](../README.md)
 
 ---
