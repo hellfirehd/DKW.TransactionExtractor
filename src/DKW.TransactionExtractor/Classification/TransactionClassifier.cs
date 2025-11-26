@@ -98,28 +98,25 @@ public class TransactionClassifier : ITransactionClassifier
                 Matchers = new List<CategoryMatcher>()
             };
 
-            if (selectionResult.AddRule)
+            if (selectionResult.HasMatcherRequest)
             {
-                newCategory.Matchers.Add(new CategoryMatcher
+                var matcher = new CategoryMatcher
                 {
-                    Type = "ExactMatch",
-                    Parameters = new Dictionary<String, Object>
-                    {
-                        { "values", new[] { context.Transaction.Description } },
-                        { "caseSensitive", false }
-                    }
-                });
+                    Type = selectionResult.MatcherRequest!.MatcherType,
+                    Parameters = new Dictionary<String, Object>(selectionResult.MatcherRequest.Parameters)
+                };
+                newCategory.Matchers.Add(matcher);
             }
 
             _categoryService.AddCategory(newCategory);
             _logger.LogInformation("Created new category '{Category}' with ID '{Id}'", selectionResult.CategoryName, selectionResult.CategoryId);
         }
-        else if (selectionResult.AddRule)
+        else if (selectionResult.HasMatcherRequest)
         {
-            // Add description to existing category's ExactMatch
-            _categoryService.AddDescriptionToCategory(selectionResult.CategoryId, context.Transaction.Description);
-            _logger.LogInformation("Added rule for '{Description}' to category '{Category}'", 
-                context.Transaction.Description, selectionResult.CategoryName);
+            // Add matcher to existing category
+            _categoryService.AddMatcherToCategory(selectionResult.CategoryId, selectionResult.MatcherRequest!);
+            _logger.LogInformation("Added {MatcherType} rule to category '{Category}'", 
+                selectionResult.MatcherRequest!.MatcherType, selectionResult.CategoryName);
         }
 
         return (new ClassifiedTransaction

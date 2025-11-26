@@ -50,6 +50,7 @@ internal class Program
                     // Classification services
                     services.AddSingleton<ICategoryRepository, CategoryRepository>();
                     services.AddSingleton<ICategoryService, CategoryService>();
+                    services.AddTransient<IMatcherBuilder, MatcherBuilderService>();
                     services.AddTransient<IConsoleInteraction, ConsoleInteractionService>();
                     services.AddTransient<ITransactionClassifier, TransactionClassifier>();
                     

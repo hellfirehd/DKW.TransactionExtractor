@@ -5,10 +5,12 @@ namespace DKW.TransactionExtractor.Classification;
 public class ConsoleInteractionService : IConsoleInteraction
 {
     private readonly ICategoryService _categoryService;
+    private readonly IMatcherBuilder _matcherBuilder;
 
-    public ConsoleInteractionService(ICategoryService categoryService)
+    public ConsoleInteractionService(ICategoryService categoryService, IMatcherBuilder matcherBuilder)
     {
         _categoryService = categoryService;
+        _matcherBuilder = matcherBuilder;
     }
 
     public CategorySelectionResult PromptForCategory(ClassifyTransactionContext context)
@@ -38,7 +40,7 @@ public class ConsoleInteractionService : IConsoleInteraction
             {
                 "1" => SelectExistingCategory(context),
                 "2" => CreateNewCategory(context),
-                "3" => new CategorySelectionResult("uncategorized", "Uncategorized", false),
+                "3" => new CategorySelectionResult("uncategorized", "Uncategorized", null),
                 "4" => HandleExit(),
                 _ => null // Invalid choice, will loop
             };
@@ -89,11 +91,16 @@ public class ConsoleInteractionService : IConsoleInteraction
             var category = sortedCategories[index - 1];
             
             Console.WriteLine();
-            Console.Write($"Add '{context.Transaction.Description}' as a rule to '{category.Name}'? [Y/n]: ");
+            Console.Write($"Add a matching rule for '{context.Transaction.Description}'? [Y/n]: ");
             var response = Console.ReadLine()?.Trim().ToLowerInvariant();
-            var addRule = response != "n";
+            
+            MatcherCreationRequest? matcherRequest = null;
+            if (response != "n")
+            {
+                matcherRequest = _matcherBuilder.BuildMatcher(context.Transaction.Description);
+            }
 
-            return new CategorySelectionResult(category.Id, category.Name, addRule);
+            return new CategorySelectionResult(category.Id, category.Name, matcherRequest);
         }
 
         return CategorySelectionResult.Invalid;
@@ -114,11 +121,16 @@ public class ConsoleInteractionService : IConsoleInteraction
         var categoryId = categoryName.ToLowerInvariant().Replace(" ", "-");
 
         Console.WriteLine();
-        Console.Write($"Add '{context.Transaction.Description}' as a rule to '{categoryName}'? [Y/n]: ");
+        Console.Write($"Add a matching rule for '{context.Transaction.Description}'? [Y/n]: ");
         var response = Console.ReadLine()?.Trim().ToLowerInvariant();
-        var addRule = response != "n";
+        
+        MatcherCreationRequest? matcherRequest = null;
+        if (response != "n")
+        {
+            matcherRequest = _matcherBuilder.BuildMatcher(context.Transaction.Description);
+        }
 
-        return new CategorySelectionResult(categoryId, categoryName, addRule);
+        return new CategorySelectionResult(categoryId, categoryName, matcherRequest);
     }
 
     private CategorySelectionResult HandleExit()
@@ -138,6 +150,6 @@ public class ConsoleInteractionService : IConsoleInteraction
             }
         }
 
-        return new CategorySelectionResult("uncategorized", "Uncategorized", false, RequestedExit: true);
+        return new CategorySelectionResult("uncategorized", "Uncategorized", null, RequestedExit: true);
     }
 }

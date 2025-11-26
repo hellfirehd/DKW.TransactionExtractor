@@ -31,11 +31,31 @@ public class MatcherFactory
 
     private ITransactionMatcher CreateContainsMatcher(Dictionary<String, Object> parameters)
     {
-        var value = ((JsonElement)parameters["value"]).GetString() ?? String.Empty;
+        // Support both old format (single "value") and new format (array "values")
+        String[] values;
+        
+        if (parameters.ContainsKey("values"))
+        {
+            var valuesElement = (JsonElement)parameters["values"];
+            values = valuesElement.EnumerateArray()
+                .Select(e => e.GetString() ?? String.Empty)
+                .ToArray();
+        }
+        else if (parameters.ContainsKey("value"))
+        {
+            // Legacy format support
+            var value = ((JsonElement)parameters["value"]).GetString() ?? String.Empty;
+            values = new[] { value };
+        }
+        else
+        {
+            throw new InvalidOperationException("Contains matcher requires either 'value' or 'values' parameter");
+        }
+
         var caseSensitive = parameters.ContainsKey("caseSensitive") 
             && ((JsonElement)parameters["caseSensitive"]).GetBoolean();
 
-        return new ContainsMatcher(value, caseSensitive);
+        return new ContainsMatcher(values, caseSensitive);
     }
 
     private ITransactionMatcher CreateRegexMatcher(Dictionary<String, Object> parameters)

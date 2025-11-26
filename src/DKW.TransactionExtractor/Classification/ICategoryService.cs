@@ -15,15 +15,11 @@ public interface ICategoryService
     void AddCategory(Category category);
 
     /// <summary>
-    /// Adds a matcher to an existing category.
+    /// Adds a matcher to an existing category based on the provided request.
+    /// For ExactMatch and Contains types, this will merge with existing matchers.
+    /// For Regex types, this will always create a new matcher.
     /// </summary>
-    void AddMatcherToCategory(String categoryId, CategoryMatcher matcher);
-
-    /// <summary>
-    /// Adds a description value to an existing ExactMatch matcher in the category,
-    /// or creates a new ExactMatch matcher if one doesn't exist.
-    /// </summary>
-    void AddDescriptionToCategory(String categoryId, String description);
+    void AddMatcherToCategory(String categoryId, MatcherCreationRequest request);
 
     /// <summary>
     /// Checks if a category with the specified ID exists.

@@ -28,14 +28,9 @@ public class CategoryService : ICategoryService
         _repository.AddCategory(category);
     }
 
-    public void AddMatcherToCategory(String categoryId, CategoryMatcher matcher)
+    public void AddMatcherToCategory(String categoryId, MatcherCreationRequest request)
     {
-        _repository.AddMatcherToCategory(categoryId, matcher);
-    }
-
-    public void AddDescriptionToCategory(String categoryId, String description)
-    {
-        _repository.AddDescriptionToCategory(categoryId, description);
+        _repository.AddMatcherToCategory(categoryId, request);
     }
 
     public Boolean CategoryExists(String categoryId)

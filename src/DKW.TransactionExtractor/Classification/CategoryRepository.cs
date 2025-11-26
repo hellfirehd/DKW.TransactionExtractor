@@ -93,73 +93,120 @@ public class CategoryRepository : ICategoryRepository
         }
     }
 
-    public void AddDescriptionToCategory(String categoryId, String description)
+    public void AddMatcherToCategory(String categoryId, MatcherCreationRequest request)
     {
         var category = _config.Categories.FirstOrDefault(c => c.Id == categoryId);
         if (category == null)
         {
+            _logger.LogWarning("Cannot add matcher to category '{CategoryId}': category not found", categoryId);
             return;
         }
 
-        // Try to find an existing ExactMatch matcher
-        var exactMatcher = category.Matchers.FirstOrDefault(m => 
-            m.Type.Equals("ExactMatch", StringComparison.OrdinalIgnoreCase));
-
-        if (exactMatcher != null)
+        // Regex matchers are always created as new instances (no merging)
+        if (request.MatcherType == "Regex")
         {
-            // Append to existing ExactMatch values
-            if (exactMatcher.Parameters.TryGetValue("values", out var valuesObj))
-            {
-                var existingValues = new List<String>();
-                
-                // Handle different serialization formats
-                if (valuesObj is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
-                {
-                    existingValues = jsonElement.EnumerateArray()
-                        .Select(e => e.GetString() ?? String.Empty)
-                        .ToList();
-                }
-                else if (valuesObj is String[] stringArray)
-                {
-                    existingValues = stringArray.ToList();
-                }
-                else if (valuesObj is List<String> stringList)
-                {
-                    existingValues = stringList;
-                }
+            var newMatcher = CreateMatcherFromRequest(request);
+            category.Matchers.Add(newMatcher);
+            _logger.LogInformation("Added new Regex matcher to category '{CategoryId}'", categoryId);
+            Save(_config);
+            return;
+        }
 
-                // Add new value if not already present (case-insensitive check)
-                if (!existingValues.Any(v => v.Equals(description, StringComparison.OrdinalIgnoreCase)))
-                {
-                    existingValues.Add(description);
-                    exactMatcher.Parameters["values"] = existingValues.ToArray();
-                    _logger.LogInformation("Added description '{Description}' to existing ExactMatch in category '{CategoryId}'", 
-                        description, categoryId);
-                }
-                else
-                {
-                    _logger.LogDebug("Description '{Description}' already exists in category '{CategoryId}'", 
-                        description, categoryId);
-                }
-            }
+        // ExactMatch and Contains can be merged with existing matchers
+        var merged = TryMergeWithExistingMatcher(category, request);
+        
+        if (merged)
+        {
+            _logger.LogInformation("Merged {MatcherType} values into existing matcher for category '{CategoryId}'", 
+                request.MatcherType, categoryId);
         }
         else
         {
-            // Create new ExactMatch matcher
-            var newMatcher = new CategoryMatcher
-            {
-                Type = "ExactMatch",
-                Parameters = new Dictionary<String, Object>
-                {
-                    { "values", new[] { description } },
-                    { "caseSensitive", false }
-                }
-            };
+            var newMatcher = CreateMatcherFromRequest(request);
             category.Matchers.Add(newMatcher);
-            _logger.LogInformation("Created new ExactMatch with description '{Description}' in category '{CategoryId}'", 
-                description, categoryId);
+            _logger.LogInformation("Added new {MatcherType} matcher to category '{CategoryId}'", 
+                request.MatcherType, categoryId);
         }
 
         Save(_config);
+    }
+
+    private Boolean TryMergeWithExistingMatcher(Category category, MatcherCreationRequest request)
+    {
+        var caseSensitive = request.Parameters.TryGetValue("caseSensitive", out var csValue) 
+            && Convert.ToBoolean(csValue);
+
+        // Find existing matcher of the same type with matching case sensitivity
+        var existingMatcher = category.Matchers.FirstOrDefault(m =>
+            m.Type.Equals(request.MatcherType, StringComparison.OrdinalIgnoreCase) &&
+            GetCaseSensitiveParameter(m) == caseSensitive);
+
+        if (existingMatcher == null)
+        {
+            return false;
+        }
+
+        // Merge the values
+        if (existingMatcher.Parameters.TryGetValue("values", out var existingValuesObj))
+        {
+            var existingValues = ExtractStringArray(existingValuesObj);
+            var newValues = ExtractStringArray(request.Parameters["values"]);
+
+            // Combine and deduplicate values (case-insensitive comparison for deduplication)
+            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+            var mergedValues = existingValues
+                .Concat(newValues)
+                .Distinct(comparer)
+                .ToArray();
+
+            existingMatcher.Parameters["values"] = mergedValues;
+            return true;
+        }
+
+        return false;
+    }
+
+    private Boolean GetCaseSensitiveParameter(CategoryMatcher matcher)
+    {
+        if (matcher.Parameters.TryGetValue("caseSensitive", out var csObj))
+        {
+            if (csObj is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.True)
+            {
+                return true;
+            }
+            if (csObj is Boolean boolValue)
+            {
+                return boolValue;
+            }
+        }
+        return false;
+    }
+
+    private String[] ExtractStringArray(Object valuesObj)
+    {
+        if (valuesObj is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
+        {
+            return jsonElement.EnumerateArray()
+                .Select(e => e.GetString() ?? String.Empty)
+                .ToArray();
+        }
+        else if (valuesObj is String[] stringArray)
+        {
+            return stringArray;
+        }
+        else if (valuesObj is List<String> stringList)
+        {
+            return stringList.ToArray();
+        }
+        return Array.Empty<String>();
+    }
+
+    private CategoryMatcher CreateMatcherFromRequest(MatcherCreationRequest request)
+    {
+        return new CategoryMatcher
+        {
+            Type = request.MatcherType,
+            Parameters = new Dictionary<String, Object>(request.Parameters)
+        };
     }
 }
