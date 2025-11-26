@@ -5,73 +5,22 @@
       "name": "Groceries",
       "matchers": [
         {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "SAFEWAY",
-              "WHOLE FOODS",
-              "TRADER JOES"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
           "type": "Contains",
           "parameters": {
-            "value": "GROCERY",
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
             "values": [
-              "COSTCO WHOLESALE W1578 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "WAL-MART #3042 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "SAVE ON FOODS #2224 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "IGA72 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "BULK BARN 673 KELOWNA KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "WALMART.CA Mississauga ON"
+              "BREAD ON WHEELS",
+              "BULK BARN",
+              "GROCERY",
+              "COSTCO",
+              "GLENMORE FRESH FRUIT",
+              "IGA",
+              "INTERIOR BEVERAGES",
+              "NO FRILLS",
+              "SAFEWAY",
+              "SAVE ON FOODS",
+              "SUPERSTORE",
+              "WAL-MART",
+              "WALMART"
             ],
             "caseSensitive": false
           }
@@ -85,7 +34,15 @@
         {
           "type": "Contains",
           "parameters": {
-            "value": "RESTAURANT",
+            "values": [
+              "BLUETAIL SUSHI",
+              "RESTAURANT",
+              "PAPA JOHNS",
+              "HECTORcS CASA",
+              "BOSTON PIZZA",
+              "OLD SPAGHETTI",
+              "DENNYcS"
+            ],
             "caseSensitive": false
           }
         },
@@ -93,7 +50,7 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "BLUETAIL SUSHI KELOWNA BC"
+              "INTERNATIONAL HOUSE PA KELOWNA BC"
             ],
             "caseSensitive": false
           }
@@ -110,15 +67,6 @@
           "parameters": {
             "values": [
               "LM Kelowna Kelowna BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "Subway 37691 Kelowna BC"
             ],
             "caseSensitive": false
           }
@@ -159,22 +107,13 @@
         {
           "type": "Contains",
           "parameters": {
-            "value": "SHELL",
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "Contains",
-          "parameters": {
-            "value": "CHEVRON",
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
             "values": [
-              "PETRO-CANADA 68287 KELOWNA BC"
+              "CDN TIRE GASBAR",
+              "CHEVRON",
+              "COSTCO GAS",
+              "ESSO",
+              "PETRO-CANADA",
+              "SHELL"
             ],
             "caseSensitive": false
           }
@@ -183,49 +122,7 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "COSTCO GAS W1578 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "ESSO 7-ELEVEN 37773 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "CDN TIRE GASBAR #01904 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "PETRO-CANADA 02820 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "uncategorized",
-      "name": "Uncategorized",
-      "matchers": [
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "LANDMARK WEB TICKETING 403-262-4255 AB"
+              "RED DEER TEMPO SMITTYS RED DEER COUNAB"
             ],
             "caseSensitive": false
           }
@@ -280,6 +177,15 @@
             ],
             "caseSensitive": false
           }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "DIGI-KEY CORP"
+            ],
+            "caseSensitive": false
+          }
         }
       ]
     },
@@ -291,7 +197,8 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "SHOPPERS DRUG MART 225 KELOWNA BC"
+              "SHOPPERS DRUG MART 225 KELOWNA BC",
+              "SP HENSON SHAVING KITCHENER NORON"
             ],
             "caseSensitive": false
           }
@@ -313,6 +220,15 @@
             ],
             "caseSensitive": false
           }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "LONDON DRUGS"
+            ],
+            "caseSensitive": false
+          }
         }
       ]
     },
@@ -324,7 +240,11 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "ARBY\u00A9S #2033 Q2P KELOWNA BC"
+              "ARBY\u00A9S #2033 Q2P KELOWNA BC",
+              "SQ *BEAVERTAILS Lake Country BC",
+              "SQ *FRESHLY SQUEEZED V West Kelowna BC",
+              "CHV40135 GOLDEN CHEVRO GOLDEN BC",
+              "MCDONALD\u00A9S #40610 KELOWNA BC"
             ],
             "caseSensitive": false
           }
@@ -526,6 +446,28 @@
             ],
             "caseSensitive": false
           }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "DAIRY QUEEN",
+              "KFC/TACO BELL",
+              "SUBCITY",
+              "KFC",
+              "7 ELEVEN",
+              "BURGER KING",
+              "TIM HORTONS",
+              "SIZZLING WOK",
+              "McDonalds",
+              "A\u0026W",
+              "MACS CONV",
+              "Dutchmen Dairy",
+              "QUESADA",
+              "Subway"
+            ],
+            "caseSensitive": false
+          }
         }
       ]
     },
@@ -537,7 +479,8 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "INDIGO 916 KELOWNA BC"
+              "INDIGO 916 KELOWNA BC",
+              "DOLLARAMA #1541 THREE HILLS AB"
             ],
             "caseSensitive": false
           }
@@ -547,6 +490,15 @@
           "parameters": {
             "values": [
               "SP LTT STORE SURREY BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "ARTONA"
             ],
             "caseSensitive": false
           }
@@ -561,7 +513,9 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "RAKUTEN KOBO INC. TORONTO ON"
+              "RAKUTEN KOBO INC. TORONTO ON",
+              "FS *FLIXTOOLS VANCOUVER BC",
+              "WORLD LITERATURE/SOL OTTAWA ON"
             ],
             "caseSensitive": false
           }
@@ -682,6 +636,24 @@
             ],
             "caseSensitive": false
           }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "ONLYFANS",
+              "EVENTBRITE",
+              "NETFLIX",
+              "MICROSOFT*STORE",
+              "STEAMGAMES",
+              "TICKETOWL",
+              "NEXUSMODS",
+              "Audible",
+              "BEST BUY",
+              "XBOX GAME"
+            ],
+            "caseSensitive": false
+          }
         }
       ]
     },
@@ -730,6 +702,18 @@
             ],
             "caseSensitive": false
           }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "1PASSWORD",
+              "FONT AWESOME",
+              "SCOOTERSOFTWARE",
+              "CLOUDFLARE"
+            ],
+            "caseSensitive": false
+          }
         }
       ]
     },
@@ -769,6 +753,15 @@
           "parameters": {
             "values": [
               "APPLE.COM/CA TORONTO ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "TELUS"
             ],
             "caseSensitive": false
           }
@@ -814,6 +807,15 @@
             ],
             "caseSensitive": false
           }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "PAYBYPHONE"
+            ],
+            "caseSensitive": false
+          }
         }
       ]
     },
@@ -840,7 +842,8 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "BLUEBIRD MEDICAL CLINI KELOWNA BC"
+              "BLUEBIRD MEDICAL CLINI KELOWNA BC",
+              "VISIONFIRST OPTOMETRY KELOWNA BC"
             ],
             "caseSensitive": false
           }
@@ -850,6 +853,15 @@
           "parameters": {
             "values": [
               "SP CPAP CANADA DIREC HAMMONDS PLAINS"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "ZENNI OPTICAL"
             ],
             "caseSensitive": false
           }
@@ -864,7 +876,124 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "AFFIRM CANADA OTTAWA ON"
+              "AFFIRM CANADA OTTAWA ON",
+              "CITY OF KELOWNA LANDFI KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "HOME DEPOT",
+              "DOLLAR TREE"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "uncategorized",
+      "name": "Uncategorized",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "AMAZON",
+              "CDN TIRE"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "LANDMARK WEB TICKETING 403-262-4255 AB"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "donations",
+      "name": "Donations",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "BCCH FOUNDATION VANCOUVER BC",
+              "SQ *GIRL GUIDES OF CAN Kelowna BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "vehicle-\u0026-transportation",
+      "name": "Vehicle \u0026 Transportation",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "BC TRANSIT",
+              "KELOWNA MAZDA",
+              "ICBC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "vacation-\u0026-travel",
+      "name": "Vacation \u0026 Travel",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "BEST WESTERN",
+              "RED DEER",
+              "EDMONTON",
+              "REVELSTOKE"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "kids---school-fees",
+      "name": "Kids - School Fees",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Central Okanagan SD KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "kids---clothing",
+      "name": "Kids - Clothing",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "TORRID CANADA INC"
             ],
             "caseSensitive": false
           }
