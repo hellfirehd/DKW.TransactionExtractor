@@ -89,17 +89,44 @@ internal class TransactionExtractor(
         // After processing all statements, write a single output file if any transactions
         if (allClassified.Count > 0)
         {
-            var outputExtension = _appConfig.OutputFormat.ToLowerInvariant() == "json" ? ".json" : ".csv";
-            var outputPath = Path.Combine(_appConfig.OutputPath, "transactions" + outputExtension);
+            // Filter out uncategorized transactions if configured
+            var transactionsToOutput = _appConfig.OutputUncategorized 
+                ? allClassified 
+                : allClassified.Where(ct => !String.Equals(ct.CategoryId, "uncategorized", StringComparison.OrdinalIgnoreCase)).ToList();
 
-            try
+            if (transactionsToOutput.Count > 0)
             {
-                _formatter.WriteOutput(allClassified, outputPath);
-                _logger.LogInformation("Wrote {Count} classified transactions to {Path}", allClassified.Count, outputPath);
+                try
+                {
+                    // Generate category summaries from filtered transactions
+                    var categorySummaries = GenerateCategorySummaries(transactionsToOutput);
+                    
+                    // Create output object
+                    var output = new Models.TransactionOutput
+                    {
+                        Transactions = transactionsToOutput,
+                        CategorySummaries = categorySummaries,
+                        GeneratedAt = DateTime.Now
+                    };
+                    
+                    // Write output using formatter (formatter decides single or multiple files)
+                    var baseOutputPath = Path.Combine(_appConfig.OutputPath, "transactions");
+                    _formatter.WriteOutput(output, baseOutputPath);
+                    
+                    _logger.LogInformation("Wrote {Count} classified transactions to output", transactionsToOutput.Count);
+                    if (categorySummaries.Count > 0)
+                    {
+                        _logger.LogInformation("Generated summary for {CategoryCount} categories", categorySummaries.Count);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to write output");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Failed to write output to {Path}", outputPath);
+                _logger.LogInformation("No transactions to output after filtering.");
             }
         }
     }
@@ -173,5 +200,22 @@ internal class TransactionExtractor(
         }
 
         return classificationResult.RequestedEarlyExit;
+    }
+
+    private List<Models.CategorySummary> GenerateCategorySummaries(List<Models.ClassifiedTransaction> transactions)
+    {
+        var summaries = transactions
+            .GroupBy(ct => new { ct.CategoryId, ct.CategoryName })
+            .Select(g => new Models.CategorySummary
+            {
+                CategoryId = g.Key.CategoryId,
+                CategoryName = g.Key.CategoryName,
+                TransactionCount = g.Count(),
+                TotalAmount = g.Sum(ct => ct.Transaction.Amount)
+            })
+            .ToList();
+
+        // Sort alphabetically by category name
+        return summaries.OrderBy(s => s.CategoryName).ToList();
     }
 }

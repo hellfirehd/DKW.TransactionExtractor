@@ -25,4 +25,11 @@ public class AppOptions
     /// Directory path where classified transaction files will be written.
     /// </summary>
     public String OutputPath { get; set; } = "output";
+
+    /// <summary>
+    /// When true, includes uncategorized transactions in the output files (both transactions and summaries).
+    /// When false, filters out uncategorized transactions from all output.
+    /// Default is true.
+    /// </summary>
+    public Boolean OutputUncategorized { get; set; } = true;
 }

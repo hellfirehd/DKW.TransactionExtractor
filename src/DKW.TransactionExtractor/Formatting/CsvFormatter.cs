@@ -5,7 +5,25 @@ namespace DKW.TransactionExtractor.Formatting;
 
 public class CsvFormatter : ITransactionFormatter
 {
-    public void WriteOutput(List<ClassifiedTransaction> transactions, String outputPath)
+    public void WriteOutput(TransactionOutput output, String baseOutputPath)
+    {
+        var timestamp = output.GeneratedAt.ToString("yyyyMMdd-HHmmss");
+        var directory = Path.GetDirectoryName(baseOutputPath) ?? String.Empty;
+        var baseFileName = Path.GetFileNameWithoutExtension(baseOutputPath);
+        
+        // Write transactions file
+        var transactionsPath = Path.Combine(directory, $"{baseFileName}-{timestamp}.csv");
+        WriteTransactions(output.Transactions, transactionsPath);
+        
+        // Write summary file if summaries exist
+        if (output.CategorySummaries.Count > 0)
+        {
+            var summaryPath = Path.Combine(directory, $"{baseFileName}-summary-{timestamp}.csv");
+            WriteSummary(output.CategorySummaries, summaryPath);
+        }
+    }
+
+    private void WriteTransactions(List<ClassifiedTransaction> transactions, String outputPath)
     {
         var sb = new StringBuilder();
 
@@ -30,7 +48,7 @@ public class CsvFormatter : ITransactionFormatter
         File.WriteAllText(outputPath, sb.ToString());
     }
 
-    public void WriteSummary(List<CategorySummary> categorySummaries, String outputPath)
+    private void WriteSummary(List<CategorySummary> categorySummaries, String outputPath)
     {
         var sb = new StringBuilder();
 
