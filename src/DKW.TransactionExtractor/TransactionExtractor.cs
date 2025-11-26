@@ -22,6 +22,9 @@ internal class TransactionExtractor(
 
     public void Run()
     {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.Clear();
+
         // Get the folder path from configuration
         var folderPath = _appConfig.FolderPath;
 
@@ -69,19 +72,39 @@ internal class TransactionExtractor(
 
         LogMessages.LogFoundFiles(_logger, filteredFiles.Length, folderPath);
 
+        // Aggregate classified transactions for entire run
+        var allClassified = new List<DKW.TransactionExtractor.Models.ClassifiedTransaction>();
+
         // Process each statement: extract -> parse -> classify -> format
         foreach (var pdfFile in filteredFiles)
         {
-            var shouldExit = ProcessStatement(pdfFile);
+            var shouldExit = ProcessStatement(pdfFile, allClassified);
             if (shouldExit)
             {
                 _logger.LogInformation("Processing stopped by user request.");
                 break;
             }
         }
+
+        // After processing all statements, write a single output file if any transactions
+        if (allClassified.Count > 0)
+        {
+            var outputExtension = _appConfig.OutputFormat.ToLowerInvariant() == "json" ? ".json" : ".csv";
+            var outputPath = Path.Combine(_appConfig.OutputPath, "transactions" + outputExtension);
+
+            try
+            {
+                _formatter.WriteOutput(allClassified, outputPath);
+                _logger.LogInformation("Wrote {Count} classified transactions to {Path}", allClassified.Count, outputPath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to write output to {Path}", outputPath);
+            }
+        }
     }
 
-    private Boolean ProcessStatement(String pdfFile)
+    private Boolean ProcessStatement(String pdfFile, List<DKW.TransactionExtractor.Models.ClassifiedTransaction> aggregate)
     {
         // Extract text from PDF
         var text = _pdfExtractor.ExtractTextFromPdf(pdfFile);
@@ -136,23 +159,11 @@ internal class TransactionExtractor(
         _logger.LogInformation("Classifying {Count} transactions...", parseResult.Transactions.Count);
         var classificationResult = _classifier.ClassifyTransactions(parseResult.Transactions);
 
-        // Write output for transactions that were classified (even if incomplete due to early exit)
-        if (classificationResult.ClassifiedTransactions.Count > 0)
+        // Attach statement date to each transaction and add to aggregate
+        foreach (var ct in classificationResult.ClassifiedTransactions)
         {
-            var outputFileName = Path.GetFileNameWithoutExtension(pdfFile);
-            var outputExtension = _appConfig.OutputFormat.ToLowerInvariant() == "json" ? ".json" : ".csv";
-            var outputPath = Path.Combine(_appConfig.OutputPath, outputFileName + outputExtension);
-
-            try
-            {
-                _formatter.WriteOutput(classificationResult.ClassifiedTransactions, outputPath);
-                _logger.LogInformation("Wrote {Count} classified transactions to {Path}", 
-                    classificationResult.ClassifiedTransactions.Count, outputPath);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to write output to {Path}", outputPath);
-            }
+            ct.Transaction.StatementDate = parseResult.StatementDate;
+            aggregate.Add(ct);
         }
 
         if (!classificationResult.RequestedEarlyExit)

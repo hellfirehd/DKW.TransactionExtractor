@@ -30,6 +30,25 @@ public class CsvFormatter : ITransactionFormatter
         File.WriteAllText(outputPath, sb.ToString());
     }
 
+    public void WriteSummary(List<CategorySummary> categorySummaries, String outputPath)
+    {
+        var sb = new StringBuilder();
+
+        // Header
+        sb.AppendLine("CategoryId,CategoryName,TransactionCount,TotalAmount");
+
+        // Data rows - summaries are already sorted alphabetically by caller
+        foreach (var summary in categorySummaries)
+        {
+            sb.AppendLine($"\"{EscapeCsv(summary.CategoryId)}\"," +
+                          $"\"{EscapeCsv(summary.CategoryName)}\"," +
+                          $"{summary.TransactionCount}," +
+                          $"{summary.TotalAmount}");
+        }
+
+        File.WriteAllText(outputPath, sb.ToString());
+    }
+
     private String EscapeCsv(String value)
     {
         if (String.IsNullOrEmpty(value))
