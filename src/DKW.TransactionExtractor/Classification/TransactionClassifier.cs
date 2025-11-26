@@ -92,12 +92,15 @@ public class TransactionClassifier : ITransactionClassifier
             }, true);
         }
 
+        // Normalize the category ID from user selection
+        var normalizedCategoryId = CategoryIdNormalizer.Normalize(selectionResult.CategoryId);
+
         // If user chose to create a new category
-        if (!_categoryService.CategoryExists(selectionResult.CategoryId))
+        if (!_categoryService.CategoryExists(normalizedCategoryId))
         {
             var newCategory = new Category
             {
-                Id = selectionResult.CategoryId,
+                Id = normalizedCategoryId,
                 Name = selectionResult.CategoryName,
                 Matchers = new List<CategoryMatcher>()
             };
@@ -113,12 +116,12 @@ public class TransactionClassifier : ITransactionClassifier
             }
 
             _categoryService.AddCategory(newCategory);
-            _logger.LogInformation("Created new category '{Category}' with ID '{Id}'", selectionResult.CategoryName, selectionResult.CategoryId);
+            _logger.LogInformation("Created new category '{Category}' with ID '{Id}'", selectionResult.CategoryName, normalizedCategoryId);
         }
         else if (selectionResult.HasMatcherRequest)
         {
             // Add matcher to existing category
-            _categoryService.AddMatcherToCategory(selectionResult.CategoryId, selectionResult.MatcherRequest!);
+            _categoryService.AddMatcherToCategory(normalizedCategoryId, selectionResult.MatcherRequest!);
             _logger.LogInformation("Added {MatcherType} rule to category '{Category}'", 
                 selectionResult.MatcherRequest!.MatcherType, selectionResult.CategoryName);
         }
@@ -126,7 +129,7 @@ public class TransactionClassifier : ITransactionClassifier
         return (new ClassifiedTransaction
         {
             Transaction = context.Transaction,
-            CategoryId = selectionResult.CategoryId,
+            CategoryId = normalizedCategoryId,
             CategoryName = selectionResult.CategoryName
         }, false);
     }

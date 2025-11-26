@@ -25,16 +25,22 @@ public class CategoryService : ICategoryService
 
     public void AddCategory(Category category)
     {
+        // Normalize the category ID before adding
+        category.Id = CategoryIdNormalizer.Normalize(category.Id);
         _repository.AddCategory(category);
     }
 
     public void AddMatcherToCategory(String categoryId, MatcherCreationRequest request)
     {
-        _repository.AddMatcherToCategory(categoryId, request);
+        // Normalize the category ID before looking it up
+        var normalizedId = CategoryIdNormalizer.Normalize(categoryId);
+        _repository.AddMatcherToCategory(normalizedId, request);
     }
 
     public Boolean CategoryExists(String categoryId)
     {
-        return _repository.Load().Categories.Any(c => c.Id == categoryId);
+        // Normalize the category ID before checking
+        var normalizedId = CategoryIdNormalizer.Normalize(categoryId);
+        return _repository.Load().Categories.Any(c => c.Id == normalizedId);
     }
 }

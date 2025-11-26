@@ -25,58 +25,73 @@ internal class TransactionExtractor(
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.Clear();
 
-        // Get the folder path from configuration
-        var folderPath = _appConfig.FolderPath;
+        if (!ValidateConfiguration())
+        {
+            return;
+        }
 
-        if (String.IsNullOrEmpty(folderPath))
+        var filteredFiles = GetFilteredPdfFiles();
+        if (filteredFiles.Length == 0)
+        {
+            return;
+        }
+
+        var allClassified = ProcessStatements(filteredFiles);
+        WriteOutput(allClassified);
+    }
+
+    private Boolean ValidateConfiguration()
+    {
+        if (String.IsNullOrEmpty(_appConfig.FolderPath))
         {
             LogMessages.LogMissingFolderPath(_logger);
-            return;
+            return false;
         }
 
-        if (!Directory.Exists(folderPath))
+        if (!Directory.Exists(_appConfig.FolderPath))
         {
-            LogMessages.LogFolderDoesNotExist(_logger, folderPath);
-            return;
+            LogMessages.LogFolderDoesNotExist(_logger, _appConfig.FolderPath);
+            return false;
         }
 
-        // Get the years to filter from configuration
-        var years = _appConfig.Years;
-
-        if (years == null || years.Length == 0)
+        if (_appConfig.Years == null || _appConfig.Years.Length == 0)
         {
             LogMessages.LogNoYearsConfigured(_logger);
-            return;
+            return false;
         }
 
-        // Ensure output directory exists
         if (!Directory.Exists(_appConfig.OutputPath))
         {
             Directory.CreateDirectory(_appConfig.OutputPath);
         }
 
-        // Get all PDF files in the folder
-        var pdfFiles = Directory.GetFiles(folderPath, "*.pdf");
+        return true;
+    }
 
-        // Filter PDF files by year prefix (YYYY-MM-DD format)
+    private String[] GetFilteredPdfFiles()
+    {
+        var pdfFiles = Directory.GetFiles(_appConfig.FolderPath, "*.pdf");
+
         var filteredFiles = pdfFiles.Where(file =>
         {
             var fileName = Path.GetFileName(file);
             if (fileName.Length >= 4 && Int32.TryParse(fileName.AsSpan(0, 4), out var fileYear))
             {
-                return years.Contains(fileYear);
+                return _appConfig.Years.Contains(fileYear);
             }
 
             return false;
         }).ToArray();
 
-        LogMessages.LogFoundFiles(_logger, filteredFiles.Length, folderPath);
+        LogMessages.LogFoundFiles(_logger, filteredFiles.Length, _appConfig.FolderPath);
+        return filteredFiles;
+    }
 
-        // Aggregate classified transactions for entire run
-        var allClassified = new List<DKW.TransactionExtractor.Models.ClassifiedTransaction>();
+    private List<Models.ClassifiedTransaction> ProcessStatements(String[] pdfFiles)
+    {
+        var allClassified = new List<Models.ClassifiedTransaction>();
 
-        // Process each statement: extract -> parse -> classify -> format
-        foreach (var pdfFile in filteredFiles)
+        foreach (var pdfFile in pdfFiles)
         {
             var shouldExit = ProcessStatement(pdfFile, allClassified);
             if (shouldExit)
@@ -86,48 +101,65 @@ internal class TransactionExtractor(
             }
         }
 
-        // After processing all statements, write a single output file if any transactions
-        if (allClassified.Count > 0)
-        {
-            // Filter out uncategorized transactions if configured
-            var transactionsToOutput = _appConfig.OutputUncategorized 
-                ? allClassified 
-                : allClassified.Where(ct => !String.Equals(ct.CategoryId, "uncategorized", StringComparison.OrdinalIgnoreCase)).ToList();
+        return allClassified;
+    }
 
-            if (transactionsToOutput.Count > 0)
-            {
-                try
-                {
-                    // Generate category summaries from filtered transactions
-                    var categorySummaries = GenerateCategorySummaries(transactionsToOutput);
-                    
-                    // Create output object
-                    var output = new Models.TransactionOutput
-                    {
-                        Transactions = transactionsToOutput,
-                        CategorySummaries = categorySummaries,
-                        GeneratedAt = DateTime.Now
-                    };
-                    
-                    // Write output using formatter (formatter decides single or multiple files)
-                    var baseOutputPath = Path.Combine(_appConfig.OutputPath, "transactions");
-                    _formatter.WriteOutput(output, baseOutputPath);
-                    
-                    _logger.LogInformation("Wrote {Count} classified transactions to output", transactionsToOutput.Count);
-                    if (categorySummaries.Count > 0)
-                    {
-                        _logger.LogInformation("Generated summary for {CategoryCount} categories", categorySummaries.Count);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Failed to write output");
-                }
-            }
-            else
-            {
-                _logger.LogInformation("No transactions to output after filtering.");
-            }
+    private void WriteOutput(List<Models.ClassifiedTransaction> allClassified)
+    {
+        if (allClassified.Count == 0)
+        {
+            return;
+        }
+
+        var transactionsToOutput = FilterTransactions(allClassified);
+        
+        if (transactionsToOutput.Count == 0)
+        {
+            _logger.LogInformation("No transactions to output after filtering.");
+            return;
+        }
+
+        try
+        {
+            var output = CreateTransactionOutput(transactionsToOutput);
+            var baseOutputPath = Path.Combine(_appConfig.OutputPath, "transactions");
+            
+            _formatter.WriteOutput(output, baseOutputPath);
+            
+            LogOutputResults(transactionsToOutput.Count, output.CategorySummaries.Count);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to write output");
+        }
+    }
+
+    private List<Models.ClassifiedTransaction> FilterTransactions(List<Models.ClassifiedTransaction> transactions)
+    {
+        return _appConfig.OutputUncategorized
+            ? transactions
+            : transactions.Where(ct => !String.Equals(ct.CategoryId, "uncategorized", StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+
+    private Models.TransactionOutput CreateTransactionOutput(List<Models.ClassifiedTransaction> transactions)
+    {
+        var categorySummaries = GenerateCategorySummaries(transactions);
+        
+        return new Models.TransactionOutput
+        {
+            Transactions = transactions,
+            CategorySummaries = categorySummaries,
+            GeneratedAt = DateTime.Now
+        };
+    }
+
+    private void LogOutputResults(Int32 transactionCount, Int32 categoryCount)
+    {
+        _logger.LogInformation("Wrote {Count} classified transactions to output", transactionCount);
+        
+        if (categoryCount > 0)
+        {
+            _logger.LogInformation("Generated summary for {CategoryCount} categories", categoryCount);
         }
     }
 

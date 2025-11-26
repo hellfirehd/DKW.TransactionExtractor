@@ -16,6 +16,10 @@ public class CategoryRepository : ICategoryRepository
         _logger = logger;
         _categoryFilePath = options.Value.CategoryConfigPath;
         _config = new CategoryConfig();
+        
+        // Load and normalize existing categories
+        Load();
+        NormalizeExistingCategoryIds();
     }
 
     public CategoryConfig Load()
@@ -44,6 +48,33 @@ public class CategoryRepository : ICategoryRepository
         }
 
         return _config;
+    }
+
+    /// <summary>
+    /// Normalizes category IDs in the existing configuration.
+    /// This is called once during initialization to migrate any legacy category IDs.
+    /// </summary>
+    private void NormalizeExistingCategoryIds()
+    {
+        var hasChanges = false;
+
+        foreach (var category in _config.Categories)
+        {
+            var normalizedId = CategoryIdNormalizer.Normalize(category.Id);
+            
+            if (category.Id != normalizedId)
+            {
+                _logger.LogInformation("Normalizing category ID from '{OldId}' to '{NewId}'", category.Id, normalizedId);
+                category.Id = normalizedId;
+                hasChanges = true;
+            }
+        }
+
+        if (hasChanges)
+        {
+            Save(_config);
+            _logger.LogInformation("Category IDs have been normalized and saved");
+        }
     }
 
     public void Save(CategoryConfig config)
