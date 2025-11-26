@@ -50,7 +50,9 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
         };
 
         if (String.IsNullOrWhiteSpace(context.Text))
+        {
             return result;
+        }
 
         // Split on newline (text should already be normalized by the PDF extractor)
         var rawLines = context.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
@@ -134,7 +136,9 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
             }
 
             if (!IsStartOfTransaction(rawLine))
+            {
                 continue;
+            }
 
             var (combined, lastIndex) = CombineLines(rawLines, i);
 
@@ -169,11 +173,15 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
     private Boolean TryExtractStatementDate(String line, ref DateTime statementDate)
     {
         if (String.IsNullOrWhiteSpace(line))
+        {
             return false;
+        }
 
         var m = StatementDateFullRegex().Match(line);
         if (!m.Success)
+        {
             return false;
+        }
 
         var extracted = line.Replace("statement date", "", StringComparison.OrdinalIgnoreCase).Replace(":", "", StringComparison.OrdinalIgnoreCase).Trim();
 
@@ -225,12 +233,16 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
             }
 
             if (j + 1 >= lines.Length)
+            {
                 break;
+            }
 
             var nextLine = lines[j + 1].Trim();
 
             if (IsStartOfTransaction(nextLine))
+            {
                 break;
+            }
 
             if (AmountOnlyRegex().IsMatch(nextLine))
             {
@@ -253,7 +265,9 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
         var norm = WhitespaceNormalizationRegex().Replace(combined, " ").Trim();
         var match = TransactionLineRegex().Match(norm);
         if (!match.Success)
+        {
             return false;
+        }
 
         var date1 = match.Groups["date1"].Value;
         var date2 = match.Groups["date2"].Value;
@@ -268,7 +282,9 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
         }
 
         if (!TryParseMonthDay(date1, statementDate.Year, out var transDate))
+        {
             return false;
+        }
 
         var postedDate = DateTime.MinValue;
         TryParseMonthDay(date2, statementDate.Year, out postedDate);
@@ -284,10 +300,14 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
         }
 
         if (!Decimal.TryParse(amountStr, NumberStyles.Number | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var amount))
+        {
             return false;
+        }
 
         if (negative)
+        {
             amount = -amount;
+        }
 
         transaction = new Transaction
         {
@@ -304,7 +324,9 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
     private static Boolean IsStartOfTransaction(String line)
     {
         if (String.IsNullOrWhiteSpace(line))
+        {
             return false;
+        }
 
         return TransactionStartRegex().IsMatch(line);
     }
@@ -313,22 +335,32 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
     {
         result = DateTime.MinValue;
         if (String.IsNullOrWhiteSpace(monthDay))
+        {
             return false;
+        }
 
         var tokens = monthDay.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (tokens.Length != 2)
+        {
             return false;
+        }
 
         var monthPart = LookupMonth(tokens[0]);
         if (monthPart == 0)
+        {
             return false;
+        }
 
         if (!Int32.TryParse(tokens[1], out var dayPart))
+        {
             return false;
+        }
 
         // Try current year first
         if (TryCreateDate(year, monthPart, dayPart, out result))
+        {
             return true;
+        }
 
         // Fallback to previous year (for transactions at year boundary)
         return TryCreateDate(year - 1, monthPart, dayPart, out result);
@@ -351,11 +383,15 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
     private static Int32 LookupMonth(String monthName)
     {
         if (String.IsNullOrWhiteSpace(monthName))
+        {
             return 0;
+        }
 
         var token = monthName.Trim();
         if (token.Length >= 3)
+        {
             token = token[..3];
+        }
 
         return token.ToLowerInvariant() switch
         {

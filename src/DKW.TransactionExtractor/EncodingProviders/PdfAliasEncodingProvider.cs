@@ -45,7 +45,9 @@ public sealed class PdfAliasEncodingProvider : EncodingProvider
     public override Encoding? GetEncoding(String name)
     {
         if (String.IsNullOrWhiteSpace(name))
+        {
             return null;
+        }
 
         return Cache.GetOrAdd(name.Trim(), ResolveEncoding);
     }
@@ -54,7 +56,9 @@ public sealed class PdfAliasEncodingProvider : EncodingProvider
     {
         // Avoid re-entry into Encoding.GetEncoding when we're already resolving to prevent recursion
         if (InResolve.Value)
+        {
             return null;
+        }
 
         try
         {
@@ -74,7 +78,9 @@ public sealed class PdfAliasEncodingProvider : EncodingProvider
     private static Encoding? ResolveEncoding(String name)
     {
         if (InResolve.Value)
+        {
             return null; // guard against re-entrancy
+        }
 
         try
         {
@@ -82,7 +88,9 @@ public sealed class PdfAliasEncodingProvider : EncodingProvider
 
             // fast alias lookup
             if (AliasMap.TryGetValue(name, out var enc))
+            {
                 return enc;
+            }
 
             // Try runtime lookup as fallback. Guard prevents the provider from being called recursively.
             try
