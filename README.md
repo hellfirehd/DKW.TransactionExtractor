@@ -106,11 +106,14 @@ Edit `appsettings.json` to configure the application:
 
 The application automatically categorizes transactions based on configurable rules. When a transaction cannot be automatically categorized, the console prompts for manual classification.
 
-See the [Transaction Classification Guide](CLASSIFICATION_GUIDE.md) for detailed documentation on:
+See the **[Transaction Classification Guide](docs/CLASSIFICATION_GUIDE.md)** for detailed documentation on:
 - Category configuration
 - Matcher types (ExactMatch, Contains, Regex)
-- Interactive console workflow
+- Interactive matcher creation
+- Smart merging behavior
 - Output formats
+
+For complete documentation, visit the **[Documentation Index](docs/README.md)**.
 
 ### Mismatch Detection
 
@@ -127,11 +130,18 @@ When totals don't match, the application logs detailed transaction information:
 
 ### Coding Standards
 
-Before contributing, please review our [Coding Standards](CODING_STANDARDS.md) which include:
-- Control flow best practices (no recursion for retry logic)
-- Error handling patterns
-- Naming conventions
+Before contributing, please review our coding standards documented in **[GitHub Copilot Instructions](.github/copilot/instructions.md)** which include:
+- Naming conventions (use `String`, `Boolean`, `Int32`)
+- Architecture patterns (Service Layer, DI, Immutability)
 - Code organization guidelines
+- Documentation placement (always in `./docs/`)
+
+### Project Documentation
+
+Visit the **[Documentation Index](docs/README.md)** for:
+- [Transaction Classification Guide](docs/CLASSIFICATION_GUIDE.md)
+- [Architecture & Design Decisions](docs/architecture/)
+- Development guides and best practices
 
 ### Testing
 
@@ -150,12 +160,14 @@ The test project includes:
 ### Contributing
 
 Contributions are welcome! Please:
-1. Read [CODING_STANDARDS.md](CODING_STANDARDS.md)
-2. Fork the repository
-3. Create a feature branch
-4. Add tests for new functionality
-5. Ensure code follows our standards
-6. Submit a pull request
+1. Read the **[Coding Standards](.github/copilot/instructions.md)**
+2. Review the **[Documentation](docs/README.md)**
+3. Fork the repository
+4. Create a feature branch
+5. Add tests for new functionality
+6. Ensure code follows our standards
+7. Update documentation in `./docs/` as needed
+8. Submit a pull request
 
 ## Project Structure
 
