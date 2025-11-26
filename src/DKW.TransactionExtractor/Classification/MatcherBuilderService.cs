@@ -40,8 +40,8 @@ public class MatcherBuilderService : IMatcherBuilder
     {
         Console.WriteLine();
         Console.WriteLine($"ExactMatch will match: '{transactionDescription}'");
-        Console.Write("Case-sensitive matching? [y/N]: ");
-        var caseSensitive = Console.ReadLine()?.Trim().ToLowerInvariant() == "y";
+        // Assume case-insensitive matching by default
+        var caseSensitive = false;
 
         var request = MatcherCreationRequest.ExactMatch(
             new[] { transactionDescription },
@@ -68,8 +68,8 @@ public class MatcherBuilderService : IMatcherBuilder
             return null!;
         }
 
-        Console.Write("Case-sensitive matching? [y/N]: ");
-        var caseSensitive = Console.ReadLine()?.Trim().ToLowerInvariant() == "y";
+        // Assume case-insensitive matching by default
+        var caseSensitive = false;
 
         var request = MatcherCreationRequest.Contains(
             new[] { substring },
@@ -77,7 +77,7 @@ public class MatcherBuilderService : IMatcherBuilder
         );
 
         Console.WriteLine();
-        Console.WriteLine($"? Will add Contains rule for '{substring}' (case-{(caseSensitive ? "sensitive" : "insensitive")})");
+        Console.WriteLine($"? Will add Contains rule for '{substring}'");
         Console.WriteLine("  (This will be merged with any existing Contains rules)");
 
         return request;
@@ -100,14 +100,13 @@ public class MatcherBuilderService : IMatcherBuilder
             return null!;
         }
 
-        Console.Write("Case-insensitive matching? [Y/n]: ");
-        var response = Console.ReadLine()?.Trim().ToLowerInvariant();
-        var ignoreCase = response != "n";
+        // Assume case-insensitive matching by default
+        var ignoreCase = true;
 
         var request = MatcherCreationRequest.Regex(pattern, ignoreCase);
 
         Console.WriteLine();
-        Console.WriteLine($"? Will add Regex rule for pattern '{pattern}' (case-{(ignoreCase ? "insensitive" : "sensitive")})");
+        Console.WriteLine($"? Will add Regex rule for pattern '{pattern}'");
 
         return request;
     }
