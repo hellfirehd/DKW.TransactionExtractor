@@ -15,6 +15,13 @@ tab_width = 4
 end_of_line = crlf
 insert_final_newline = false
 
+#### Project-Specific Guidelines ####
+
+# Coding Standards: See CODING_STANDARDS.md for detailed guidelines
+# - Avoid recursion for retry/validation logic (use loops with sentinel values)
+# - Use result types (records) for expected failures, not exceptions
+# - Prefer explicit control flow over implicit recursion
+
 #### .NET Code Actions ####
 
 # Type members

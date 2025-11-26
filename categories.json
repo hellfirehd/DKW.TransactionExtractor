@@ -1,0 +1,875 @@
+{
+  "categories": [
+    {
+      "id": "groceries",
+      "name": "Groceries",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SAFEWAY",
+              "WHOLE FOODS",
+              "TRADER JOES"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "value": "GROCERY",
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "COSTCO WHOLESALE W1578 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "WAL-MART #3042 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SAVE ON FOODS #2224 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "IGA72 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "BULK BARN 673 KELOWNA KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "WALMART.CA Mississauga ON"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "dining",
+      "name": "Dining \u0026 Restaurants",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "value": "RESTAURANT",
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "BLUETAIL SUSHI KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "Regex",
+          "parameters": {
+            "pattern": "\\b(CAFE|COFFEE|BISTRO)\\b",
+            "ignoreCase": true
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "LM Kelowna Kelowna BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Subway 37691 Kelowna BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "PIZZA HUT #31142 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "DOZO HOUSE KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "C-LOVERS FISH \u0026 CHIPS KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "gas",
+      "name": "Gas \u0026 Fuel",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "value": "SHELL",
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "value": "CHEVRON",
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "PETRO-CANADA 68287 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "COSTCO GAS W1578 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "ESSO 7-ELEVEN 37773 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "CDN TIRE GASBAR #01904 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "PETRO-CANADA 02820 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "uncategorized",
+      "name": "Uncategorized",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "LANDMARK WEB TICKETING 403-262-4255 AB"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "hobbies",
+      "name": "Hobbies",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SP IND. PLASTICS \u0026 PAI SURREY BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "MICHAELS #3929 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SP 3DMOUSE.CA TORONTO ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "aliexpress Vancouver BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "CARTOGRAPHER3D.COM TUNBRIDGE WELLND"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "personal-care",
+      "name": "Personal Care",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SHOPPERS DRUG MART 225 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SHOPPERS DRUG MART #22 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "KELOWNA ORTHODONTICS KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "fast-food",
+      "name": "Fast Food",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "ARBY\u00A9S #2033 Q2P KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "WENDY\u00A9S #6517 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "TIM HORTONS #1459 250-863-9709 BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "A\u0026W #0612 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "BARBURRITO KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "MCDONALD\u00A9S #29032 QPS KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "YUM YUM TREE KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SUBCITY DONAIR KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "LITTLE CAESARS #4952 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "DAIRY QUEEN #27421 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "MCDONALD\u00A9S #40162 QPS KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "TIM HORTONS #8502 250-717-3997 BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "DOMINO\u00A9S PIZZA #39022 250-861-5731 BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "BOOSTER JUICE # 541 PO KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "McDonalds 29032 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "TACO TIME CANTINA KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "McDonalds 22109 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "BAR BURRITO KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "MCDONALD\u00A9S #3800 QPS KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SPECIALITY BAKERY KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "TIM HORTONS #2097 250-863-9709 BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "PIZZA HUT #31161 VERNON BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "STARBUCKS 00138 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "gifts",
+      "name": "Gifts",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "INDIGO 916 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SP LTT STORE SURREY BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "entertainment",
+      "name": "Entertainment",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "RAKUTEN KOBO INC. TORONTO ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "NETFLIX.COM Vancover BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "GOOGLE *YouTubePremium 650-253-0000 NS"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Ad free for PrimeVideo Prime Video BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Microsoft*Ultimate 1 M Mississauga ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Amazon Channels amazon.ca BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Audible CA*Z56OS1NK0 Amzn.com/billNJ"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Netflix.com 866-716-0414 ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "MICROSOFT*STORE MISSISSAUGA ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "MICROSOFT*ULTIMATE 1 M HALIFAX NS"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Audible CA*ZQ3DF2T43 Amzn.com/billNJ"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "PrimeVideo.c*W15F26XZ3 www.amazon.caBC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Audible CA*TY9MY48T3 Amzn.com/billNJ"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "DISNEY PLUS 1 800727-1800CA"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "payment",
+      "name": "Payment",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "CIBC BANK PMT/PAIEMENT BCIC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "business-expense",
+      "name": "Business Expense",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "GITHUB, INC. SAN FRANCISCOCA"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "Amazon Web Services www.amazon.caON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "TWILIO INC SAN FRANCISCOCA"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "cell-phones",
+      "name": "Cell Phones",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "APPLE.COM/BILL 866-712-7753 ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "APPLE.COM/BILL TORONTO ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "APPLE.COM/CA 800-676-2775 ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "APPLE.COM/CA TORONTO ON"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "miscellaneous",
+      "name": "Miscellaneous",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "IMPARK00100286U KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "IMPARK00100286H 844-309-1028 BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "WEALTHSIMPLE TAX TORONTO ON"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "THE UPS STORE KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund",
+      "name": "Refund",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "ICBC REFUND N VANCOUVER BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "healthcare",
+      "name": "Healthcare",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "BLUEBIRD MEDICAL CLINI KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "SP CPAP CANADA DIREC HAMMONDS PLAINS"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "kitchen-\u0026-household",
+      "name": "Kitchen \u0026 Household",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "AFFIRM CANADA OTTAWA ON"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    }
+  ]
+}

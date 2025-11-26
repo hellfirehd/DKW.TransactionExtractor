@@ -6,6 +6,9 @@ A .NET 10 console application for extracting and validating credit card transact
 
 - **PDF Text Extraction**: Extracts text from PDF credit card statements using iText library
 - **Transaction Parsing**: Parses individual transactions with dates, descriptions, and amounts
+- **Transaction Classification**: Categorizes transactions using configurable matching rules
+- **Interactive Console UI**: Prompts for manual classification when needed
+- **Flexible Output Formats**: Export classified transactions as CSV or JSON
 - **Automatic Validation**: Compares computed purchase totals against declared statement totals
 - **Transaction Filtering**: Excludes fees, interest charges, and refunds from purchase calculations
 - **Year-based Filtering**: Process only statements from specified years
@@ -41,7 +44,10 @@ Edit `appsettings.json` to configure the application:
   "AppOptions": {
     "FolderPath": "C:\\path\\to\\statements",
     "Years": [ 2023, 2024, 2025 ],
-    "WriteExtractedText": false
+    "WriteExtractedText": false,
+    "CategoryConfigPath": "categories.json",
+    "OutputFormat": "Csv",
+    "OutputPath": "output"
   },
   "ParserOptions": {
     "DifferenceTolerance": 0.01,
@@ -62,6 +68,9 @@ Edit `appsettings.json` to configure the application:
 - **FolderPath**: Directory containing PDF statement files
 - **Years**: Array of years to process (filters by YYYY prefix in filename)
 - **WriteExtractedText**: When `true`, saves extracted text to `.txt` files for debugging
+- **CategoryConfigPath**: Path to the category configuration JSON file
+- **OutputFormat**: Output format for classified transactions (`"Csv"` or `"Json"`)
+- **OutputPath**: Directory where classified transaction files will be written
 
 #### ParserOptions
 
@@ -71,11 +80,12 @@ Edit `appsettings.json` to configure the application:
 ## Usage
 
 1. Configure the folder path in `appsettings.json`
-2. Place PDF statements in the configured folder (named with YYYY-MM-DD prefix)
-3. Run the application:
+2. Create a `categories.json` file with your category definitions (see [Transaction Classification](#transaction-classification))
+3. Place PDF statements in the configured folder (named with YYYY-MM-DD prefix)
+4. Run the application:
 
     ```bash
-    dotnet run --project DKW.TransactionExtractor
+    dotnet run --project src/DKW.TransactionExtractor
     ```
 
 ### Example Output
@@ -88,7 +98,19 @@ Edit `appsettings.json` to configure the application:
 [2025-01-15 10:30:45.567] [INF] Computed Purchases: $2,348.84
 [2025-01-15 10:30:45.678] [INF] Transaction Count: 42
 [2025-01-15 10:30:45.789] [INF] Excluded Transactions: 3
+[2025-01-15 10:30:45.890] [INF] Classifying 42 transactions...
+[2025-01-15 10:30:46.000] [INF] Wrote 42 classified transactions to D:\output\2024-10-21-statement.csv
 ```
+
+### Transaction Classification
+
+The application automatically categorizes transactions based on configurable rules. When a transaction cannot be automatically categorized, the console prompts for manual classification.
+
+See the [Transaction Classification Guide](CLASSIFICATION_GUIDE.md) for detailed documentation on:
+- Category configuration
+- Matcher types (ExactMatch, Contains, Regex)
+- Interactive console workflow
+- Output formats
 
 ### Mismatch Detection
 
@@ -101,52 +123,17 @@ When totals don't match, the application logs detailed transaction information:
 [2025-01-15 10:30:50.456] [INF] Oct 16 | ANNUAL FEE | $50.00 | Exclude
 ```
 
-## Project Structure
+## Development
 
-```
-DKW.TransactionExtractor/
-??? Models/
-?   ??? ParseContext.cs          # Input context for parsing
-?   ??? ParseResult.cs           # Output result with transactions and totals
-?   ??? Transaction.cs           # Individual transaction model
-?   ??? TransactionInclusionStatus.cs
-??? Providers/
-?   ??? CTFS/
-?       ??? CtfsMastercardPdfTextExtractor.cs   # PDF text extraction
-?       ??? CtfsMastercardTransactionParser.cs  # Transaction parsing logic
-??? EncodingProviders/
-?   ??? PdfAliasEncodingProvider.cs             # Custom encoding support
-??? AppOptions.cs                # Application configuration model
-??? ParserOptions.cs             # Parser configuration model
-??? DefaultTransactionFilter.cs  # Transaction exclusion logic
-??? ITransactionFilter.cs        # Transaction filter interface
-??? ITransactionParser.cs        # Transaction parser interface
-??? IPdfTextExtractor.cs         # PDF extractor interface
-??? LogMessages.cs               # Structured logging messages
-??? TransactionExtractor.cs      # Main processing logic
-??? Program.cs                   # Application entry point
+### Coding Standards
 
-DKW.TransactionExtractor.Tests/
-??? TransactionParserTests.cs
-??? TransactionParserEdgeCasesTests.cs
-??? TransactionExclusionTests.cs
-??? TransactionParsingIssuesTests.cs
-??? ParseResultTests.cs
-??? SupplementalDetailsTests.cs
-??? RealStatementTests.cs
-```
+Before contributing, please review our [Coding Standards](CODING_STANDARDS.md) which include:
+- Control flow best practices (no recursion for retry logic)
+- Error handling patterns
+- Naming conventions
+- Code organization guidelines
 
-## Architecture
-
-The application follows a clean, modular architecture with dependency injection:
-
-- **TransactionExtractor**: Main orchestrator that processes PDF files
-- **IPdfTextExtractor**: Extracts raw text from PDF documents
-- **ITransactionParser**: Parses transactions from extracted text
-- **ITransactionFilter**: Determines which transactions to include in totals
-- **Models**: Data transfer objects for transactions and parse results
-
-## Testing
+### Testing
 
 Run the test suite:
 
@@ -159,6 +146,74 @@ The test project includes:
 - Edge case handling tests
 - Real statement validation tests
 - Transaction exclusion pattern tests
+
+### Contributing
+
+Contributions are welcome! Please:
+1. Read [CODING_STANDARDS.md](CODING_STANDARDS.md)
+2. Fork the repository
+3. Create a feature branch
+4. Add tests for new functionality
+5. Ensure code follows our standards
+6. Submit a pull request
+
+## Project Structure
+
+```
+DKW.TransactionExtractor/
+??? Classification/
+?   ??? ITransactionClassifier.cs
+?   ??? TransactionClassifier.cs
+?   ??? CategoryRepository.cs
+?   ??? ConsoleInteractionService.cs
+?   ??? ITransactionMatcher.cs
+?   ??? ExactMatcher.cs
+?   ??? ContainsMatcher.cs
+?   ??? RegexMatcher.cs
+?   ??? MatcherFactory.cs
+??? Formatting/
+?   ??? ITransactionFormatter.cs
+?   ??? CsvFormatter.cs
+?   ??? JsonFormatter.cs
+??? Models/
+?   ??? ParseContext.cs
+?   ??? ParseResult.cs
+?   ??? Transaction.cs
+?   ??? ClassifiedTransaction.cs
+?   ??? Category.cs
+?   ??? CategoryMatcher.cs
+?   ??? TransactionInclusionStatus.cs
+??? Providers/
+?   ??? CTFS/
+?       ??? CtfsMastercardPdfTextExtractor.cs
+?       ??? CtfsMastercardTransactionParser.cs
+??? EncodingProviders/
+?   ??? PdfAliasEncodingProvider.cs
+??? AppOptions.cs
+??? ParserOptions.cs
+??? DefaultTransactionFilter.cs
+??? TransactionExtractor.cs
+??? Program.cs
+
+DKW.TransactionExtractor.Tests/
+??? TransactionParserTests.cs
+??? TransactionParserEdgeCasesTests.cs
+??? TransactionExclusionTests.cs
+??? ParseResultTests.cs
+??? ...
+```
+
+## Architecture
+
+The application follows a clean, modular architecture with dependency injection:
+
+- **TransactionExtractor**: Main orchestrator that processes PDF files
+- **IPdfTextExtractor**: Extracts raw text from PDF documents
+- **ITransactionParser**: Parses transactions from extracted text
+- **ITransactionClassifier**: Classifies transactions into categories
+- **ITransactionFormatter**: Formats classified transactions for output
+- **ITransactionFilter**: Determines which transactions to include in totals
+- **Models**: Data transfer objects for transactions and parse results
 
 ## Dependencies
 
@@ -212,6 +267,12 @@ Log levels can be adjusted in `appsettings.json` under the `Serilog` section.
 - Add missing exclusion patterns to `ParserOptions.ExclusionPatterns`
 - Verify multi-line transactions are being combined correctly
 
+### Classification issues
+
+- Check that `categories.json` exists and is valid JSON
+- Review category matcher patterns for accuracy
+- Enable debug logging to see matching attempts
+
 ### Encoding issues
 
 The application includes custom PDF encoding providers. If you encounter unusual characters, check `PdfAliasEncodingProvider.cs`.
@@ -219,14 +280,6 @@ The application includes custom PDF encoding providers. If you encounter unusual
 ## License
 
 This project is available under the [AGPL License](LICENSE).
-
-## Contributing
-
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Submit a pull request
 
 ## Acknowledgments
 

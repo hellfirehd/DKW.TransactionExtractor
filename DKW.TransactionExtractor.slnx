@@ -3,8 +3,20 @@
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
+    <File Path="categories.json" />
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Solution Items/docs/">
+    <File Path="docs/CLASSIFICATION_GUIDE.md" />
+    <File Path="docs/EXTRACTED_TEXT_FEATURE.md" />
+    <File Path="docs/LEAP_YEAR_FIX.md" />
+    <File Path="docs/LINE_ENDING_NORMALIZATION_FIX.md" />
+    <File Path="docs/LOGGING_QUICK_REFERENCE.md" />
+    <File Path="docs/PARSECONTEXT_REFACTORING.md" />
+    <File Path="docs/SERILOG_FILE_LOGGING.md" />
+    <File Path="docs/SUPPLEMENTAL_DETAILS_FILTERING.md" />
+    <File Path="docs/TRANSACTION_EXCLUSION_FEATURE.md" />
   </Folder>
   <Project Path="src/DKW.TransactionExtractor.Tests/DKW.TransactionExtractor.Tests.csproj" />
   <Project Path="src/DKW.TransactionExtractor/DKW.TransactionExtractor.csproj" />

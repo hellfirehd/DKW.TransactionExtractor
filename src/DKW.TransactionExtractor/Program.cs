@@ -5,6 +5,8 @@ using Serilog;
 using Microsoft.Extensions.Hosting;
 using DKW.TransactionExtractor.Providers.CTFS;
 using DKW.TransactionExtractor.EncodingProviders;
+using DKW.TransactionExtractor.Classification;
+using DKW.TransactionExtractor.Formatting;
 
 namespace DKW.TransactionExtractor;
 
@@ -44,6 +46,23 @@ internal class Program
                     services.AddSingleton<ITransactionFilter, DefaultTransactionFilter>();
                     services.AddTransient<IPdfTextExtractor, CtfsMastercardPdfTextExtractor>();
                     services.AddTransient<ITransactionParser, CtfsMastercardTransactionParser>();
+                    
+                    // Classification services
+                    services.AddSingleton<ICategoryRepository, CategoryRepository>();
+                    services.AddSingleton<ICategoryService, CategoryService>();
+                    services.AddTransient<IConsoleInteraction, ConsoleInteractionService>();
+                    services.AddTransient<ITransactionClassifier, TransactionClassifier>();
+                    
+                    // Formatting services - register based on configuration
+                    services.AddTransient<ITransactionFormatter>(sp =>
+                    {
+                        var appOptions = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AppOptions>>().Value;
+                        return appOptions.OutputFormat.ToLowerInvariant() switch
+                        {
+                            "json" => new JsonFormatter(),
+                            _ => new CsvFormatter()
+                        };
+                    });
                     
                     services.AddTransient<TransactionExtractor>();
                 })

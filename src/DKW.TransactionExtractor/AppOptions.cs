@@ -10,4 +10,19 @@ public class AppOptions
     /// Useful for debugging parsing issues.
     /// </summary>
     public Boolean WriteExtractedText { get; set; } = false;
+
+    /// <summary>
+    /// Path to the category configuration JSON file.
+    /// </summary>
+    public String CategoryConfigPath { get; set; } = "categories.json";
+
+    /// <summary>
+    /// Output format for classified transactions: "Csv" or "Json".
+    /// </summary>
+    public String OutputFormat { get; set; } = "Csv";
+
+    /// <summary>
+    /// Directory path where classified transaction files will be written.
+    /// </summary>
+    public String OutputPath { get; set; } = "output";
 }
