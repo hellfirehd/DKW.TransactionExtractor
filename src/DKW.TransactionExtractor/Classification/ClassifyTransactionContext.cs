@@ -8,6 +8,11 @@ public record ClassifyTransactionContext(
     Int32 TotalCount)
 {
     /// <summary>
+    /// Gets or sets an optional comment for this transaction.
+    /// </summary>
+    public String? Comment { get; set; }
+
+    /// <summary>
     /// Gets a formatted progress string (e.g., "14 of 48").
     /// </summary>
     public String ProgressText => $"{CurrentIndex} of {TotalCount}";

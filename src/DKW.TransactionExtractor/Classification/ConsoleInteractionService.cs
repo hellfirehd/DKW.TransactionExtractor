@@ -15,6 +15,10 @@ public class ConsoleInteractionService(ICategoryService categoryService, IMatche
             Console.WriteLine($"Description: {context.Transaction.Description}");
             Console.WriteLine($"Amount: {context.Transaction.Amount:C}");
             Console.WriteLine($"Date: {context.Transaction.TransactionDate:yyyy-MM-dd}");
+            if (!String.IsNullOrWhiteSpace(context.Comment))
+            {
+                Console.WriteLine($"Comment: {context.Comment}");
+            }
             Console.WriteLine("No category match found.");
             Console.WriteLine("═══════════════════════════════════════════════════════════");
             Console.WriteLine();
@@ -22,17 +26,25 @@ public class ConsoleInteractionService(ICategoryService categoryService, IMatche
             Console.WriteLine("  0. Exit (stop processing)");
             Console.WriteLine("  1. Select existing category");
             Console.WriteLine("  2. Create new category");
-            Console.WriteLine("  3. Skip (leave uncategorized)");
+            Console.WriteLine("  3. Add comment");
+            Console.WriteLine("  4. Skip (leave uncategorized) [default]");
             Console.WriteLine();
-            Console.Write("Your choice [0-3]: ");
+            Console.Write("Your choice [0-4]: ");
 
             var choice = Console.ReadLine()?.Trim();
+
+            // Default to skip if empty
+            if (String.IsNullOrEmpty(choice))
+            {
+                choice = "4";
+            }
 
             var result = choice switch
             {
                 "1" => SelectExistingCategory(context),
                 "2" => CreateNewCategory(context),
-                "3" => new CategorySelectionResult("uncategorized", "Uncategorized", null),
+                "3" => AddComment(context),
+                "4" => new CategorySelectionResult("uncategorized", "Uncategorized", null, context.Comment),
                 "0" => HandleExit(),
                 _ => null // Invalid choice, will loop
             };
@@ -55,6 +67,26 @@ public class ConsoleInteractionService(ICategoryService categoryService, IMatche
 
             return result;
         }
+    }
+
+    private CategorySelectionResult? AddComment(ClassifyTransactionContext context)
+    {
+        Console.WriteLine();
+        Console.Write("Enter comment (or press Enter to cancel): ");
+        var comment = Console.ReadLine()?.Trim();
+
+        if (!String.IsNullOrWhiteSpace(comment))
+        {
+            context.Comment = comment;
+            Console.WriteLine($"Comment added: {comment}");
+        }
+        else
+        {
+            Console.WriteLine("No comment added.");
+        }
+
+        // Return GoBack to redisplay menu with comment
+        return CategorySelectionResult.GoBack;
     }
 
     private CategorySelectionResult SelectExistingCategory(ClassifyTransactionContext context)
@@ -94,7 +126,7 @@ public class ConsoleInteractionService(ICategoryService categoryService, IMatche
                 matcherRequest = _matcherBuilder.BuildMatcher(context.Transaction.Description);
             }
 
-            return new CategorySelectionResult(category.Id, category.Name, matcherRequest);
+            return new CategorySelectionResult(category.Id, category.Name, matcherRequest, context.Comment);
         }
 
         return CategorySelectionResult.Invalid;
@@ -124,7 +156,7 @@ public class ConsoleInteractionService(ICategoryService categoryService, IMatche
             matcherRequest = _matcherBuilder.BuildMatcher(context.Transaction.Description);
         }
 
-        return new CategorySelectionResult(categoryId, categoryName, matcherRequest);
+        return new CategorySelectionResult(categoryId, categoryName, matcherRequest, context.Comment);
     }
 
     private static CategorySelectionResult HandleExit()

@@ -61,7 +61,8 @@ public class TransactionClassifier(
                     {
                         Transaction = context.Transaction,
                         CategoryId = category.Id,
-                        CategoryName = category.Name
+                        CategoryName = category.Name,
+                        Comment = null // No comment for auto-matched transactions
                     }, false);
                 }
             }
@@ -77,7 +78,8 @@ public class TransactionClassifier(
             {
                 Transaction = context.Transaction,
                 CategoryId = "uncategorized",
-                CategoryName = "Uncategorized"
+                CategoryName = "Uncategorized",
+                Comment = selectionResult.Comment
             }, true);
         }
 
@@ -118,7 +120,8 @@ public class TransactionClassifier(
         {
             Transaction = context.Transaction,
             CategoryId = normalizedCategoryId,
-            CategoryName = selectionResult.CategoryName
+            CategoryName = selectionResult.CategoryName,
+            Comment = selectionResult.Comment
         }, false);
     }
 }

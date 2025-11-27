@@ -4,6 +4,7 @@ public record CategorySelectionResult(
     String CategoryId,
     String CategoryName,
     MatcherCreationRequest? MatcherRequest,
+    String? Comment = null,
     Boolean RequestedExit = false
 )
 {

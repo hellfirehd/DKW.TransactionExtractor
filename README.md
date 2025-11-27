@@ -7,6 +7,7 @@ A .NET 10 console application for extracting and validating credit card transact
 - **PDF Text Extraction**: Extracts text from PDF credit card statements using iText library
 - **Transaction Parsing**: Parses individual transactions with dates, descriptions, and amounts
 - **Transaction Classification**: Categorizes transactions using configurable matching rules
+- **Transaction Comments**: Add optional notes to transactions for context and tracking (gifts, tax-deductible, etc.)
 - **Interactive Console UI**: Prompts for manual classification when needed
 - **Flexible Output Formats**: Export classified transactions as CSV or JSON
 - **Automatic Validation**: Compares computed purchase totals against declared statement totals
@@ -26,12 +27,14 @@ A .NET 10 console application for extracting and validating credit card transact
 ## Installation
 
 1. Clone the repository:
+
     ```bash
     git clone https://github.com/hellfirehd/DKW.TransactionExtractor.git
     cd DKW.TransactionExtractor
     ```
 
 2. Build the solution:
+
     ```bash
     dotnet build
     ```
@@ -95,7 +98,7 @@ Edit `appsettings.json` to configure the application:
 
 ### Example Output
 
-```
+```log
 [2025-11-27 10:30:45.123] [INF] Starting Transaction Extractor v2025.1.0+abc1234
 [2025-11-27 10:30:45.234] [INF] Filtering statements: StartDate=2024-10-01, EndDate=<null>
 [2025-11-27 10:30:45.345] [INF] Found 12 PDF file(s) matching configured date range in D:\statements
@@ -111,12 +114,14 @@ Edit `appsettings.json` to configure the application:
 
 ### Transaction Classification
 
-The application automatically categorizes transactions based on configurable rules. When a transaction cannot be automatically categorized, the console prompts for manual classification.
+The application automatically categorizes transactions based on configurable rules. When a transaction cannot be automatically categorized, the console prompts for manual classification with the option to add comments for context.
 
 See the **[Transaction Classification Guide](docs/CLASSIFICATION_GUIDE.md)** for detailed documentation on:
+
 - Category configuration
 - Matcher types (ExactMatch, Contains, Regex)
 - Interactive matcher creation
+- Adding transaction comments
 - Smart merging behavior
 - Output formats
 
@@ -126,7 +131,7 @@ For complete documentation, visit the **[Documentation Index](docs/README.md)**.
 
 When totals don't match, the application logs detailed transaction information:
 
-```
+```log
 [2025-11-27 10:30:50.123] [WRN] Declared: $1,234.56 | Computed: $1,230.21 | Difference: $4.35
 [2025-11-27 10:30:50.234] [WRN] Investigate this file and update parser logic if necessary.
 [2025-11-27 10:30:50.345] [INF] 2024-10-15 | CANADIAN TIRE #123 | 75.00 | Excluded: Include
@@ -138,6 +143,7 @@ When totals don't match, the application logs detailed transaction information:
 ### Versioning
 
 This project uses [GitVersion](https://gitversion.net/) for automatic version management. See **[Versioning Workflow](docs/development/VERSIONING_WORKFLOW.md)** for details on:
+
 - Version format (YYYY.MINOR.PATCH)
 - Creating releases with Git tags
 - Pre-release versioning
@@ -146,6 +152,7 @@ This project uses [GitVersion](https://gitversion.net/) for automatic version ma
 ### Coding Standards
 
 Before contributing, please review our coding standards documented in **[GitHub Copilot Instructions](.github/copilot-instructions.md)** which include:
+
 - Naming conventions (use `String`, `Boolean`, `Int32`)
 - Architecture patterns (Service Layer, DI, Immutability)
 - Code organization guidelines
@@ -154,6 +161,7 @@ Before contributing, please review our coding standards documented in **[GitHub 
 ### Project Documentation
 
 Visit the **[Documentation Index](docs/README.md)** for:
+
 - [Transaction Classification Guide](docs/CLASSIFICATION_GUIDE.md)
 - [Versioning Workflow](docs/development/VERSIONING_WORKFLOW.md)
 - Feature documentation in `docs/features/`
@@ -168,6 +176,7 @@ dotnet test
 ```
 
 The test project includes:
+
 - Unit tests for transaction parsing logic
 - Edge case handling tests
 - Real statement validation tests
@@ -176,6 +185,7 @@ The test project includes:
 ### Contributing
 
 Contributions are welcome! Please:
+
 1. Read the **[Coding Standards](.github/copilot-instructions.md)**
 2. Review the **[Documentation](docs/README.md)**
 3. Fork the repository
@@ -187,7 +197,7 @@ Contributions are welcome! Please:
 
 ## Project Structure
 
-```
+```text
 DKW.TransactionExtractor/
 ??? Classification/
 ?   ??? ITransactionClassifier.cs
@@ -276,6 +286,7 @@ To add support for additional credit card providers:
 ## Logging
 
 Logs are written to:
+
 - **Console**: Real-time output with color coding
 - **File**: Daily rolling logs in `logs/transaction-extractor-YYYYMMDD.log`
 - **Retention**: 30 days of log files

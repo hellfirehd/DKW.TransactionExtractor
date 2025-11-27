@@ -391,7 +391,7 @@ public class TransactionClassifierTests
 
         var capturedContexts = new List<ClassifyTransactionContext>();
         _mockConsoleInteraction.PromptForCategory(Arg.Do<ClassifyTransactionContext>(capturedContexts.Add))
-            .Returns(new CategorySelectionResult("test", "Test", null, false));
+            .Returns(new CategorySelectionResult("test", "Test", null, null, false));
 
         _mockCategoryService.CategoryExists(Arg.Any<String>()).Returns(true);
 

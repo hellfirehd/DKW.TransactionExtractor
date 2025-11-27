@@ -5,6 +5,7 @@ All notable changes to the DKW.TransactionExtractor project will be documented i
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This project uses **Calendar-Semantic Versioning** in the format `YYYY.MINOR.PATCH`:
+
 - **YYYY**: Year of release (e.g., 2025)
 - **MINOR**: Incremented for new features or significant changes
 - **PATCH**: Incremented for bug fixes and minor improvements
@@ -13,11 +14,67 @@ Versions are automatically managed by [GitVersion](https://gitversion.net/) base
 
 ## [Unreleased]
 
-_No unreleased changes at this time._
+### Added
+
+- **Transaction Comments**: Add optional notes to transactions during classification
+  - New "Add comment" option (option 3) in classification menu
+  - Comments stored in `ClassifyTransactionContext` and `ClassifiedTransaction`
+  - Comments included in both CSV and JSON output formats
+  - Useful for distinguishing purchases at the same merchant (gifts, tax-deductible, etc.)
+  - Empty/whitespace comments treated as "no comment"
+  - Menu default changed: pressing Enter now skips (option 4) instead of invalid choice
+  - Files: `ClassifyTransactionContext.cs`, `ClassifiedTransaction.cs`, `CategorySelectionResult.cs`
+  - Files: `ConsoleInteractionService.cs`, `TransactionClassifier.cs`, `CsvFormatter.cs`
+  - Documentation: `docs/features/TRANSACTION_COMMENTS.md`
+
+### Changed
+
+- **Classification Menu**: Reorganized classification menu options
+  - Option 3: Changed from "Skip" to "Add comment"
+  - Option 4: Now "Skip (leave uncategorized)" with [default] indicator
+  - Pressing Enter without input defaults to option 4 (Skip)
+  - File: `ConsoleInteractionService.cs`
+
+- **CSV Output Format**: Added `Comment` column after `CategoryName`
+  - Header: `...,CategoryName,Comment,InclusionStatus`
+  - Empty comments appear as empty fields in CSV
+  - File: `CsvFormatter.cs`
+
+- **JSON Output Format**: Added `comment` property to classified transactions
+  - Property appears in each transaction object
+  - Null for transactions without comments
+  - File: `JsonFormatter.cs` (automatic serialization)
+
+### Documentation
+
+- **Transaction Comments Guide**: Comprehensive documentation for comment feature
+  - Use cases and examples
+  - Comment flow and UI walkthrough
+  - Output format examples (CSV and JSON)
+  - Best practices and comment patterns
+  - Technical architecture details
+  - File: `docs/features/TRANSACTION_COMMENTS.md`
+
+- **Updated Classification Guide**: Added comment documentation
+  - New option 3 description
+  - Comment use cases
+  - Updated output format examples
+  - File: `docs/CLASSIFICATION_GUIDE.md`
+
+- **Updated README**: Mentioned transaction comments in features list
+  - File: `README.md`
+
+### Testing
+
+- **Unit Tests Updated**: All 194 tests passing
+  - Updated `TransactionClassifierTests` for new `CategorySelectionResult` signature
+  - Tests verify comment flow and storage
+  - Files: `TransactionClassifierTests.cs`
 
 ## [2025.1.0] - 2025-11-27
 
 ### Added
+
 - **Automatic Versioning**: Implemented GitVersion for automatic version management
   - Calendar-semantic versioning format: `YYYY.MINOR.PATCH`
   - Version automatically derived from Git tags
@@ -26,6 +83,7 @@ _No unreleased changes at this time._
   - Files: `GitVersion.yml`, `Program.cs`, `DKW.TransactionExtractor.csproj`
 
 ### Changed
+
 - **Date Range Filtering**: Replaced year-based filtering with date range filtering
   - Added `StartDate` and `EndDate` properties to `AppOptions` (nullable DateTime)
   - Removed `Years` array property
@@ -39,6 +97,7 @@ _No unreleased changes at this time._
 ## [2025.0.2] - 2025-11-26 - Output and Data Model Enhancements
 
 ### Added
+
 - **Transaction Summarization**: Added category summaries to output
   - Groups transactions by category with counts and totals
   - Sorted alphabetically by category name
@@ -58,6 +117,7 @@ _No unreleased changes at this time._
   - File: `AppOptions.cs`, `TransactionExtractor.cs`
 
 ### Changed
+
 - **PDF Text Sanitization**: Added text sanitization during PDF extraction
   - Removes null characters and other problematic characters
   - Improves parsing reliability across different PDF sources
@@ -79,6 +139,7 @@ _No unreleased changes at this time._
   - File: `CategoryRepository.cs`
 
 ### Fixed
+
 - **Null Checks**: Added null checks for robustness
   - Prevents null reference exceptions in edge cases
   - Improved error handling throughout classification
@@ -86,6 +147,7 @@ _No unreleased changes at this time._
 ## [2025.0.1] - 2025-11-25 - Initial Release
 
 ### Added
+
 - **Transaction Classification System**: Complete classification framework
   - Automatic transaction categorization based on configurable rules
   - Interactive console prompts for manual classification
@@ -170,6 +232,7 @@ _No unreleased changes at this time._
   - File: `TransactionExtractor.cs`
 
 ### Fixed
+
 - **Line Ending Normalization**: Fixed mixed line ending issues in PDF extraction
   - PDF extraction now normalizes all line endings to `\n` (Unix LF)
   - Prevents parsing failures caused by mixed `\r\n`, `\n`, and `\r`
@@ -187,6 +250,7 @@ _No unreleased changes at this time._
   - Documentation: `docs/development/LEAP_YEAR_FIX.md`
 
 ### Removed
+
 - **Checksum-based Identification**: Replaced with filename-based identification
   - Removed `Checksum` property from `ParseResult` model
   - Removed `LogChecksum` from `LogMessages`
@@ -198,6 +262,7 @@ _No unreleased changes at this time._
   - Simpler output structure and file management
 
 ### Documentation
+
 - **Comprehensive Documentation**: Added extensive feature and development documentation
   - Feature documentation in `docs/features/`
   - Development documentation in `docs/development/`
@@ -206,6 +271,7 @@ _No unreleased changes at this time._
   - README with architecture, usage, and contributing guidelines
 
 ### Technical
+
 - **.NET 10**: Project targeting .NET 10
 - **C# 14.0**: Using latest C# language features
 - **Dependency Injection**: Microsoft.Extensions.DependencyInjection
@@ -215,6 +281,7 @@ _No unreleased changes at this time._
 - **MSTest**: Unit testing framework
 
 ### Testing
+
 - **Comprehensive Test Suite**: Unit and integration tests
   - Transaction parsing tests
   - Edge case handling tests
@@ -239,6 +306,7 @@ _No unreleased changes at this time._
 ## Change Categories
 
 This changelog uses the following change categories:
+
 - **Added**: New features and functionality
 - **Changed**: Changes in existing functionality
 - **Deprecated**: Soon-to-be removed features
@@ -252,6 +320,7 @@ This changelog uses the following change categories:
 ## Breaking Changes
 
 Breaking changes are marked with **Breaking Change** in the description and include:
+
 - Configuration format changes
 - API signature changes
 - Removed functionality
@@ -259,7 +328,9 @@ Breaking changes are marked with **Breaking Change** in the description and incl
 ## Migration Notes
 
 ### Migrating from Years to Date Range (Unreleased)
+
 **Old configuration:**
+
 ```json
 {
   "AppOptions": {
@@ -269,6 +340,7 @@ Breaking changes are marked with **Breaking Change** in the description and incl
 ```
 
 **New configuration:**
+
 ```json
 {
   "AppOptions": {

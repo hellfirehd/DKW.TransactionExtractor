@@ -131,12 +131,13 @@ No category match found.
 ???????????????????????????????????????????????????????????
 
 Options:
+  0. Exit (stop processing)
   1. Select existing category
   2. Create new category
-  3. Skip (leave uncategorized)
-  4. Exit (stop processing)
+  3. Add comment
+  4. Skip (leave uncategorized) [default]
 
-Your choice [1-4]:
+Your choice [0-4]:
 ```
 
 ### Option 1: Select Existing Category
@@ -152,11 +153,26 @@ Your choice [1-4]:
 4. If yes, user selects matcher type and provides parameters
 5. New category is saved to categories.json
 
-### Option 3: Skip
+### Option 3: Add Comment
+1. User enters an optional comment for the transaction
+2. Menu redisplays with comment shown
+3. User can then select a category (options 1 or 2) or skip (option 4)
+4. Comment is saved with the classified transaction
+
+**Use Cases for Comments:**
+- Distinguish between purchases at the same merchant (e.g., "Birthday gift" vs. "Personal use")
+- Track tax-deductible or business expenses
+- Note transactions that span multiple categories
+- Add context for future expense reviews
+
+See **[Transaction Comments Feature](features/TRANSACTION_COMMENTS.md)** for complete documentation.
+
+### Option 4: Skip (Default)
 - Transaction is categorized as "Uncategorized"
 - No rules are added
+- **Pressing Enter** without typing defaults to this option
 
-### Option 4: Exit
+### Option 0: Exit
 - Stops processing remaining transactions
 - Prompts to save category changes
 
@@ -247,32 +263,50 @@ Each regex pattern is unique and creates a new matcher instance.
 
 ## Output Files
 
-Classified transactions are written to the `OutputPath` directory with the same name as the input PDF file.
+Classified transactions are written to the `OutputPath` directory with timestamps in the filename.
 
 ### CSV Format (default)
 ```csv
-TransactionDate,PostedDate,Description,Amount,CategoryId,CategoryName,InclusionStatus
-2024-01-15,2024-01-16,"SAFEWAY STORE #123",45.67,groceries,Groceries,Included
+StatementDate,TransactionDate,PostedDate,Description,Amount,CategoryId,CategoryName,Comment,InclusionStatus
+2024-01-15,2024-01-15,2024-01-16,"SAFEWAY STORE #123",45.67,groceries,Groceries,,Included
+2024-01-16,2024-01-16,2024-01-17,"AMAZON.COM",79.99,gifts,Gifts,"Birthday gift for Sarah",Included
 ```
+
+**Note:** The `Comment` column is included after `CategoryName`. Empty comments appear as empty fields.
 
 ### JSON Format
 ```json
 [
   {
     "transaction": {
+      "statementDate": "2024-01-15",
       "transactionDate": "2024-01-15",
       "postedDate": "2024-01-16",
       "description": "SAFEWAY STORE #123",
       "amount": 45.67,
-      "rawText": "...",
-      "startLineNumber": 10,
       "inclusionStatus": "Included"
     },
     "categoryId": "groceries",
-    "categoryName": "Groceries"
+    "categoryName": "Groceries",
+    "comment": null
+  },
+  {
+    "transaction": {
+      "statementDate": "2024-01-16",
+      "transactionDate": "2024-01-16",
+      "postedDate": "2024-01-17",
+      "description": "AMAZON.COM",
+      "amount": 79.99,
+      "inclusionStatus": "Included"
+    },
+    "categoryId": "gifts",
+    "categoryName": "Gifts",
+    "comment": "Birthday gift for Sarah"
   }
 ]
 ```
+
+**Note:** The `comment` property is included in each classified transaction object.
 
 ## Processing Flow
 

@@ -17,6 +17,7 @@ Welcome to the DKW Transaction Extractor documentation. This directory contains 
 - **[Logging Quick Reference](features/LOGGING_QUICK_REFERENCE.md)** - Quick guide to logging configuration
 - **[Serilog File Logging](features/SERILOG_FILE_LOGGING.md)** - File-based logging setup and configuration
 - **[Supplemental Details Filtering](features/SUPPLEMENTAL_DETAILS_FILTERING.md)** - Handling itemized purchase details
+- **[Transaction Comments](features/TRANSACTION_COMMENTS.md)** - Adding optional notes to transactions for context
 - **[Transaction Exclusion Feature](features/TRANSACTION_EXCLUSION_FEATURE.md)** - Excluding fees, interest, and refunds
 
 ### Architecture & Design
