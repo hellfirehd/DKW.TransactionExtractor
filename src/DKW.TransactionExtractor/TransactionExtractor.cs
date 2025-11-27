@@ -1,7 +1,7 @@
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using DKW.TransactionExtractor.Classification;
 using DKW.TransactionExtractor.Formatting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DKW.TransactionExtractor;
 
@@ -22,9 +22,6 @@ internal class TransactionExtractor(
 
     public void Run()
     {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Console.Clear();
-
         if (!ValidateConfiguration())
         {
             return;
@@ -78,13 +75,13 @@ internal class TransactionExtractor(
         var filteredFiles = pdfFiles.Where(file =>
         {
             var fileName = Path.GetFileName(file);
-            
+
             // Try to parse date from filename (expecting YYYY-MM-DD format at start)
             if (fileName.Length >= 10 && DateTime.TryParseExact(
-                fileName.AsSpan(0, 10), 
-                "yyyy-MM-dd", 
-                System.Globalization.CultureInfo.InvariantCulture, 
-                System.Globalization.DateTimeStyles.None, 
+                fileName.AsSpan(0, 10),
+                "yyyy-MM-dd",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None,
                 out var fileDate))
             {
                 // Apply start date filter (inclusive)
@@ -92,13 +89,13 @@ internal class TransactionExtractor(
                 {
                     return false;
                 }
-                
+
                 // Apply end date filter (exclusive)
                 if (_appConfig.EndDate.HasValue && fileDate >= _appConfig.EndDate.Value)
                 {
                     return false;
                 }
-                
+
                 return true;
             }
 
@@ -134,7 +131,7 @@ internal class TransactionExtractor(
         }
 
         var transactionsToOutput = FilterTransactions(allClassified);
-        
+
         if (transactionsToOutput.Count == 0)
         {
             _logger.LogNoTransactionsAfterFiltering();
@@ -145,9 +142,9 @@ internal class TransactionExtractor(
         {
             var output = CreateTransactionOutput(transactionsToOutput);
             var baseOutputPath = Path.Combine(_appConfig.OutputPath, "transactions");
-            
+
             _formatter.WriteOutput(output, baseOutputPath);
-            
+
             LogOutputResults(transactionsToOutput.Count, output.CategorySummaries.Count);
         }
         catch (Exception ex)
@@ -166,7 +163,7 @@ internal class TransactionExtractor(
     private static Models.TransactionOutput CreateTransactionOutput(List<Models.ClassifiedTransaction> transactions)
     {
         var categorySummaries = GenerateCategorySummaries(transactions);
-        
+
         return new Models.TransactionOutput
         {
             Transactions = transactions,
@@ -178,7 +175,7 @@ internal class TransactionExtractor(
     private void LogOutputResults(Int32 transactionCount, Int32 categoryCount)
     {
         _logger.LogWroteClassifiedTransactions(transactionCount);
-        
+
         if (categoryCount > 0)
         {
             _logger.LogGeneratedCategorySummary(categoryCount);

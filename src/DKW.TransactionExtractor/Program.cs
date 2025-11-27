@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-using Microsoft.Extensions.Hosting;
-using DKW.TransactionExtractor.Providers.CTFS;
+﻿using DKW.TransactionExtractor.Classification;
 using DKW.TransactionExtractor.EncodingProviders;
-using DKW.TransactionExtractor.Classification;
 using DKW.TransactionExtractor.Formatting;
+using DKW.TransactionExtractor.Providers.CTFS;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 using System.Reflection;
+using System.Text;
 
 namespace DKW.TransactionExtractor;
 
@@ -15,6 +15,9 @@ internal class Program
 {
     static void Main(String[] args)
     {
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.Clear();
+
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -29,7 +32,7 @@ internal class Program
             var version = Assembly.GetExecutingAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
                 .InformationalVersion ?? "Unknown";
-            
+
             Log.Information("Starting Transaction Extractor v{Version}", version);
 
             var host = Host.CreateDefaultBuilder(args)
@@ -47,18 +50,17 @@ internal class Program
                     services.Configure<AppOptions>(context.Configuration.GetSection(nameof(AppOptions)));
                     services.Configure<ParserOptions>(context.Configuration.GetSection(nameof(ParserOptions)));
 
-                    services.AddSingleton(TimeProvider.System);
                     services.AddSingleton<ITransactionFilter, DefaultTransactionFilter>();
                     services.AddTransient<IPdfTextExtractor, CtfsMastercardPdfTextExtractor>();
                     services.AddTransient<ITransactionParser, CtfsMastercardTransactionParser>();
-                    
+
                     // Classification services
                     services.AddSingleton<ICategoryRepository, CategoryRepository>();
                     services.AddSingleton<ICategoryService, CategoryService>();
                     services.AddTransient<IMatcherBuilder, MatcherBuilderService>();
                     services.AddTransient<IConsoleInteraction, ConsoleInteractionService>();
                     services.AddTransient<ITransactionClassifier, TransactionClassifier>();
-                    
+
                     // Formatting services - register based on configuration
                     services.AddTransient<ITransactionFormatter>(sp =>
                     {
@@ -69,7 +71,7 @@ internal class Program
                             _ => new CsvFormatter()
                         };
                     });
-                    
+
                     services.AddTransient<TransactionExtractor>();
                 })
                 .Build();

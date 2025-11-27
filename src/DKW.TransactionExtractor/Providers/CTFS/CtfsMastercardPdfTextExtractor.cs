@@ -149,7 +149,7 @@ public partial class CtfsMastercardPdfTextExtractor : IPdfTextExtractor
     public IEnumerable<Transaction> ExtractTransactions(String filePath, ITransactionParser? parser = null)
     {
         var text = ExtractTextFromPdf(filePath);
-        var fileName = System.IO.Path.GetFileName(filePath);
+        var fileName = Path.GetFileName(filePath);
         var usedParser = parser ?? new CtfsMastercardTransactionParser();
         var context = new ParseContext { Text = text, FileName = fileName };
         var result = usedParser.Parse(context);
