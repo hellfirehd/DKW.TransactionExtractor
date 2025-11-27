@@ -7,6 +7,13 @@ public class ExactMatcher : ITransactionMatcher
 
     public ExactMatcher(String[] values, Boolean caseSensitive = false)
     {
+        ArgumentNullException.ThrowIfNull(values);
+        
+        if (values.Length == 0)
+        {
+            throw new ArgumentException("Values array cannot be empty", nameof(values));
+        }
+
         _caseSensitive = caseSensitive;
         var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
         _values = new HashSet<String>(values, comparer);
@@ -14,6 +21,11 @@ public class ExactMatcher : ITransactionMatcher
 
     public Boolean TryMatch(String description)
     {
+        if (String.IsNullOrWhiteSpace(description))
+        {
+            return false;
+        }
+
         return _values.Contains(description);
     }
 }

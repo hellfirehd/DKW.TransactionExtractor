@@ -9,8 +9,8 @@ public sealed class PdfAliasEncodingProvider : EncodingProvider
     private static readonly Encoding MacRoman = Encoding.GetEncoding(10000);
 
     // Alias map for known PDF and common encoding names
-    private static readonly IReadOnlyDictionary<String, Encoding> AliasMap =
-        new Dictionary<String, Encoding>(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<String, Encoding> AliasMap =
+        new(StringComparer.OrdinalIgnoreCase)
         {
             { "StandardEncoding", WinAnsi },
             { "WinAnsiEncoding", WinAnsi },
