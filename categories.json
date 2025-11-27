@@ -46,7 +46,8 @@
               "DOZO HOUSE",
               "C-LOVERS FISH",
               "HECTORS CASA",
-              "DENNYS"
+              "DENNYS",
+              "RED SWAN PIZZA"
             ],
             "caseSensitive": false
           }
@@ -73,7 +74,8 @@
               "COSTCO GAS",
               "ESSO",
               "PETRO-CANADA",
-              "SHELL"
+              "SHELL",
+              "PETRO CANADA"
             ],
             "caseSensitive": false
           }
@@ -99,7 +101,8 @@
             "values": [
               "DIGI-KEY CORP",
               "PLASTICS \u0026 PAI",
-              "MICHAELS"
+              "MICHAELS",
+              "ALIEXPRESS"
             ],
             "caseSensitive": false
           }
@@ -126,7 +129,8 @@
             "values": [
               "LONDON DRUGS",
               "SHOPPERS DRUG MART",
-              "HENSON SHAVING"
+              "HENSON SHAVING",
+              "PHARMASAVE"
             ],
             "caseSensitive": false
           }
@@ -141,7 +145,7 @@
           "type": "Contains",
           "parameters": {
             "values": [
-              "ARBY",
+              "ARBYS",
               "DAIRY QUEEN",
               "KFC/TACO BELL",
               "SUBCITY",
@@ -166,7 +170,18 @@
               "SPECIALITY BAKERY",
               "STARBUCKS",
               "BEAVERTAILS",
-              "FRESHLY SQUEEZED"
+              "FRESHLY SQUEEZED",
+              "NEW YORK FRIES",
+              "ASIAN PEAR BUFFE"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "DQ #27051 KELOWNA BC"
             ],
             "caseSensitive": false
           }
@@ -222,7 +237,9 @@
               "Microsoft*Ultimate",
               "DISNEY PLUS",
               "WORLD LITERATURE/SOL",
-              "BOOKAPY/SOL"
+              "BOOKAPY/SOL",
+              "Microsoft*Xbox",
+              "RAKUTEN KOBO"
             ],
             "caseSensitive": false
           }
@@ -231,7 +248,6 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "RAKUTEN KOBO INC. TORONTO ON",
               "FS *FLIXTOOLS VANCOUVER BC"
             ],
             "caseSensitive": false
@@ -272,18 +288,26 @@
             ],
             "caseSensitive": false
           }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "MICROSOFT*MICROSOFT 36 MISSISSAUGA ON"
+            ],
+            "caseSensitive": false
+          }
         }
       ]
     },
     {
-      "id": "cell-phones",
-      "name": "Cell Phones",
+      "id": "communication-cell-phones",
+      "name": "Communication - Cell Phones",
       "matchers": [
         {
           "type": "Contains",
           "parameters": {
             "values": [
-              "TELUS",
               "APPLE"
             ],
             "caseSensitive": false
@@ -296,21 +320,14 @@
       "name": "Miscellaneous",
       "matchers": [
         {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              "PAYBYPHONE"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
           "type": "ExactMatch",
           "parameters": {
             "values": [
               "NAYAX CANADA INC MASTE FREDERICTON NB",
               "GCDS170 KELOWNA KELOWNA BC",
-              "LM Kelowna Kelowna BC"
+              "LM Kelowna Kelowna BC",
+              "TRIANGLE SELECT 8003878803 ON",
+              "RDCO WEBSITE KELOWNA BC"
             ],
             "caseSensitive": false
           }
@@ -368,32 +385,9 @@
           "parameters": {
             "values": [
               "HOME DEPOT",
-              "DOLLAR TREE"
-            ],
-            "caseSensitive": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "uncategorized",
-      "name": "Uncategorized",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              "AMAZON",
-              "CDN TIRE"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "LANDMARK WEB TICKETING 403-262-4255 AB"
+              "DOLLAR TREE",
+              "PRINCESS AUTO",
+              "SUN CITY LIQUIDATI"
             ],
             "caseSensitive": false
           }
@@ -417,7 +411,9 @@
           "type": "Contains",
           "parameters": {
             "values": [
-              "GIRL GUIDES"
+              "GIRL GUIDES",
+              "Astraweb",
+              "THUNDERBIRD EMAIL"
             ],
             "caseSensitive": false
           }
@@ -425,8 +421,24 @@
       ]
     },
     {
-      "id": "vehicle-transportation",
-      "name": "Vehicle \u0026 Transportation",
+      "id": "transportation-bus-parking-taxi",
+      "name": "Transportation - Bus, Parking, Taxi",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "BC TRANSIT",
+              "IMPARK"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "transportation-vehicle",
+      "name": "Transportation - Vehicle",
       "matchers": [
         {
           "type": "Contains",
@@ -435,7 +447,8 @@
               "BC TRANSIT",
               "KELOWNA MAZDA",
               "ICBC",
-              "IMPARK"
+              "IMPARK",
+              "CURRENT TAXI"
             ],
             "caseSensitive": false
           }
@@ -455,7 +468,8 @@
               "EDMONTON",
               "REVELSTOKE",
               "GOLDEN BC",
-              "THREE HILLS"
+              "THREE HILLS",
+              "CALGARY"
             ],
             "caseSensitive": false
           }
@@ -485,7 +499,8 @@
           "type": "Contains",
           "parameters": {
             "values": [
-              "TORRID CANADA INC"
+              "TORRID CANADA INC",
+              "VALUE VILLAGE"
             ],
             "caseSensitive": false
           }
@@ -501,7 +516,60 @@
           "parameters": {
             "values": [
               "ORTHODONTICS",
-              "BLUEBIRD MEDICAL"
+              "BLUEBIRD MEDICAL",
+              "KUNG FU ACADEMY"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "insurance-tenant",
+      "name": "Insurance - Tenant",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "SQUARE ONE INSURANCE"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "clothing",
+      "name": "Clothing",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "MARKS.COM"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "uncategorized",
+      "name": "Uncategorized",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "LANDMARK WEB TICKETING 403-262-4255 AB"
             ],
             "caseSensitive": false
           }
