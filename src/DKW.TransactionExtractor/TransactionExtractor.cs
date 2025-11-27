@@ -44,23 +44,23 @@ internal class TransactionExtractor(
     {
         if (String.IsNullOrEmpty(_appConfig.FolderPath))
         {
-            LogMessages.LogMissingFolderPath(_logger);
+            _logger.LogMissingFolderPath();
             return false;
         }
 
         if (!Directory.Exists(_appConfig.FolderPath))
         {
-            LogMessages.LogFolderDoesNotExist(_logger, _appConfig.FolderPath);
+            _logger.LogFolderDoesNotExist(_appConfig.FolderPath);
             return false;
         }
 
         if (_appConfig.StartDate == null && _appConfig.EndDate == null)
         {
-            LogMessages.LogNoDateRangeConfigured(_logger);
+            _logger.LogNoDateRangeConfigured();
         }
         else
         {
-            LogMessages.LogDateRangeFilter(_logger, _appConfig.StartDate, _appConfig.EndDate);
+            _logger.LogDateRangeFilter(_appConfig.StartDate, _appConfig.EndDate);
         }
 
         if (!Directory.Exists(_appConfig.OutputPath))
@@ -105,7 +105,7 @@ internal class TransactionExtractor(
             return false;
         }).ToArray();
 
-        LogMessages.LogFoundFiles(_logger, filteredFiles.Length, _appConfig.FolderPath);
+        _logger.LogFoundFiles(filteredFiles.Length, _appConfig.FolderPath);
         return filteredFiles;
     }
 
@@ -118,7 +118,7 @@ internal class TransactionExtractor(
             var shouldExit = ProcessStatement(pdfFile, allClassified);
             if (shouldExit)
             {
-                _logger.LogInformation("Processing stopped by user request.");
+                _logger.LogProcessingStoppedByUser();
                 break;
             }
         }
@@ -137,7 +137,7 @@ internal class TransactionExtractor(
         
         if (transactionsToOutput.Count == 0)
         {
-            _logger.LogInformation("No transactions to output after filtering.");
+            _logger.LogNoTransactionsAfterFiltering();
             return;
         }
 
@@ -152,7 +152,7 @@ internal class TransactionExtractor(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to write output");
+            _logger.LogFailedToWriteOutput(ex);
         }
     }
 
@@ -163,7 +163,7 @@ internal class TransactionExtractor(
             : transactions.Where(ct => !String.Equals(ct.CategoryId, "uncategorized", StringComparison.OrdinalIgnoreCase)).ToList();
     }
 
-    private Models.TransactionOutput CreateTransactionOutput(List<Models.ClassifiedTransaction> transactions)
+    private static Models.TransactionOutput CreateTransactionOutput(List<Models.ClassifiedTransaction> transactions)
     {
         var categorySummaries = GenerateCategorySummaries(transactions);
         
@@ -177,11 +177,11 @@ internal class TransactionExtractor(
 
     private void LogOutputResults(Int32 transactionCount, Int32 categoryCount)
     {
-        _logger.LogInformation("Wrote {Count} classified transactions to output", transactionCount);
+        _logger.LogWroteClassifiedTransactions(transactionCount);
         
         if (categoryCount > 0)
         {
-            _logger.LogInformation("Generated summary for {CategoryCount} categories", categoryCount);
+            _logger.LogGeneratedCategorySummary(categoryCount);
         }
     }
 
@@ -198,11 +198,11 @@ internal class TransactionExtractor(
             try
             {
                 File.WriteAllText(textFilePath, text);
-                LogMessages.LogWroteExtractedText(_logger, textFilePath);
+                _logger.LogWroteExtractedText(textFilePath);
             }
             catch (Exception ex)
             {
-                LogMessages.LogFailedToWriteExtractedText(_logger, ex, textFilePath);
+                _logger.LogFailedToWriteExtractedText(ex, textFilePath);
             }
         }
 
@@ -217,19 +217,19 @@ internal class TransactionExtractor(
         parseResult.FilePath = pdfFile;
 
         // Output parsing summary
-        LogMessages.LogFilename(_logger, parseResult.FileName);
-        LogMessages.LogDeclaredPurchases(_logger, parseResult.DeclaredPurchasesTotal);
-        LogMessages.LogComputedPurchases(_logger, parseResult.ComputedPurchasesTotal);
-        LogMessages.LogTransactionsCount(_logger, parseResult.Transactions.Count);
+        _logger.LogFilename(parseResult.FileName);
+        _logger.LogDeclaredPurchases(parseResult.DeclaredPurchasesTotal);
+        _logger.LogComputedPurchases(parseResult.ComputedPurchasesTotal);
+        _logger.LogTransactionsCount(parseResult.Transactions.Count);
         if (parseResult.ExcludedCount > 0)
         {
-            LogMessages.LogExcludedTransactions(_logger, parseResult.ExcludedCount);
+            _logger.LogExcludedTransactions(parseResult.ExcludedCount);
         }
 
         if (!parseResult.IsMatch)
         {
-            LogMessages.LogMismatchDetails(_logger, parseResult.DeclaredPurchasesTotal, parseResult.ComputedPurchasesTotal, parseResult.Difference);
-            LogMessages.LogInvestigate(_logger);
+            _logger.LogMismatchDetails(parseResult.DeclaredPurchasesTotal, parseResult.ComputedPurchasesTotal, parseResult.Difference);
+            _logger.LogInvestigate();
             foreach (var transaction in parseResult.Transactions)
             {
                 _logger.LogTransactionDetail(transaction.TransactionDate, transaction.Description, transaction.Amount, transaction.InclusionStatus);
@@ -237,7 +237,7 @@ internal class TransactionExtractor(
         }
 
         // Classify transactions
-        _logger.LogInformation("Classifying {Count} transactions...", parseResult.Transactions.Count);
+        _logger.LogClassifyingTransactions(parseResult.Transactions.Count);
         var classificationResult = _classifier.ClassifyTransactions(parseResult.Transactions);
 
         // Attach statement date to each transaction and add to aggregate
@@ -249,14 +249,14 @@ internal class TransactionExtractor(
 
         if (!classificationResult.RequestedEarlyExit)
         {
-            _logger.LogInformation("Completed processing {FileName}", fileName);
+            _logger.LogCompletedProcessingFile(fileName);
             Console.WriteLine();
         }
 
         return classificationResult.RequestedEarlyExit;
     }
 
-    private List<Models.CategorySummary> GenerateCategorySummaries(List<Models.ClassifiedTransaction> transactions)
+    private static List<Models.CategorySummary> GenerateCategorySummaries(List<Models.ClassifiedTransaction> transactions)
     {
         var summaries = transactions
             .GroupBy(ct => new { ct.CategoryId, ct.CategoryName })

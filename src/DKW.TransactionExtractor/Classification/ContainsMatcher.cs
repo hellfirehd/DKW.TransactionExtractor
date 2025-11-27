@@ -1,15 +1,9 @@
 namespace DKW.TransactionExtractor.Classification;
 
-public class ContainsMatcher : ITransactionMatcher
+public class ContainsMatcher(String[] values, Boolean caseSensitive = false) : ITransactionMatcher
 {
-    private readonly String[] _values;
-    private readonly StringComparison _comparison;
-
-    public ContainsMatcher(String[] values, Boolean caseSensitive = false)
-    {
-        _values = values;
-        _comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-    }
+    private readonly String[] _values = values;
+    private readonly StringComparison _comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
     public Boolean TryMatch(String description)
     {

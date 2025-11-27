@@ -128,12 +128,12 @@ public partial class CtfsMastercardPdfTextExtractor : IPdfTextExtractor
                 // Use the explicit mapping
                 result.Append(replacement);
             }
-            else if (ch == '\n' || ch == '\r' || ch == '\t')
+            else if (ch is '\n' or '\r' or '\t')
             {
                 // Preserve line breaks and tabs (essential for parsing)
                 result.Append(ch);
             }
-            else if (ch >= 32 && ch <= 126)
+            else if (ch is >= (Char)32 and <= (Char)126)
             {
                 // Keep standard ASCII printable characters (space through tilde)
                 result.Append(ch);

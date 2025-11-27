@@ -2,14 +2,9 @@ using DKW.TransactionExtractor.Models;
 
 namespace DKW.TransactionExtractor.Classification;
 
-public class CategoryService : ICategoryService
+public class CategoryService(ICategoryRepository repository) : ICategoryService
 {
-    private readonly ICategoryRepository _repository;
-
-    public CategoryService(ICategoryRepository repository)
-    {
-        _repository = repository;
-    }
+    private readonly ICategoryRepository _repository = repository;
 
     public List<Category> GetAvailableCategories()
     {

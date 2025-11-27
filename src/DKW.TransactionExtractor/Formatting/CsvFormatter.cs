@@ -23,7 +23,7 @@ public class CsvFormatter : ITransactionFormatter
         }
     }
 
-    private void WriteTransactions(List<ClassifiedTransaction> transactions, String outputPath)
+    private static void WriteTransactions(List<ClassifiedTransaction> transactions, String outputPath)
     {
         var sb = new StringBuilder();
 
@@ -48,7 +48,7 @@ public class CsvFormatter : ITransactionFormatter
         File.WriteAllText(outputPath, sb.ToString());
     }
 
-    private void WriteSummary(List<CategorySummary> categorySummaries, String outputPath)
+    private static void WriteSummary(List<CategorySummary> categorySummaries, String outputPath)
     {
         var sb = new StringBuilder();
 
@@ -67,7 +67,7 @@ public class CsvFormatter : ITransactionFormatter
         File.WriteAllText(outputPath, sb.ToString());
     }
 
-    private String EscapeCsv(String value)
+    private static String EscapeCsv(String value)
     {
         if (String.IsNullOrEmpty(value))
         {

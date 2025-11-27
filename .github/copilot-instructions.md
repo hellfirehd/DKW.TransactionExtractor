@@ -168,10 +168,75 @@ public record CategorySelectionResult(
 - Use Serilog with structured logging
 - Log at appropriate levels (Debug, Info, Warning, Error)
 - Include context in error messages
+- **Use LoggerMessage attributes for all logging** (see Logging section below)
   ```csharp
   _logger.LogError("Failed to load category '{CategoryId}' from {FilePath}", 
       categoryId, filePath);
   ```
+
+### Logging
+
+#### LoggerMessage Pattern (Required)
+
+**Always use the `LoggerMessage` attribute pattern for all logging statements.** This provides:
+- Zero-allocation logging via source generators
+- Compile-time validation of log parameters
+- Centralized log message definitions
+- Better performance than direct ILogger calls
+
+**Define log messages in `LogMessages.cs`:**
+```csharp
+// LogMessages.cs
+internal static partial class LogMessages
+{
+    [LoggerMessage(EventId = 1500, Level = LogLevel.Warning, 
+        Message = "Category configuration file not found at {Path}. Starting with empty configuration.")]
+    public static partial void LogCategoryConfigNotFound(this ILogger logger, String path);
+
+    [LoggerMessage(EventId = 1510, Level = LogLevel.Debug, 
+        Message = "Loaded {Count} categories from {Path}")]
+    public static partial void LogLoadedCategories(this ILogger logger, Int32 count, String path);
+    
+    [LoggerMessage(EventId = 1520, Level = LogLevel.Error, 
+        Message = "Failed to load category configuration from {Path}")]
+    public static partial void LogFailedToLoadCategoryConfig(this ILogger logger, Exception ex, String path);
+}
+```
+
+**Use as extension methods in your code:**
+```csharp
+// ? Correct - Extension method pattern
+_logger.LogCategoryConfigNotFound(filePath);
+_logger.LogLoadedCategories(count, filePath);
+_logger.LogFailedToLoadCategoryConfig(ex, filePath);
+
+// ? Incorrect - Direct LogInformation/LogWarning/LogError calls
+_logger.LogWarning("Category configuration file not found at {Path}", filePath);
+_logger.LogInformation("Loaded {Count} categories from {Path}", count, filePath);
+_logger.LogError(ex, "Failed to load category configuration from {Path}", filePath);
+
+// ? Incorrect - Static method pattern
+LogMessages.LogCategoryConfigNotFound(_logger, filePath);
+```
+
+**Organization in LogMessages.cs:**
+- Group log messages by functional area with comments
+- Use clear event ID ranges (1000-1099, 1100-1199, etc.)
+- Keep related messages together
+- Example ranges:
+  - 1000-1099: Configuration and Validation
+  - 1100-1199: Transaction Processing
+  - 1200-1399: Parsing and Validation
+  - 1400-1499: Transaction Filtering
+  - 1500-1699: Category Repository
+  - 1700-1799: Transaction Classification
+
+**Benefits:**
+- ? Performance: Source-generated, zero-allocation
+- ? Type Safety: Compile-time parameter validation
+- ? Consistency: All log messages in one place
+- ? Maintainability: Easy to find and update messages
+- ? CA1873 Compliance: Eliminates analyzer warnings
 
 ### Architecture Patterns
 
@@ -334,6 +399,8 @@ Before submitting a PR, verify:
 - [ ] Descriptive variable and method names
 - [ ] Each method has a single, clear responsibility
 - [ ] Result types used for expected failures
+- [ ] LoggerMessage attributes used for all logging (no direct `_logger.LogInformation()` calls)
+- [ ] Logging uses extension method pattern (`_logger.LogXxx()` not `LogMessages.LogXxx(_logger)`)
 - [ ] Unit tests added for new functionality
 - [ ] Documentation updated in `./docs/`
 - [ ] No compiler warnings

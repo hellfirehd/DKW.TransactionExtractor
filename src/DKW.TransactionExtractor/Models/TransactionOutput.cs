@@ -8,12 +8,12 @@ public class TransactionOutput
     /// <summary>
     /// Gets or sets the list of classified transactions.
     /// </summary>
-    public List<ClassifiedTransaction> Transactions { get; set; } = new();
+    public List<ClassifiedTransaction> Transactions { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the list of category summaries.
     /// </summary>
-    public List<CategorySummary> CategorySummaries { get; set; } = new();
+    public List<CategorySummary> CategorySummaries { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the timestamp when this output was generated.

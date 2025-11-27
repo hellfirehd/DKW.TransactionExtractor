@@ -36,7 +36,7 @@ public class MatcherBuilderService : IMatcherBuilder
         };
     }
 
-    private MatcherCreationRequest BuildExactMatcher(String transactionDescription)
+    private static MatcherCreationRequest BuildExactMatcher(String transactionDescription)
     {
         Console.WriteLine();
         Console.WriteLine($"ExactMatch will match: '{transactionDescription}'");
@@ -44,7 +44,7 @@ public class MatcherBuilderService : IMatcherBuilder
         var caseSensitive = false;
 
         var request = MatcherCreationRequest.ExactMatch(
-            new[] { transactionDescription },
+            [transactionDescription],
             caseSensitive
         );
 
@@ -55,7 +55,7 @@ public class MatcherBuilderService : IMatcherBuilder
         return request;
     }
 
-    private MatcherCreationRequest BuildContainsMatcher(String transactionDescription)
+    private static MatcherCreationRequest BuildContainsMatcher(String transactionDescription)
     {
         Console.WriteLine();
         Console.WriteLine($"Current description: '{transactionDescription}'");
@@ -72,7 +72,7 @@ public class MatcherBuilderService : IMatcherBuilder
         var caseSensitive = false;
 
         var request = MatcherCreationRequest.Contains(
-            new[] { substring },
+            [substring],
             caseSensitive
         );
 
@@ -83,7 +83,7 @@ public class MatcherBuilderService : IMatcherBuilder
         return request;
     }
 
-    private MatcherCreationRequest BuildRegexMatcher(String transactionDescription)
+    private static MatcherCreationRequest BuildRegexMatcher(String transactionDescription)
     {
         Console.WriteLine();
         Console.WriteLine($"Current description: '{transactionDescription}'");

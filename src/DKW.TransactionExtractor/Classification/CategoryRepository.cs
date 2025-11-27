@@ -7,6 +7,13 @@ namespace DKW.TransactionExtractor.Classification;
 
 public class CategoryRepository : ICategoryRepository
 {
+    private static readonly JsonSerializerOptions JSO = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     private readonly ILogger<CategoryRepository> _logger;
     private readonly String _categoryFilePath;
     private CategoryConfig _config;
@@ -16,7 +23,7 @@ public class CategoryRepository : ICategoryRepository
         _logger = logger;
         _categoryFilePath = options.Value.CategoryConfigPath;
         _config = new CategoryConfig();
-        
+
         // Load and normalize existing categories
         Load();
         NormalizeExistingCategoryIds();
@@ -26,7 +33,7 @@ public class CategoryRepository : ICategoryRepository
     {
         if (!File.Exists(_categoryFilePath))
         {
-            _logger.LogWarning("Category configuration file not found at {Path}. Starting with empty configuration.", _categoryFilePath);
+            _logger.LogCategoryConfigNotFound(_categoryFilePath);
             _config = new CategoryConfig();
             return _config;
         }
@@ -34,16 +41,12 @@ public class CategoryRepository : ICategoryRepository
         try
         {
             var json = File.ReadAllText(_categoryFilePath);
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            _config = JsonSerializer.Deserialize<CategoryConfig>(json, options) ?? new CategoryConfig();
-            _logger.LogDebug("Loaded {Count} categories from {Path}", _config.Categories.Count, _categoryFilePath);
+            _config = JsonSerializer.Deserialize<CategoryConfig>(json, JSO) ?? new CategoryConfig();
+            _logger.LogLoadedCategories(_config.Categories.Count, _categoryFilePath);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to load category configuration from {Path}", _categoryFilePath);
+            _logger.LogFailedToLoadCategoryConfig(ex, _categoryFilePath);
             _config = new CategoryConfig();
         }
 
@@ -61,10 +64,10 @@ public class CategoryRepository : ICategoryRepository
         foreach (var category in _config.Categories)
         {
             var normalizedId = CategoryIdNormalizer.Normalize(category.Id);
-            
+
             if (category.Id != normalizedId)
             {
-                _logger.LogInformation("Normalizing category ID from '{OldId}' to '{NewId}'", category.Id, normalizedId);
+                _logger.LogNormalizingCategoryId(category.Id, normalizedId);
                 category.Id = normalizedId;
                 hasChanges = true;
             }
@@ -73,7 +76,7 @@ public class CategoryRepository : ICategoryRepository
         if (hasChanges)
         {
             Save(_config);
-            _logger.LogInformation("Category IDs have been normalized and saved");
+            _logger.LogCategoryIdsNormalized();
         }
     }
 
@@ -81,12 +84,7 @@ public class CategoryRepository : ICategoryRepository
     {
         try
         {
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            var json = JsonSerializer.Serialize(config, options);
+            var json = JsonSerializer.Serialize(config, JSO);
 
             var directory = Path.GetDirectoryName(_categoryFilePath);
             if (!String.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -96,11 +94,11 @@ public class CategoryRepository : ICategoryRepository
 
             File.WriteAllText(_categoryFilePath, json);
             _config = config;
-            _logger.LogInformation("Saved {Count} categories to {Path}", config.Categories.Count, _categoryFilePath);
+            _logger.LogSavedCategories(config.Categories.Count, _categoryFilePath);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to save category configuration to {Path}", _categoryFilePath);
+            _logger.LogFailedToSaveCategoryConfig(ex, _categoryFilePath);
         }
     }
 
@@ -129,7 +127,7 @@ public class CategoryRepository : ICategoryRepository
         var category = _config.Categories.FirstOrDefault(c => c.Id == categoryId);
         if (category == null)
         {
-            _logger.LogWarning("Cannot add matcher to category '{CategoryId}': category not found", categoryId);
+            _logger.LogCategoryNotFoundForMatcher(categoryId);
             return;
         }
 
@@ -138,7 +136,7 @@ public class CategoryRepository : ICategoryRepository
         {
             var newMatcher = CreateMatcherFromRequest(request);
             category.Matchers.Add(newMatcher);
-            _logger.LogInformation("Added new Regex matcher to category '{CategoryId}'", categoryId);
+            _logger.LogAddedRegexMatcher(categoryId);
             Save(_config);
             return;
         }
@@ -148,21 +146,19 @@ public class CategoryRepository : ICategoryRepository
 
         if (merged)
         {
-            _logger.LogInformation("Merged {MatcherType} values into existing matcher for category '{CategoryId}'",
-                request.MatcherType, categoryId);
+            _logger.LogMergedMatcherValues(request.MatcherType, categoryId);
         }
         else
         {
             var newMatcher = CreateMatcherFromRequest(request);
             category.Matchers.Add(newMatcher);
-            _logger.LogInformation("Added new {MatcherType} matcher to category '{CategoryId}'",
-                request.MatcherType, categoryId);
+            _logger.LogAddedNewMatcher(request.MatcherType, categoryId);
         }
 
         Save(_config);
     }
 
-    private Boolean TryMergeWithExistingMatcher(Category category, MatcherCreationRequest request)
+    private static Boolean TryMergeWithExistingMatcher(Category category, MatcherCreationRequest request)
     {
         var caseSensitive = request.Parameters.TryGetValue("caseSensitive", out var csValue)
             && Convert.ToBoolean(csValue);
@@ -197,7 +193,7 @@ public class CategoryRepository : ICategoryRepository
         return false;
     }
 
-    private Boolean GetCaseSensitiveParameter(CategoryMatcher matcher)
+    private static Boolean GetCaseSensitiveParameter(CategoryMatcher matcher)
     {
         if (matcher.Parameters.TryGetValue("caseSensitive", out var csObj))
         {
@@ -215,7 +211,7 @@ public class CategoryRepository : ICategoryRepository
         return false;
     }
 
-    private String[] ExtractStringArray(Object valuesObj)
+    private static String[] ExtractStringArray(Object valuesObj)
     {
         if (valuesObj is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
         {
@@ -232,10 +228,10 @@ public class CategoryRepository : ICategoryRepository
             return stringList.ToArray();
         }
 
-        return Array.Empty<String>();
+        return [];
     }
 
-    private CategoryMatcher CreateMatcherFromRequest(MatcherCreationRequest request)
+    private static CategoryMatcher CreateMatcherFromRequest(MatcherCreationRequest request)
     {
         return new CategoryMatcher
         {

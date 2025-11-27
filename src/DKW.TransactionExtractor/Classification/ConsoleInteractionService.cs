@@ -1,15 +1,9 @@
 ﻿namespace DKW.TransactionExtractor.Classification;
 
-public class ConsoleInteractionService : IConsoleInteraction
+public class ConsoleInteractionService(ICategoryService categoryService, IMatcherBuilder matcherBuilder) : IConsoleInteraction
 {
-    private readonly ICategoryService _categoryService;
-    private readonly IMatcherBuilder _matcherBuilder;
-
-    public ConsoleInteractionService(ICategoryService categoryService, IMatcherBuilder matcherBuilder)
-    {
-        _categoryService = categoryService;
-        _matcherBuilder = matcherBuilder;
-    }
+    private readonly ICategoryService _categoryService = categoryService;
+    private readonly IMatcherBuilder _matcherBuilder = matcherBuilder;
 
     public CategorySelectionResult PromptForCategory(ClassifyTransactionContext context)
     {
@@ -133,7 +127,7 @@ public class ConsoleInteractionService : IConsoleInteraction
         return new CategorySelectionResult(categoryId, categoryName, matcherRequest);
     }
 
-    private CategorySelectionResult HandleExit()
+    private static CategorySelectionResult HandleExit()
     {
         Console.WriteLine();
         Console.Write("Categories have been updated. Save changes before exiting? [Y/n]: ");

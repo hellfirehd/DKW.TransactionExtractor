@@ -3,23 +3,14 @@ using Microsoft.Extensions.Logging;
 
 namespace DKW.TransactionExtractor.Classification;
 
-public class TransactionClassifier : ITransactionClassifier
+public class TransactionClassifier(
+    ILogger<TransactionClassifier> logger,
+    ICategoryService categoryService,
+    IConsoleInteraction consoleInteraction) : ITransactionClassifier
 {
-    private readonly ILogger<TransactionClassifier> _logger;
-    private readonly ICategoryService _categoryService;
-    private readonly IConsoleInteraction _consoleInteraction;
-    private readonly MatcherFactory _matcherFactory;
-
-    public TransactionClassifier(
-        ILogger<TransactionClassifier> logger,
-        ICategoryService categoryService,
-        IConsoleInteraction consoleInteraction)
-    {
-        _logger = logger;
-        _categoryService = categoryService;
-        _consoleInteraction = consoleInteraction;
-        _matcherFactory = new MatcherFactory();
-    }
+    private readonly ILogger<TransactionClassifier> _logger = logger;
+    private readonly ICategoryService _categoryService = categoryService;
+    private readonly IConsoleInteraction _consoleInteraction = consoleInteraction;
 
     public ClassificationResult ClassifyTransactions(List<Transaction> transactions)
     {
@@ -35,14 +26,13 @@ public class TransactionClassifier : ITransactionClassifier
             );
 
             var result = ClassifyTransaction(context);
-            
+
             if (result.RequestedExit)
             {
-                _logger.LogInformation("User requested early exit. Processed {Count} of {Total} transactions.", 
-                    classifiedTransactions.Count, transactions.Count);
+                _logger.LogUserRequestedEarlyExit(classifiedTransactions.Count, transactions.Count);
                 return new ClassificationResult(classifiedTransactions, RequestedEarlyExit: true);
             }
-            
+
             classifiedTransactions.Add(result.ClassifiedTransaction);
         }
 
@@ -53,21 +43,20 @@ public class TransactionClassifier : ITransactionClassifier
     {
         // Try to match against existing categories
         var categories = _categoryService.GetAllCategories();
-        
+
         foreach (var category in categories)
         {
             foreach (var matcherConfig in category.Matchers)
             {
-                var matcher = _matcherFactory.CreateMatcher(matcherConfig);
+                var matcher = MatcherFactory.CreateMatcher(matcherConfig);
                 if (matcher != null && matcher.TryMatch(context.Transaction.Description))
                 {
-                    _logger.LogDebug("Matched transaction '{Description}' to category '{Category}'", 
-                        context.Transaction.Description, category.Name);
-                    
+                    _logger.LogMatchedTransaction(context.Transaction.Description, category.Name);
+
                     // Show summary for automatically classified transaction
                     Console.WriteLine($"  [{context.CurrentIndex}/{context.TotalCount}] {context.Transaction.TransactionDate:MMM dd} | " +
                                     $"{context.Transaction.Description,-40} | {context.Transaction.Amount,10:C} ? {category.Name}");
-                    
+
                     return (new ClassifiedTransaction
                     {
                         Transaction = context.Transaction,
@@ -80,7 +69,7 @@ public class TransactionClassifier : ITransactionClassifier
 
         // No match found, prompt user
         var selectionResult = _consoleInteraction.PromptForCategory(context);
-        
+
         // Check for early exit
         if (selectionResult.RequestedExit)
         {
@@ -102,7 +91,7 @@ public class TransactionClassifier : ITransactionClassifier
             {
                 Id = normalizedCategoryId,
                 Name = selectionResult.CategoryName,
-                Matchers = new List<CategoryMatcher>()
+                Matchers = []
             };
 
             if (selectionResult.HasMatcherRequest)
@@ -116,14 +105,13 @@ public class TransactionClassifier : ITransactionClassifier
             }
 
             _categoryService.AddCategory(newCategory);
-            _logger.LogInformation("Created new category '{Category}' with ID '{Id}'", selectionResult.CategoryName, normalizedCategoryId);
+            _logger.LogCreatedNewCategory(selectionResult.CategoryName, normalizedCategoryId);
         }
         else if (selectionResult.HasMatcherRequest)
         {
             // Add matcher to existing category
             _categoryService.AddMatcherToCategory(normalizedCategoryId, selectionResult.MatcherRequest!);
-            _logger.LogInformation("Added {MatcherType} rule to category '{Category}'", 
-                selectionResult.MatcherRequest!.MatcherType, selectionResult.CategoryName);
+            _logger.LogAddedRuleToCategory(selectionResult.MatcherRequest!.MatcherType, selectionResult.CategoryName);
         }
 
         return (new ClassifiedTransaction
