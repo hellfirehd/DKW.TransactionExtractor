@@ -2,7 +2,11 @@ using DKW.TransactionExtractor.Models;
 
 namespace DKW.TransactionExtractor.Classification;
 
-public interface IConsoleInteraction
+/// <summary>
+/// Console-specific user interaction interface.
+/// This interface is maintained for backward compatibility but inherits from IUserInteraction.
+/// </summary>
+public interface IConsoleInteraction : IUserInteraction
 {
-    CategorySelectionResult PromptForCategory(ClassifyTransactionContext context);
+    // No additional methods - IUserInteraction defines the contract
 }

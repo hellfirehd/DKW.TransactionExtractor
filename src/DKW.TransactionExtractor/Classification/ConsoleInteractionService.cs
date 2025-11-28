@@ -11,14 +11,16 @@ public class ConsoleInteractionService(ICategoryService categoryService, IMatche
         {
             Console.WriteLine();
             Console.WriteLine("═══════════════════════════════════════════════════════════");
-            Console.WriteLine($"Transaction {context.ProgressText}");
-            Console.WriteLine($"Description: {context.Transaction.Description}");
-            Console.WriteLine($"Amount: {context.Transaction.Amount:C}");
-            Console.WriteLine($"Date: {context.Transaction.TransactionDate:yyyy-MM-dd}");
+            Console.WriteLine($"Transaction    {context.ProgressText}");
+            Console.WriteLine($"Description:   {context.Transaction.Description}");
+            Console.WriteLine($"Purchase Date: {context.Transaction.TransactionDate:yyyy-MM-dd}");
+            Console.WriteLine($"Posted Date:   {context.Transaction.PostedDate:yyyy-MM-dd}");
+            Console.WriteLine($"Amount:        {context.Transaction.Amount:C}");
             if (!String.IsNullOrWhiteSpace(context.Comment))
             {
-                Console.WriteLine($"Comment: {context.Comment}");
+                Console.WriteLine($"Comment:       {context.Comment}");
             }
+
             Console.WriteLine("No category match found.");
             Console.WriteLine("═══════════════════════════════════════════════════════════");
             Console.WriteLine();
@@ -69,7 +71,7 @@ public class ConsoleInteractionService(ICategoryService categoryService, IMatche
         }
     }
 
-    private CategorySelectionResult? AddComment(ClassifyTransactionContext context)
+    private static CategorySelectionResult? AddComment(ClassifyTransactionContext context)
     {
         Console.WriteLine();
         Console.Write("Enter comment (or press Enter to cancel): ");

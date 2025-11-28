@@ -239,7 +239,8 @@
               "WORLD LITERATURE/SOL",
               "BOOKAPY/SOL",
               "Microsoft*Xbox",
-              "RAKUTEN KOBO"
+              "RAKUTEN KOBO",
+              "Amazon Channels"
             ],
             "caseSensitive": false
           }
@@ -284,7 +285,8 @@
               "CLOUDFLARE",
               "GITHUB",
               "TWILIO",
-              "WEALTHSIMPLE TAX"
+              "WEALTHSIMPLE TAX",
+              "Amazon Web Services"
             ],
             "caseSensitive": false
           }
@@ -375,7 +377,8 @@
           "parameters": {
             "values": [
               "AFFIRM CANADA OTTAWA ON",
-              "CITY OF KELOWNA LANDFI KELOWNA BC"
+              "CITY OF KELOWNA LANDFI KELOWNA BC",
+              "ROMORYMSUSD STERLING CO"
             ],
             "caseSensitive": false
           }
@@ -387,7 +390,8 @@
               "HOME DEPOT",
               "DOLLAR TREE",
               "PRINCESS AUTO",
-              "SUN CITY LIQUIDATI"
+              "SUN CITY LIQUIDATI",
+              "DOLLARAMA"
             ],
             "caseSensitive": false
           }
@@ -429,7 +433,17 @@
           "parameters": {
             "values": [
               "BC TRANSIT",
-              "IMPARK"
+              "IMPARK",
+              "PAYBYPHONE"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "DRIVER SERVICES CENTRE KELOWNA BC"
             ],
             "caseSensitive": false
           }

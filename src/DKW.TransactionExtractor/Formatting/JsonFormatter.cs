@@ -5,6 +5,12 @@ namespace DKW.TransactionExtractor.Formatting;
 
 public class JsonFormatter : ITransactionFormatter
 {
+    private readonly JsonSerializerOptions _options = new()
+    {
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public void WriteOutput(TransactionOutput output, String baseOutputPath)
     {
         var timestamp = output.GeneratedAt.ToString("yyyyMMdd-HHmmss");
@@ -12,14 +18,8 @@ public class JsonFormatter : ITransactionFormatter
         var baseFileName = Path.GetFileNameWithoutExtension(baseOutputPath);
         var outputPath = Path.Combine(directory, $"{baseFileName}-{timestamp}.json");
 
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
         Object outputObject;
-        
+
         if (output.CategorySummaries.Count > 0)
         {
             // Include summary in the output
@@ -29,7 +29,7 @@ public class JsonFormatter : ITransactionFormatter
                 {
                     Categories = output.CategorySummaries
                 },
-                Transactions = output.Transactions
+                output.Transactions
             };
         }
         else
@@ -38,7 +38,7 @@ public class JsonFormatter : ITransactionFormatter
             outputObject = output.Transactions;
         }
 
-        var json = JsonSerializer.Serialize(outputObject, options);
+        var json = JsonSerializer.Serialize(outputObject, _options);
         File.WriteAllText(outputPath, json);
     }
 }
