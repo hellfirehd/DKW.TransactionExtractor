@@ -1,26 +1,14 @@
 {
   "categories": [
     {
-      "id": "groceries",
-      "name": "Groceries",
+      "id": "utilities-cell-phones",
+      "name": "Utilities - Cell Phones",
       "matchers": [
         {
           "type": "Contains",
           "parameters": {
             "values": [
-              "BREAD ON WHEELS",
-              "BULK BARN",
-              "GROCERY",
-              "COSTCO",
-              "GLENMORE FRESH FRUIT",
-              "IGA",
-              "INTERIOR BEVERAGES",
-              "NO FRILLS",
-              "SAFEWAY",
-              "SAVE ON FOODS",
-              "SUPERSTORE",
-              "WAL-MART",
-              "WALMART"
+              "APPLE"
             ],
             "caseSensitive": false
           }
@@ -28,8 +16,68 @@
       ]
     },
     {
-      "id": "dining",
-      "name": "Dining \u0026 Restaurants",
+      "id": "utilities-cabletv",
+      "name": "Utilities - Cable TV",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "Amazon.ca Prime"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "utilities-internet",
+      "name": "Utilities - Internet",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "TELUS"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "household-supplies",
+      "name": "Household - Supplies",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "AFFIRM CANADA OTTAWA ON",
+              "CITY OF KELOWNA LANDFI KELOWNA BC",
+              "ROMORYMSUSD STERLING CO"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "HOME DEPOT",
+              "DOLLAR TREE",
+              "PRINCESS AUTO",
+              "SUN CITY LIQUIDATI",
+              "DOLLARAMA"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "household-restaurants",
+      "name": "Household - Restaurants",
       "matchers": [
         {
           "type": "Contains",
@@ -62,8 +110,93 @@
       ]
     },
     {
-      "id": "gas",
-      "name": "Gas \u0026 Fuel",
+      "id": "household-fast-food-snacks",
+      "name": "Household - Fast Food \u0026 Snacks",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "ARBYS",
+              "DAIRY QUEEN",
+              "KFC/TACO BELL",
+              "SUBCITY",
+              "KFC",
+              "7 ELEVEN",
+              "BURGER KING",
+              "TIM HORTONS",
+              "SIZZLING WOK",
+              "McDonalds",
+              "A\u0026W",
+              "MACS CONV",
+              "Dutchmen Dairy",
+              "QUESADA",
+              "Subway",
+              "BARBURRITO",
+              "YUM YUM TREE",
+              "LITTLE CAESARS",
+              "WENDYS",
+              "BOOSTER JUICE",
+              "TACO TIME",
+              "BAR BURRITO",
+              "SPECIALITY BAKERY",
+              "STARBUCKS",
+              "BEAVERTAILS",
+              "FRESHLY SQUEEZED",
+              "NEW YORK FRIES",
+              "ASIAN PEAR BUFFE"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "DQ #27051 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "household-groceries",
+      "name": "Household - Groceries",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "SAVE ON FOODS",
+              "WAL-MART",
+              "COSTCO WHOLESALE",
+              "IGA72",
+              "SUPERSTORE",
+              "BULK BARN",
+              "WALMART",
+              "RAYS NO FRILLS",
+              "COSTCO",
+              "GLENMORE FRESH FRUIT",
+              "BREAD ON WHEELS BAKERY"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "INTERIOR BEVERAGES \u0026 F KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "transportation-gas-oil",
+      "name": "Transportation - Gas \u0026 Oil",
       "matchers": [
         {
           "type": "Contains",
@@ -138,57 +271,6 @@
       ]
     },
     {
-      "id": "fast-food",
-      "name": "Fast Food",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              "ARBYS",
-              "DAIRY QUEEN",
-              "KFC/TACO BELL",
-              "SUBCITY",
-              "KFC",
-              "7 ELEVEN",
-              "BURGER KING",
-              "TIM HORTONS",
-              "SIZZLING WOK",
-              "McDonalds",
-              "A\u0026W",
-              "MACS CONV",
-              "Dutchmen Dairy",
-              "QUESADA",
-              "Subway",
-              "BARBURRITO",
-              "YUM YUM TREE",
-              "LITTLE CAESARS",
-              "WENDYS",
-              "BOOSTER JUICE",
-              "TACO TIME",
-              "BAR BURRITO",
-              "SPECIALITY BAKERY",
-              "STARBUCKS",
-              "BEAVERTAILS",
-              "FRESHLY SQUEEZED",
-              "NEW YORK FRIES",
-              "ASIAN PEAR BUFFE"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "DQ #27051 KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        }
-      ]
-    },
-    {
       "id": "gifts",
       "name": "Gifts",
       "matchers": [
@@ -196,18 +278,8 @@
           "type": "Contains",
           "parameters": {
             "values": [
-              "ARTONA",
               "LTT STORE",
               "UPS STORE"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "INDIGO 916 KELOWNA BC"
             ],
             "caseSensitive": false
           }
@@ -222,6 +294,7 @@
           "type": "Contains",
           "parameters": {
             "values": [
+              "Astraweb",
               "ONLYFANS",
               "EVENTBRITE",
               "NETFLIX",
@@ -249,7 +322,8 @@
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "FS *FLIXTOOLS VANCOUVER BC"
+              "FS *FLIXTOOLS VANCOUVER BC",
+              "LANDMARK WEB TICKETING 403-262-4255 AB"
             ],
             "caseSensitive": false
           }
@@ -296,21 +370,6 @@
           "parameters": {
             "values": [
               "MICROSOFT*MICROSOFT 36 MISSISSAUGA ON"
-            ],
-            "caseSensitive": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "communication-cell-phones",
-      "name": "Communication - Cell Phones",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              "APPLE"
             ],
             "caseSensitive": false
           }
@@ -369,38 +428,8 @@
       ]
     },
     {
-      "id": "kitchen-household",
-      "name": "Kitchen \u0026 Household",
-      "matchers": [
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "AFFIRM CANADA OTTAWA ON",
-              "CITY OF KELOWNA LANDFI KELOWNA BC",
-              "ROMORYMSUSD STERLING CO"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              "HOME DEPOT",
-              "DOLLAR TREE",
-              "PRINCESS AUTO",
-              "SUN CITY LIQUIDATI",
-              "DOLLARAMA"
-            ],
-            "caseSensitive": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "donations",
-      "name": "Donations",
+      "id": "charitable-donations",
+      "name": "Charitable Donations",
       "matchers": [
         {
           "type": "ExactMatch",
@@ -416,7 +445,6 @@
           "parameters": {
             "values": [
               "GIRL GUIDES",
-              "Astraweb",
               "THUNDERBIRD EMAIL"
             ],
             "caseSensitive": false
@@ -425,43 +453,14 @@
       ]
     },
     {
-      "id": "transportation-bus-parking-taxi",
-      "name": "Transportation - Bus, Parking, Taxi",
+      "id": "transportation-public-transit-tax",
+      "name": "Transportation - Public Transit \u0026 Taxi",
       "matchers": [
         {
           "type": "Contains",
           "parameters": {
             "values": [
               "BC TRANSIT",
-              "IMPARK",
-              "PAYBYPHONE"
-            ],
-            "caseSensitive": false
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              "DRIVER SERVICES CENTRE KELOWNA BC"
-            ],
-            "caseSensitive": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "transportation-vehicle",
-      "name": "Transportation - Vehicle",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              "BC TRANSIT",
-              "KELOWNA MAZDA",
-              "ICBC",
-              "IMPARK",
               "CURRENT TAXI"
             ],
             "caseSensitive": false
@@ -470,8 +469,40 @@
       ]
     },
     {
-      "id": "vacation-travel",
-      "name": "Vacation \u0026 Travel",
+      "id": "transportation-parking",
+      "name": "Transportation - Parking",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "IMPARK",
+              "PAYBYPHONE"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "transportation-repairs-maintenance",
+      "name": "Transportation - Repairs \u0026 Maintenance",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "KELOWNA MAZDA",
+              "ICBC",
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "vacation",
+      "name": "Vacation",
       "matchers": [
         {
           "type": "Contains",
@@ -522,6 +553,55 @@
       ]
     },
     {
+      "id": "kids-haircare",
+      "name": "Kids - Hair Care",
+      "matchers": []
+    },
+    {
+      "id": "kids-entertainment",
+      "name": "Kids - Entertainment",
+      "matchers": []
+    },
+    {
+      "id": "kids-activities",
+      "name": "Kids - Activities",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "KUNG FU ACADEMY"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "kids-gifts",
+      "name": "Kids - Gifts",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": {
+            "values": [
+              "ARTONA"
+            ],
+            "caseSensitive": false
+          }
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": {
+            "values": [
+              "INDIGO 916 KELOWNA BC"
+            ],
+            "caseSensitive": false
+          }
+        }
+      ]
+    },
+    {
       "id": "kids-healthcare",
       "name": "Kids - Healthcare",
       "matchers": [
@@ -530,8 +610,7 @@
           "parameters": {
             "values": [
               "ORTHODONTICS",
-              "BLUEBIRD MEDICAL",
-              "KUNG FU ACADEMY"
+              "BLUEBIRD MEDICAL"
             ],
             "caseSensitive": false
           }
@@ -571,19 +650,17 @@
     {
       "id": "uncategorized",
       "name": "Uncategorized",
+      "matchers": []
+    },
+    {
+      "id": "transportation-license-insurance",
+      "name": "Transportation - License \u0026 Insurance",
       "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [],
-            "caseSensitive": false
-          }
-        },
         {
           "type": "ExactMatch",
           "parameters": {
             "values": [
-              "LANDMARK WEB TICKETING 403-262-4255 AB"
+              "DRIVER SERVICES CENTRE KELOWNA BC"
             ],
             "caseSensitive": false
           }
