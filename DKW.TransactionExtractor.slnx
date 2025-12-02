@@ -40,6 +40,7 @@
     <File Path="docs\development\PARSECONTEXT_REFACTORING.md" />
   </Folder>
   <Folder Name="/docs/features/">
+    <File Path="docs/features/TRANSACTION_COMMENTS.md" />
     <File Path="docs\features\EXTRACTED_TEXT_FEATURE.md" />
     <File Path="docs\features\LOGGING_QUICK_REFERENCE.md" />
     <File Path="docs\features\SERILOG_FILE_LOGGING.md" />

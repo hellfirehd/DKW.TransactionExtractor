@@ -1,3 +1,6 @@
+using System.Linq;
+using System.Text.Json;
+
 namespace DKW.TransactionExtractor.Classification;
 
 /// <summary>
@@ -10,46 +13,79 @@ public record MatcherCreationRequest(
 )
 {
     /// <summary>
-    /// Creates an ExactMatch request with the specified values and case sensitivity.
+    /// Creates an ExactMatch request with the specified values.
+    /// Each value may optionally include an amount.
     /// </summary>
-    public static MatcherCreationRequest ExactMatch(String[] values, Boolean caseSensitive = false)
+    public static MatcherCreationRequest ExactMatch((String value, Decimal? amount)[] values)
     {
+        var valueObjects = values
+            .Select(v =>
+            {
+                var dict = new Dictionary<String, Object>
+                {
+                    ["value"] = v.value
+                };
+                if (v.amount.HasValue)
+                {
+                    dict["amount"] = Decimal.Round(v.amount.Value, 2);
+                }
+                return JsonSerializer.SerializeToElement(dict);
+            })
+            .ToArray();
+
+        var dictParams = new Dictionary<String, Object>
+        {
+            { "values", JsonSerializer.SerializeToElement(valueObjects) }
+        };
+
         return new MatcherCreationRequest(
             "ExactMatch",
-            new Dictionary<String, Object>
-            {
-                { "values", values },
-                { "caseSensitive", caseSensitive }
-            }
+            dictParams
         );
     }
 
     /// <summary>
-    /// Creates a Contains request with the specified values and case sensitivity.
+    /// Creates a Contains request with the specified values.
+    /// Each value may optionally include an amount.
     /// </summary>
-    public static MatcherCreationRequest Contains(String[] values, Boolean caseSensitive = false)
+    public static MatcherCreationRequest Contains((String value, Decimal? amount)[] values)
     {
+        var valueObjects = values
+            .Select(v =>
+            {
+                var dict = new Dictionary<String, Object>
+                {
+                    ["value"] = v.value
+                };
+                if (v.amount.HasValue)
+                {
+                    dict["amount"] = Decimal.Round(v.amount.Value, 2);
+                }
+                return JsonSerializer.SerializeToElement(dict);
+            })
+            .ToArray();
+
+        var dictParams = new Dictionary<String, Object>
+        {
+            { "values", JsonSerializer.SerializeToElement(valueObjects) }
+        };
+
         return new MatcherCreationRequest(
             "Contains",
-            new Dictionary<String, Object>
-            {
-                { "values", values },
-                { "caseSensitive", caseSensitive }
-            }
+            dictParams
         );
     }
 
     /// <summary>
-    /// Creates a Regex request with the specified pattern and case sensitivity.
+    /// Creates a Regex request with the specified pattern.
     /// </summary>
-    public static MatcherCreationRequest Regex(String pattern, Boolean ignoreCase = true)
+    public static MatcherCreationRequest Regex(String pattern)
     {
         return new MatcherCreationRequest(
             "Regex",
             new Dictionary<String, Object>
             {
-                { "pattern", pattern },
-                { "ignoreCase", ignoreCase }
+                { "pattern", pattern }
             }
         );
     }

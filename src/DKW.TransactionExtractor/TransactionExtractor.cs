@@ -240,14 +240,12 @@ internal class TransactionExtractor(
         // Attach statement date to each transaction and add to aggregate
         foreach (var ct in classificationResult.ClassifiedTransactions)
         {
-            ct.Transaction.StatementDate = parseResult.StatementDate;
             aggregate.Add(ct);
         }
 
         if (!classificationResult.RequestedEarlyExit)
         {
             _logger.LogCompletedProcessingFile(fileName);
-            Console.WriteLine();
         }
 
         return classificationResult.RequestedEarlyExit;

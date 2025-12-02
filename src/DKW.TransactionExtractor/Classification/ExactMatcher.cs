@@ -1,31 +1,58 @@
+using System;
+using System.Linq;
+using DKW.TransactionExtractor.Models;
+
 namespace DKW.TransactionExtractor.Classification;
 
-public class ExactMatcher : ITransactionMatcher
+/// <summary>
+/// ExactMatcher matches transactions whose description exactly equals one of the configured values.
+/// Matching is case-insensitive. Each configured value may optionally include an <c>Amount</c> which
+/// restricts matches to transactions with that amount (rounded to 2 decimals).
+/// </summary>
+public class ExactMatcher : TransactionMatcherBase
 {
-    private readonly HashSet<String> _values;
-    private readonly Boolean _caseSensitive;
+    private readonly MatcherValue[] _values;
 
-    public ExactMatcher(String[] values, Boolean caseSensitive = false)
+    /// <summary>
+    /// Creates a new ExactMatcher.
+    /// </summary>
+    /// <param name="values">Array of value/amount pairs to match against. Cannot be null or empty.</param>
+    public ExactMatcher(MatcherValue[] values)
     {
         ArgumentNullException.ThrowIfNull(values);
-        
+
         if (values.Length == 0)
         {
             throw new ArgumentException("Values array cannot be empty", nameof(values));
         }
 
-        _caseSensitive = caseSensitive;
-        var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-        _values = new HashSet<String>(values, comparer);
+        _values = values;
     }
 
-    public Boolean TryMatch(String description)
+    /// <summary>
+    /// Core matching logic executed after base validation. Description is guaranteed non-null/non-whitespace.
+    /// </summary>
+    protected override Boolean TryMatchCore(Transaction transaction, String description)
     {
-        if (String.IsNullOrWhiteSpace(description))
+        var amount = transaction.Amount;
+        var comparison = StringComparison.OrdinalIgnoreCase; // Force case-insensitive
+
+        foreach (var mv in _values)
         {
-            return false;
+            if (String.Equals(mv.Value, description, comparison))
+            {
+                if (mv.Amount.HasValue)
+                {
+                    if (AmountsEqual(mv.Amount, amount))
+                        return true;
+                }
+                else
+                {
+                    return true;
+                }
+            }
         }
 
-        return _values.Contains(description);
+        return false;
     }
 }

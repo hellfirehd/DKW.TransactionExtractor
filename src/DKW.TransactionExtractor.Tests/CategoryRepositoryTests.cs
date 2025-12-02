@@ -52,6 +52,12 @@ public class CategoryRepositoryTests : IDisposable
     [Fact]
     public void Save_ValidConfig_WritesFileSuccessfully()
     {
+        var valuesArray = new[]
+        {
+            JsonSerializer.SerializeToElement(new { value = "WALMART" }),
+            JsonSerializer.SerializeToElement(new { value = "TARGET" })
+        };
+
         var config = new CategoryConfig
         {
             Categories =
@@ -67,8 +73,7 @@ public class CategoryRepositoryTests : IDisposable
                             Type = "ExactMatch",
                             Parameters = new Dictionary<String, Object>
                             {
-                                ["values"] = new[] { "WALMART", "TARGET" },
-                                ["caseSensitive"] = false
+                                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
                             }
                         }
                     ]
@@ -89,6 +94,12 @@ public class CategoryRepositoryTests : IDisposable
     public void Load_ValidJsonFile_LoadsConfigCorrectly()
     {
         // Arrange: Create a test JSON file
+        var valuesArray = new[]
+        {
+            JsonSerializer.SerializeToElement(new { value = "MCDONALD" }),
+            JsonSerializer.SerializeToElement(new { value = "WENDY" })
+        };
+
         var testConfig = new CategoryConfig
         {
             Categories =
@@ -104,8 +115,7 @@ public class CategoryRepositoryTests : IDisposable
                             Type = "Contains",
                             Parameters = new Dictionary<String, Object>
                             {
-                                ["values"] = new[] { "MCDONALD", "WENDY" },
-                                ["caseSensitive"] = false
+                                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
                             }
                         }
                     ]
@@ -172,12 +182,13 @@ public class CategoryRepositoryTests : IDisposable
         _repository.AddCategory(category);
 
         // Act: Add a matcher
+        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) };
+
         var matcherRequest = new MatcherCreationRequest(
             MatcherType: "ExactMatch",
             Parameters: new Dictionary<String, Object>
             {
-                ["values"] = new[] { "WALMART" },
-                ["caseSensitive"] = false
+                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
             }
         );
 
@@ -205,8 +216,7 @@ public class CategoryRepositoryTests : IDisposable
                     Type = "Regex",
                     Parameters = new Dictionary<String, Object>
                     {
-                        ["pattern"] = "^WALMART #\\d+",
-                        ["caseSensitive"] = false
+                        ["pattern"] = JsonSerializer.SerializeToElement("^WALMART #\\d+")
                     }
                 }
             ]
@@ -218,8 +228,7 @@ public class CategoryRepositoryTests : IDisposable
             MatcherType: "Regex",
             Parameters: new Dictionary<String, Object>
             {
-                ["pattern"] = "^TARGET #\\d+",
-                ["caseSensitive"] = false
+                ["pattern"] = JsonSerializer.SerializeToElement("^TARGET #\\d+")
             }
         );
 
@@ -236,6 +245,7 @@ public class CategoryRepositoryTests : IDisposable
     public void AddMatcherToCategory_ExactMatchWithSameCaseSensitivity_MergesValues()
     {
         // Arrange: Create a category with existing ExactMatch matcher
+        var existingValues = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) };
         var category = new Category
         {
             Id = "groceries",
@@ -247,21 +257,20 @@ public class CategoryRepositoryTests : IDisposable
                     Type = "ExactMatch",
                     Parameters = new Dictionary<String, Object>
                     {
-                        ["values"] = new[] { "WALMART" },
-                        ["caseSensitive"] = false
+                        ["values"] = JsonSerializer.SerializeToElement(existingValues)
                     }
                 }
             ]
         };
         _repository.AddCategory(category);
 
-        // Act: Add another ExactMatch with same case sensitivity
+        // Act: Add another ExactMatch
+        var newValues = new[] { JsonSerializer.SerializeToElement(new { value = "TARGET" }), JsonSerializer.SerializeToElement(new { value = "COSTCO" }) };
         var matcherRequest = new MatcherCreationRequest(
             MatcherType: "ExactMatch",
             Parameters: new Dictionary<String, Object>
             {
-                ["values"] = new[] { "TARGET", "COSTCO" },
-                ["caseSensitive"] = false
+                ["values"] = JsonSerializer.SerializeToElement(newValues)
             }
         );
 
@@ -285,7 +294,8 @@ public class CategoryRepositoryTests : IDisposable
     [Fact]
     public void AddMatcherToCategory_ExactMatchWithDifferentCaseSensitivity_CreatesNewMatcher()
     {
-        // Arrange: Create category with case-insensitive matcher
+        // This test updated for removed caseSensitivity: adding an ExactMatch will merge since all matchers are case-insensitive
+        var existingValues = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) };
         var category = new Category
         {
             Id = "stores",
@@ -297,30 +307,28 @@ public class CategoryRepositoryTests : IDisposable
                     Type = "ExactMatch",
                     Parameters = new Dictionary<String, Object>
                     {
-                        ["values"] = new[] { "WALMART" },
-                        ["caseSensitive"] = false
+                        ["values"] = JsonSerializer.SerializeToElement(existingValues)
                     }
                 }
             ]
         };
         _repository.AddCategory(category);
 
-        // Act: Add case-sensitive ExactMatch
+        // Act: Add another ExactMatch (previously case-sensitive difference created new matcher)
         var matcherRequest = new MatcherCreationRequest(
             MatcherType: "ExactMatch",
             Parameters: new Dictionary<String, Object>
             {
-                ["values"] = new[] { "TARGET" },
-                ["caseSensitive"] = true
+                ["values"] = JsonSerializer.SerializeToElement(new[] { JsonSerializer.SerializeToElement(new { value = "TARGET" }) })
             }
         );
 
         _repository.AddMatcherToCategory("stores", matcherRequest);
 
-        // Assert: Should have 2 separate matchers
+        // Assert: Should merge into single matcher under new rules
         var config = _repository.Load();
         var savedCategory = config.Categories.First(c => c.Id == "stores");
-        Assert.Equal(2, savedCategory.Matchers.Count);
+        Assert.Single(savedCategory.Matchers);
     }
 
     [Fact]
@@ -330,8 +338,7 @@ public class CategoryRepositoryTests : IDisposable
             MatcherType: "ExactMatch",
             Parameters: new Dictionary<String, Object>
             {
-                ["values"] = new[] { "WALMART" },
-                ["caseSensitive"] = false
+                ["values"] = JsonSerializer.SerializeToElement(new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) })
             }
         );
 
@@ -392,6 +399,7 @@ public class CategoryRepositoryTests : IDisposable
     public void AddMatcherToCategory_ContainsMatcherMerging_WorksCorrectly()
     {
         // Arrange: Create category with Contains matcher
+        var existingValues = new[] { JsonSerializer.SerializeToElement(new { value = "MCDONALD" }) };
         var category = new Category
         {
             Id = "restaurants",
@@ -403,21 +411,20 @@ public class CategoryRepositoryTests : IDisposable
                     Type = "Contains",
                     Parameters = new Dictionary<String, Object>
                     {
-                        ["values"] = new[] { "MCDONALD" },
-                        ["caseSensitive"] = false
+                        ["values"] = JsonSerializer.SerializeToElement(existingValues)
                     }
                 }
             ]
         };
         _repository.AddCategory(category);
 
-        // Act: Add another Contains matcher with same case sensitivity
+        // Act: Add another Contains matcher
+        var newValues = new[] { JsonSerializer.SerializeToElement(new { value = "WENDY" }), JsonSerializer.SerializeToElement(new { value = "BURGER" }) };
         var matcherRequest = new MatcherCreationRequest(
             MatcherType: "Contains",
             Parameters: new Dictionary<String, Object>
             {
-                ["values"] = new[] { "WENDY", "BURGER" },
-                ["caseSensitive"] = false
+                ["values"] = JsonSerializer.SerializeToElement(newValues)
             }
         );
 
@@ -439,6 +446,7 @@ public class CategoryRepositoryTests : IDisposable
     public void AddMatcherToCategory_DuplicateValues_DeduplicatesCorrectly()
     {
         // Arrange: Create category with matcher
+        var existingValues = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }), JsonSerializer.SerializeToElement(new { value = "TARGET" }) };
         var category = new Category
         {
             Id = "stores",
@@ -450,8 +458,7 @@ public class CategoryRepositoryTests : IDisposable
                     Type = "ExactMatch",
                     Parameters = new Dictionary<String, Object>
                     {
-                        ["values"] = new[] { "WALMART", "TARGET" },
-                        ["caseSensitive"] = false
+                        ["values"] = JsonSerializer.SerializeToElement(existingValues)
                     }
                 }
             ]
@@ -463,8 +470,7 @@ public class CategoryRepositoryTests : IDisposable
             MatcherType: "ExactMatch",
             Parameters: new Dictionary<String, Object>
             {
-                ["values"] = new[] { "WALMART", "COSTCO" }, // WALMART is duplicate
-                ["caseSensitive"] = false
+                ["values"] = JsonSerializer.SerializeToElement(new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }), JsonSerializer.SerializeToElement(new { value = "COSTCO" }) }) // WALMART is duplicate
             }
         );
 
@@ -486,7 +492,12 @@ public class CategoryRepositoryTests : IDisposable
             if (valuesObj is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
             {
                 return jsonElement.EnumerateArray()
-                    .Select(e => e.GetString() ?? String.Empty)
+                    .Select(e =>
+                    {
+                        if (e.ValueKind == JsonValueKind.Object && e.TryGetProperty("value", out var v))
+                            return v.GetString() ?? String.Empty;
+                        return e.GetString() ?? String.Empty;
+                    })
                     .ToArray();
             }
             else if (valuesObj is String[] stringArray)
@@ -499,6 +510,6 @@ public class CategoryRepositoryTests : IDisposable
             }
         }
 
-        return [];
+        return Array.Empty<String>();
     }
 }

@@ -29,15 +29,20 @@ Define categories and their matching rules:
         {
           "type": "ExactMatch",
           "parameters": {
-            "values": ["SAFEWAY", "WHOLE FOODS", "TRADER JOES"],
-            "caseSensitive": false
+            "values": [
+              { "value": "SAFEWAY" },
+              { "value": "WHOLE FOODS" },
+              { "value": "TRADER JOES" }
+            ]
           }
         },
         {
           "type": "Contains",
           "parameters": {
-            "values": ["GROCERY", "SUPERMARKET"],
-            "caseSensitive": false
+            "values": [
+              { "value": "GROCERY" },
+              { "value": "SUPERMARKET" }
+            ]
           }
         }
       ]
@@ -49,53 +54,59 @@ Define categories and their matching rules:
 ## Matcher Types
 
 ### ExactMatch
-Matches transaction descriptions exactly against a list of values. Multiple values with the same case sensitivity are automatically merged into a single matcher.
+Matches transaction descriptions exactly against a list of values. Multiple values are automatically merged into a single matcher.
 
 **Parameters:**
-- `values` (string[]): Array of exact values to match
-- `caseSensitive` (bool, optional): Whether matching is case-sensitive (default: false)
+- `values` (object[]): Array of objects, each representing an exact value to match
+  - `value` (string): The value to match
+  - `amount` (number, optional): Restricts the matcher to only match transactions with this amount (rounded to 2 decimal places)
 
-**Merging Behavior:** When adding new values, they are merged into an existing ExactMatch matcher with the same `caseSensitive` setting.
+**Merging Behavior:** When adding new values, they are merged into an existing ExactMatch matcher.
 
 **Example:**
 ```json
 {
   "type": "ExactMatch",
   "parameters": {
-    "values": ["SAFEWAY", "WHOLE FOODS", "TRADER JOES"],
-    "caseSensitive": false
+    "values": [
+      { "value": "SAFEWAY" },
+      { "value": "WHOLE FOODS" },
+      { "value": "TRADER JOES" }
+    ]
   }
 }
 ```
 
 ### Contains
-Matches if the transaction description contains any of the specified substrings. Multiple values with the same case sensitivity are automatically merged into a single matcher.
+Matches if the transaction description contains any of the specified substrings. Multiple values are automatically merged into a single matcher.
 
 **Parameters:**
-- `values` (string[]): Array of substrings to search for
-- `caseSensitive` (bool, optional): Whether matching is case-sensitive (default: false)
+- `values` (object[]): Array of objects, each representing a substring to search for
+  - `value` (string): The substring to search for
+  - `amount` (number, optional): Restricts the matcher to only match transactions with this amount (rounded to 2 decimal places)
 
-**Merging Behavior:** When adding new substrings, they are merged into an existing Contains matcher with the same `caseSensitive` setting.
+**Merging Behavior:** When adding new substrings, they are merged into an existing Contains matcher.
 
 **Example:**
 ```json
 {
   "type": "Contains",
   "parameters": {
-    "values": ["RESTAURANT", "BISTRO", "CAFE"],
-    "caseSensitive": false
+    "values": [
+      { "value": "RESTAURANT", "amount": -50.00 },
+      { "value": "BISTRO" },
+      { "value": "CAFE", "amount": 10.99 }
+    ]
   }
 }
 ```
-
-**Note:** Legacy format with single `value` parameter is still supported for backward compatibility.
 
 ### Regex
 Matches transaction descriptions using a regular expression pattern. Each regex pattern is always created as a separate matcher (no merging).
 
 **Parameters:**
 - `pattern` (string): Regular expression pattern
-- `ignoreCase` (bool, optional): Whether to ignore case (default: true)
+- `amount` (number, optional): Restricts the matcher to only match transactions with this amount (rounded to 2 decimal places)
 
 **Merging Behavior:** Regex matchers are never merged; each pattern creates a new matcher instance.
 
@@ -104,8 +115,8 @@ Matches transaction descriptions using a regular expression pattern. Each regex 
 {
   "type": "Regex",
   "parameters": {
-    "pattern": "\\b(CAFE|COFFEE|BISTRO)\\b",
-    "ignoreCase": true
+    "pattern": "^WALMART #\\d+",
+    "amount": 50.00
   }
 }
 ```
@@ -178,7 +189,7 @@ See **[Transaction Comments Feature](features/TRANSACTION_COMMENTS.md)** for com
 
 ## Interactive Matcher Creation
 
-When adding a rule, the system prompts for matcher type:
+When adding a rule, the system prompts for matcher type. The matcher builder receives the full `Transaction` object (not just the description) so implementations can access other transaction fields such as `Amount` when constructing matcher parameters.
 
 ```
 Select matcher type:
@@ -243,8 +254,10 @@ The system intelligently merges matchers to keep your configuration clean:
 {
   "type": "ExactMatch",
   "parameters": {
-    "values": ["SAFEWAY", "WHOLE FOODS"],
-    "caseSensitive": false
+    "values": [
+      { "value": "SAFEWAY" },
+      { "value": "WHOLE FOODS" }
+    ]
   }
 }
 
@@ -252,8 +265,11 @@ The system intelligently merges matchers to keep your configuration clean:
 {
   "type": "ExactMatch",
   "parameters": {
-    "values": ["SAFEWAY", "WHOLE FOODS", "TRADER JOES"],
-    "caseSensitive": false
+    "values": [
+      { "value": "SAFEWAY" },
+      { "value": "WHOLE FOODS" },
+      { "value": "TRADER JOES" }
+    ]
   }
 }
 ```
@@ -267,12 +283,12 @@ Classified transactions are written to the `OutputPath` directory with timestamp
 
 ### CSV Format (default)
 ```csv
-StatementDate,TransactionDate,PostedDate,Description,Amount,CategoryId,CategoryName,Comment,InclusionStatus
-2024-01-15,2024-01-15,2024-01-16,"SAFEWAY STORE #123",45.67,groceries,Groceries,,Included
-2024-01-16,2024-01-16,2024-01-17,"AMAZON.COM",79.99,gifts,Gifts,"Birthday gift for Sarah",Included
+StatementDate,TransactionDate,PostedDate,Description,Amount,Comment,CategoryId,CategoryName,MatcherType,InclusionStatus
+2024-01-15,2024-01-15,2024-01-16,"SAFEWAY STORE #123",45.67,,groceries,Groceries,ExactMatch,Included
+2024-01-16,2024-01-16,2024-01-17,"AMAZON.COM",79.99,"Birthday gift for Sarah",gifts,Gifts,Contains,Included
 ```
 
-**Note:** The `Comment` column is included after `CategoryName`. Empty comments appear as empty fields.
+**Note:** The CSV now includes a `MatcherType` column (before `InclusionStatus`) that indicates which matcher type produced the automated classification. The `Comment` column appears before the category columns; empty comments appear as empty fields.
 
 ### JSON Format
 ```json
@@ -288,7 +304,8 @@ StatementDate,TransactionDate,PostedDate,Description,Amount,CategoryId,CategoryN
     },
     "categoryId": "groceries",
     "categoryName": "Groceries",
-    "comment": null
+    "comment": null,
+    "matcherType": "ExactMatch"
   },
   {
     "transaction": {
@@ -301,12 +318,13 @@ StatementDate,TransactionDate,PostedDate,Description,Amount,CategoryId,CategoryN
     },
     "categoryId": "gifts",
     "categoryName": "Gifts",
-    "comment": "Birthday gift for Sarah"
+    "comment": "Birthday gift for Sarah",
+    "matcherType": "Contains"
   }
 ]
 ```
 
-**Note:** The `comment` property is included in each classified transaction object.
+**Note:** The JSON output now includes a top-level `matcherType` property in each classified transaction object when applicable; it is `null` for manually classified transactions without a matcher addition.
 
 ## Processing Flow
 
@@ -334,3 +352,105 @@ Example future matchers:
 - `EndsWithMatcher` - Match descriptions ending with specific text
 - `FuzzyMatcher` - Match using Levenshtein distance for typo tolerance
 - `AmountRangeMatcher` - Match based on transaction amount ranges
+
+# Classification Guide
+
+This document describes the matcher configuration schema and runtime behavior for the classification subsystem (matchers) after the recent refactor.
+
+Key changes in this version
+
+- `values` now uses an object form for each entry: `{ "value": "...", "amount": 12.34 }`.
+  - `value` (string) is required for each entry.
+  - `amount` (number, optional) is optional and, when present, restricts the matcher to only match transactions with that amount (rounded to 2 decimal places).
+- All matchers are now forced to be case-insensitive. The previous `caseSensitive` parameter and the behaviour it implied have been removed.
+- Regex matchers may optionally include an `amount` and will only match when both the regex matches the description and the amount (when provided) equals the transaction amount to 2 decimal places.
+- Matchers now share a common base class `TransactionMatcherBase` which centralizes description validation and amount comparison logic.
+- Backwards compatibility for the legacy string-array `values` format has been intentionally removed. The repository and factory expect `values` to be an array of objects.
+
+JSON schema (example)
+
+- Example `ExactMatch` rule (no amount):
+
+```json
+{
+  "type": "ExactMatch",
+  "parameters": {
+    "values": [
+      { "value": "WALMART" },
+      { "value": "TARGET" }
+    ]
+  }
+}
+```
+
+- Example `Contains` rule where one value has an amount and another does not:
+
+```json
+{
+  "type": "Contains",
+  "parameters": {
+    "values": [
+      { "value": "REFUND", "amount": -5.00 },
+      { "value": "STARBUCKS" }
+    ]
+  }
+}
+```
+
+- Example `Regex` rule with amount:
+
+```json
+{
+  "type": "Regex",
+  "parameters": {
+    "pattern": "^WALMART #\\d+",
+    "amount": 50.00
+  }
+}
+```
+
+Runtime behavior summary
+
+- ExactMatch
+  - Compares the full transaction description to each `value` entry (case-insensitive).
+  - If a `value` entry includes an `amount`, the transaction must also have that amount (rounded to 2 decimals) for the match to succeed.
+
+- Contains
+  - Tests whether the transaction description contains the `value` substring (case-insensitive).
+  - If a `value` entry includes an `amount`, the transaction must also have that amount (rounded to 2 decimals) for the match to succeed.
+
+- Regex
+  - Tests the configured regular expression against the transaction description. Regexes are always executed case-insensitively in the current codebase.
+  - If an `amount` parameter is provided for the regex matcher, the transaction amount must equal it (rounded to 2 decimals) for the match to succeed.
+
+Merging rules
+
+- ExactMatch and Contains matchers are merged when a new matcher of the same `Type` is added to a category. Values are combined and deduplicated by `(value, amount)`.
+- Regex matchers are always added as separate matchers (no merging).
+- Deduplication is case-insensitive and considers `null` and absent amounts as distinct from explicit numeric amounts.
+
+Migration notes
+
+- Existing configuration files using the legacy string-array format for `values` must be migrated to the new object form. The migration is intentionally not automatic in this release.
+- Remove `caseSensitive` parameters from matcher definitions; matching is always case-insensitive.
+
+Implementation notes for developers
+
+- The shared base class `TransactionMatcherBase` provides:
+  - A `TryMatch` implementation that verifies `transaction` and `transaction.Description` are non-null and non-whitespace.
+  - An abstract `TryMatchCore(Transaction transaction, string description)` method for concrete matchers to implement.
+  - A protected helper `AmountsEqual(Decimal? expected, Decimal actual)` that rounds both sides to 2 decimal places and returns `true` when `expected` is `null` (no amount requirement).
+
+- When adding new matcher types:
+  1. Implement `ITransactionMatcher` by inheriting `TransactionMatcherBase` and implementing `TryMatchCore`.
+  2. Add creation logic in `MatcherFactory.CreateMatcher` to parse the `parameters` and construct the matcher.
+  3. If the new matcher supports per-value amounts, follow the `{ value, amount? }` shape for `values`.
+
+Testing
+
+- Unit tests were updated to construct matcher parameters using `System.Text.Json.JsonSerializer.SerializeToElement(new { value = "...", amount = ... })` for the `values` array entries.
+- Add tests for regex matchers that include an amount to ensure both pattern and amount checks are performed.
+
+Contact
+
+- If you need migration tooling or a compatibility layer for older config files, open an issue or create a PR with a migration plan.

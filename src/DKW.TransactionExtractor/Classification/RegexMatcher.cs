@@ -1,12 +1,27 @@
 using System.Text.RegularExpressions;
+using DKW.TransactionExtractor.Models;
 
 namespace DKW.TransactionExtractor.Classification;
 
-public class RegexMatcher : ITransactionMatcher
+/// <summary>
+/// RegexMatcher matches transactions whose description matches a regular expression.
+/// Regex matching is performed using compiled expressions and is executed case-insensitively
+/// by default in the current factory configuration. If an <c>amount</c> is supplied to the
+/// matcher, a match will only succeed when both the regex matches the description and the
+/// transaction amount equals the configured amount (rounded to 2 decimals).
+/// </summary>
+public class RegexMatcher : TransactionMatcherBase
 {
     private readonly Regex _regex;
+    private readonly Decimal? _amount;
 
-    public RegexMatcher(String pattern, Boolean ignoreCase = false)
+    /// <summary>
+    /// Create a new RegexMatcher.
+    /// </summary>
+    /// <param name="pattern">Regular expression pattern to match against transaction descriptions.</param>
+    /// <param name="ignoreCase">If true, the regex uses case-insensitive matching.</param>
+    /// <param name="amount">Optional amount that must match the transaction amount (rounded to 2 decimals) for a match to succeed.</param>
+    public RegexMatcher(String pattern, Boolean ignoreCase = false, Decimal? amount = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(pattern);
 
@@ -24,15 +39,24 @@ public class RegexMatcher : ITransactionMatcher
         {
             throw new ArgumentException($"Invalid regex pattern: {pattern}", nameof(pattern), ex);
         }
+
+        if (amount.HasValue)
+        {
+            _amount = Decimal.Round(amount.Value, 2);
+        }
     }
 
-    public Boolean TryMatch(String description)
+    /// <summary>
+    /// Core matching logic executed after base validation. Description is guaranteed non-null/non-whitespace.
+    /// </summary>
+    protected override Boolean TryMatchCore(Transaction transaction, String description)
     {
-        if (String.IsNullOrWhiteSpace(description))
-        {
+        if (!_regex.IsMatch(description))
             return false;
-        }
 
-        return _regex.IsMatch(description);
+        if (_amount.HasValue)
+            return AmountsEqual(_amount, transaction.Amount);
+
+        return true;
     }
 }

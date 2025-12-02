@@ -311,8 +311,9 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
 
         transaction = new Transaction
         {
+            StatementDate = statementDate,
             TransactionDate = transDate,
-            PostedDate = postedDate == DateTime.MinValue ? (DateTime?)null : postedDate,
+            PostedDate = postedDate,
             Description = WhitespaceNormalizationRegex().Replace(desc, " ").Trim(),
             Amount = amount,
             RawText = norm

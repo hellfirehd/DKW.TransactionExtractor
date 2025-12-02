@@ -6,11 +6,11 @@ namespace DKW.TransactionExtractor.Classification;
 public class TransactionClassifier(
     ILogger<TransactionClassifier> logger,
     ICategoryService categoryService,
-    IConsoleInteraction consoleInteraction) : ITransactionClassifier
+    IUserInteraction consoleInteraction) : ITransactionClassifier
 {
     private readonly ILogger<TransactionClassifier> _logger = logger;
-    private readonly ICategoryService _categoryService = categoryService;
-    private readonly IConsoleInteraction _consoleInteraction = consoleInteraction;
+    private readonly ICategoryService _category_service = categoryService;
+    private readonly IUserInteraction _consoleInteraction = consoleInteraction;
 
     public ClassificationResult ClassifyTransactions(List<Transaction> transactions)
     {
@@ -19,7 +19,7 @@ public class TransactionClassifier(
 
         for (var i = 0; i < transactions.Count; i++)
         {
-            var context = new ClassifyTransactionContext(
+            var context = new TransactionContext(
                 Transaction: transactions[i],
                 CurrentIndex: i + 1,
                 TotalCount: totalCount
@@ -39,30 +39,30 @@ public class TransactionClassifier(
         return new ClassificationResult(classifiedTransactions);
     }
 
-    private (ClassifiedTransaction ClassifiedTransaction, Boolean RequestedExit) ClassifyTransaction(ClassifyTransactionContext context)
+    private (ClassifiedTransaction ClassifiedTransaction, Boolean RequestedExit) ClassifyTransaction(TransactionContext context)
     {
         // Try to match against existing categories
-        var categories = _categoryService.GetAllCategories();
+        var categories = _category_service.GetAllCategories();
 
         foreach (var category in categories)
         {
             foreach (var matcherConfig in category.Matchers)
             {
                 var matcher = MatcherFactory.CreateMatcher(matcherConfig);
-                if (matcher != null && matcher.TryMatch(context.Transaction.Description))
+                if (matcher != null && matcher.TryMatch(context.Transaction))
                 {
                     _logger.LogMatchedTransaction(context.Transaction.Description, category.Name);
 
                     // Show summary for automatically classified transaction
-                    Console.WriteLine($"  [{context.CurrentIndex}/{context.TotalCount}] {context.Transaction.TransactionDate:MMM dd} | " +
-                                    $"{context.Transaction.Description,-40} | {context.Transaction.Amount,10:C} ? {category.Name}");
+                    _consoleInteraction.DisplayAutoMatchSummary(context, category.Name);
 
                     return (new ClassifiedTransaction
                     {
                         Transaction = context.Transaction,
                         CategoryId = category.Id,
                         CategoryName = category.Name,
-                        Comment = null // No comment for auto-matched transactions
+                        Comment = null, // No comment for auto-matched transactions
+                        MatcherType = matcherConfig.Type
                     }, false);
                 }
             }
@@ -79,7 +79,8 @@ public class TransactionClassifier(
                 Transaction = context.Transaction,
                 CategoryId = "uncategorized",
                 CategoryName = "Uncategorized",
-                Comment = selectionResult.Comment
+                Comment = selectionResult.Comment,
+                MatcherType = null
             }, true);
         }
 
@@ -87,7 +88,7 @@ public class TransactionClassifier(
         var normalizedCategoryId = CategoryIdNormalizer.Normalize(selectionResult.CategoryId);
 
         // If user chose to create a new category
-        if (!_categoryService.CategoryExists(normalizedCategoryId))
+        if (!_category_service.CategoryExists(normalizedCategoryId))
         {
             var newCategory = new Category
             {
@@ -106,13 +107,13 @@ public class TransactionClassifier(
                 newCategory.Matchers.Add(matcher);
             }
 
-            _categoryService.AddCategory(newCategory);
+            _category_service.AddCategory(newCategory);
             _logger.LogCreatedNewCategory(selectionResult.CategoryName, normalizedCategoryId);
         }
         else if (selectionResult.HasMatcherRequest)
         {
             // Add matcher to existing category
-            _categoryService.AddMatcherToCategory(normalizedCategoryId, selectionResult.MatcherRequest!);
+            _category_service.AddMatcherToCategory(normalizedCategoryId, selectionResult.MatcherRequest!);
             _logger.LogAddedRuleToCategory(selectionResult.MatcherRequest!.MatcherType, selectionResult.CategoryName);
         }
 
@@ -121,7 +122,8 @@ public class TransactionClassifier(
             Transaction = context.Transaction,
             CategoryId = normalizedCategoryId,
             CategoryName = selectionResult.CategoryName,
-            Comment = selectionResult.Comment
+            Comment = selectionResult.Comment,
+            MatcherType = selectionResult.HasMatcherRequest ? selectionResult.MatcherRequest!.MatcherType : null
         }, false);
     }
 }

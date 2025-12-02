@@ -1,5 +1,6 @@
 using DKW.TransactionExtractor.Models;
 using System.Text.Json;
+using System.Globalization;
 
 namespace DKW.TransactionExtractor.Classification;
 
@@ -23,13 +24,29 @@ public class MatcherFactory
 
     private static ExactMatcher? CreateExactMatcher(Dictionary<String, Object> parameters)
     {
-        if (!parameters.TryGetValue("values", out var valuesObj) || valuesObj is not JsonElement valuesElement)
+        if (!parameters.TryGetValue("values", out var valuesObj) || valuesObj is not JsonElement valuesElement || valuesElement.ValueKind != JsonValueKind.Array)
         {
             return null;
         }
 
         var values = valuesElement.EnumerateArray()
-            .Select(e => e.GetString() ?? String.Empty)
+            .Select(e =>
+            {
+                if (e.ValueKind == JsonValueKind.Object)
+                {
+                    var v = e.GetProperty("value").GetString() ?? String.Empty;
+                    Decimal? amt = null;
+                    if (e.TryGetProperty("amount", out var amtProp) && amtProp.ValueKind == JsonValueKind.Number && amtProp.TryGetDecimal(out var d))
+                    {
+                        amt = Decimal.Round(d, 2);
+                    }
+
+                    return new MatcherValue(v, amt);
+                }
+
+                // Fallback - treat as string (but per instructions we are using object form only)
+                return new MatcherValue(e.GetString() ?? String.Empty, null);
+            })
             .ToArray();
 
         if (values.Length == 0)
@@ -37,45 +54,42 @@ public class MatcherFactory
             return null;
         }
 
-        var caseSensitive = parameters.ContainsKey("caseSensitive")
-            && parameters["caseSensitive"] is JsonElement csElement
-            && csElement.GetBoolean();
-
-        return new ExactMatcher(values, caseSensitive);
+        return new ExactMatcher(values);
     }
 
     private static ContainsMatcher? CreateContainsMatcher(Dictionary<String, Object> parameters)
     {
-        // Support both old format (single "value") and new format (array "values")
-        String[] parameterValues;
-
-        if (parameters.TryGetValue("values", out var values) && values is JsonElement valuesElement)
-        {
-            parameterValues = valuesElement.EnumerateArray()
-                .Select(e => e.GetString() ?? String.Empty)
-                .ToArray();
-        }
-        else if (parameters.TryGetValue("value", out var value) && value is JsonElement valueElement)
-        {
-            // Legacy format support
-            var singleValue = valueElement.GetString() ?? String.Empty;
-            parameterValues = [singleValue];
-        }
-        else
+        if (!parameters.TryGetValue("values", out var valuesObj) || valuesObj is not JsonElement valuesElement || valuesElement.ValueKind != JsonValueKind.Array)
         {
             return null;
         }
 
-        if (parameterValues.Length == 0)
+        var values = valuesElement.EnumerateArray()
+            .Select(e =>
+            {
+                if (e.ValueKind == JsonValueKind.Object)
+                {
+                    var v = e.GetProperty("value").GetString() ?? String.Empty;
+                    Decimal? amt = null;
+                    if (e.TryGetProperty("amount", out var amtProp) && amtProp.ValueKind == JsonValueKind.Number && amtProp.TryGetDecimal(out var d))
+                    {
+                        amt = Decimal.Round(d, 2);
+                    }
+
+                    return new MatcherValue(v, amt);
+                }
+
+                // Fallback - treat as string (but per instructions we are using object form only)
+                return new MatcherValue(e.GetString() ?? String.Empty, null);
+            })
+            .ToArray();
+
+        if (values.Length == 0)
         {
             return null;
         }
 
-        var caseSensitive = parameters.ContainsKey("caseSensitive")
-            && parameters["caseSensitive"] is JsonElement csElement
-            && csElement.GetBoolean();
-
-        return new ContainsMatcher(parameterValues, caseSensitive);
+        return new ContainsMatcher(values);
     }
 
     private static RegexMatcher? CreateRegexMatcher(Dictionary<String, Object> parameters)
@@ -91,13 +105,34 @@ public class MatcherFactory
             return null;
         }
 
-        var ignoreCase = parameters.ContainsKey("ignoreCase")
-            && parameters["ignoreCase"] is JsonElement icElement
-            && icElement.GetBoolean();
+        // Always ignore case for regex per new requirement
+        var ignoreCase = true;
+
+        // Parse optional amount parameter
+        Decimal? amount = null;
+        if (parameters.TryGetValue("amount", out var amtObj))
+        {
+            if (amtObj is JsonElement amtElement && amtElement.ValueKind == JsonValueKind.Number && amtElement.TryGetDecimal(out var d))
+            {
+                amount = Decimal.Round(d, 2);
+            }
+            else if (amtObj is Decimal dec)
+            {
+                amount = Decimal.Round(dec, 2);
+            }
+            else if (amtObj is Double dbl)
+            {
+                amount = Decimal.Round(Convert.ToDecimal(dbl), 2);
+            }
+            else if (amtObj is String s && Decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
+            {
+                amount = Decimal.Round(parsed, 2);
+            }
+        }
 
         try
         {
-            return new RegexMatcher(pattern, ignoreCase);
+            return new RegexMatcher(pattern, ignoreCase, amount);
         }
         catch (ArgumentException)
         {

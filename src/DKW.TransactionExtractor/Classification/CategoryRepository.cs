@@ -160,55 +160,119 @@ public class CategoryRepository : ICategoryRepository
 
     private static Boolean TryMergeWithExistingMatcher(Category category, MatcherCreationRequest request)
     {
-        var caseSensitive = request.Parameters.TryGetValue("caseSensitive", out var csValue)
-            && Convert.ToBoolean(csValue);
+        // Parse request values into MatcherValue[]
+        if (!request.Parameters.TryGetValue("values", out var valuesObj) || valuesObj is not JsonElement valuesElement || valuesElement.ValueKind != JsonValueKind.Array)
+            return false;
 
-        // Find existing matcher of the same type with matching case sensitivity
+        var newValues = valuesElement.EnumerateArray()
+            .Select(e =>
+            {
+                if (e.ValueKind == JsonValueKind.Object)
+                {
+                    var v = e.GetProperty("value").GetString() ?? String.Empty;
+                    Decimal? amt = null;
+                    if (e.TryGetProperty("amount", out var amtProp) && amtProp.ValueKind == JsonValueKind.Number && amtProp.TryGetDecimal(out var d))
+                    {
+                        amt = Decimal.Round(d, 2);
+                    }
+
+                    return new MatcherValue(v, amt);
+                }
+
+                return new MatcherValue(e.GetString() ?? String.Empty, null);
+            })
+            .ToArray();
+
+        // Find existing matcher of the same type (case-insensitive matching forced)
         var existingMatcher = category.Matchers.FirstOrDefault(m =>
-            m.Type.Equals(request.MatcherType, StringComparison.OrdinalIgnoreCase) &&
-            GetCaseSensitiveParameter(m) == caseSensitive);
+            m.Type.Equals(request.MatcherType, StringComparison.OrdinalIgnoreCase)
+        );
 
         if (existingMatcher == null)
         {
             return false;
         }
 
-        // Merge the values
-        if (existingMatcher.Parameters.TryGetValue("values", out var existingValuesObj))
+        // Merge the values (existing matcher parameters expected to have "values" as array of objects)
+        if (existingMatcher.Parameters.TryGetValue("values", out var existingValuesObj) && existingValuesObj is JsonElement existingValuesElement && existingValuesElement.ValueKind == JsonValueKind.Array)
         {
-            var existingValues = ExtractStringArray(existingValuesObj);
-            var newValues = ExtractStringArray(request.Parameters["values"]);
+            var existingValues = existingValuesElement.EnumerateArray()
+                .Select(e =>
+                {
+                    if (e.ValueKind == JsonValueKind.Object)
+                    {
+                        var v = e.GetProperty("value").GetString() ?? String.Empty;
+                        Decimal? amt = null;
+                        if (e.TryGetProperty("amount", out var amtProp) && amtProp.ValueKind == JsonValueKind.Number && amtProp.TryGetDecimal(out var d))
+                        {
+                            amt = Decimal.Round(d, 2);
+                        }
 
-            // Combine and deduplicate values (case-insensitive comparison for deduplication)
-            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-            var mergedValues = existingValues
-                .Concat(newValues)
-                .Distinct(comparer)
+                        return new MatcherValue(v, amt);
+                    }
+
+                    return new MatcherValue(e.GetString() ?? String.Empty, null);
+                })
                 .ToArray();
 
-            existingMatcher.Parameters["values"] = mergedValues;
+            var comparer = StringComparer.OrdinalIgnoreCase; // Force case-insensitive dedupe
+
+            // Combine, dedupe by (value, amount) using string comparer for value and amount equality
+            var mergedValues = existingValues
+                .Concat(newValues)
+                .Distinct(new MatcherValueEqualityComparer(comparer))
+                .ToArray();
+
+            // Convert merged values back to JsonElement array
+            var mergedJsonElements = mergedValues.Select(mv =>
+            {
+                var dict = new Dictionary<String, Object>
+                {
+                    ["value"] = mv.Value
+                };
+                if (mv.Amount.HasValue)
+                {
+                    dict["amount"] = Decimal.Round(mv.Amount.Value, 2);
+                }
+                return JsonSerializer.SerializeToElement(dict);
+            }).ToArray();
+
+            existingMatcher.Parameters["values"] = JsonSerializer.SerializeToElement(mergedJsonElements);
             return true;
         }
 
         return false;
     }
 
-    private static Boolean GetCaseSensitiveParameter(CategoryMatcher matcher)
+    private static Decimal? GetAmountParameter(CategoryMatcher matcher)
     {
-        if (matcher.Parameters.TryGetValue("caseSensitive", out var csObj))
+        if (matcher.Parameters.TryGetValue("amount", out var amtObj))
         {
-            if (csObj is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.True)
+            if (amtObj is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Number)
             {
-                return true;
+                if (jsonElement.TryGetDecimal(out var d))
+                {
+                    return Decimal.Round(d, 2);
+                }
             }
 
-            if (csObj is Boolean boolValue)
+            if (amtObj is Decimal dec)
             {
-                return boolValue;
+                return Decimal.Round(dec, 2);
+            }
+
+            if (amtObj is Double dbl)
+            {
+                return Decimal.Round(Convert.ToDecimal(dbl), 2);
+            }
+
+            if (amtObj is String s && Decimal.TryParse(s, out var parsed))
+            {
+                return Decimal.Round(parsed, 2);
             }
         }
 
-        return false;
+        return null;
     }
 
     private static String[] ExtractStringArray(Object valuesObj)
@@ -228,7 +292,7 @@ public class CategoryRepository : ICategoryRepository
             return stringList.ToArray();
         }
 
-        return [];
+        return Array.Empty<String>();
     }
 
     private static CategoryMatcher CreateMatcherFromRequest(MatcherCreationRequest request)
@@ -238,5 +302,32 @@ public class CategoryRepository : ICategoryRepository
             Type = request.MatcherType,
             Parameters = new Dictionary<String, Object>(request.Parameters)
         };
+    }
+}
+
+internal class MatcherValueEqualityComparer : IEqualityComparer<MatcherValue>
+{
+    private readonly StringComparer _stringComparer;
+
+    public MatcherValueEqualityComparer(StringComparer stringComparer)
+    {
+        _stringComparer = stringComparer;
+    }
+
+    public bool Equals(MatcherValue? x, MatcherValue? y)
+    {
+        if (x == null && y == null) return true;
+        if (x == null || y == null) return false;
+
+        var valueEqual = _stringComparer.Equals(x.Value, y.Value);
+        var amountEqual = Nullable.Equals(x.Amount, y.Amount);
+        return valueEqual && amountEqual;
+    }
+
+    public int GetHashCode(MatcherValue obj)
+    {
+        var hash = _stringComparer.GetHashCode(obj.Value ?? String.Empty);
+        hash = (hash * 397) ^ (obj.Amount?.GetHashCode() ?? 0);
+        return hash;
     }
 }

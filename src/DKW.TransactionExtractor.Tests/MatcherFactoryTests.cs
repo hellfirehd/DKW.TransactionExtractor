@@ -14,13 +14,14 @@ public class MatcherFactoryTests
     [Fact]
     public void CreateMatcher_ExactMatchType_CreatesExactMatcher()
     {
+        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }), JsonSerializer.SerializeToElement(new { value = "TARGET" }) };
+
         var matcherConfig = new CategoryMatcher
         {
             Type = "ExactMatch",
             Parameters = new Dictionary<String, Object>
             {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { "WALMART", "TARGET" }),
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
+                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
             }
         };
 
@@ -28,20 +29,21 @@ public class MatcherFactoryTests
 
         Assert.NotNull(matcher);
         Assert.IsType<ExactMatcher>(matcher);
-        Assert.True(matcher.TryMatch("WALMART"));
-        Assert.True(matcher.TryMatch("walmart")); // Case insensitive
+        Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "walmart", Amount = 0m })); // Case insensitive enforced
     }
 
     [Fact]
     public void CreateMatcher_ContainsType_CreatesContainsMatcher()
     {
+        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "COFFEE" }), JsonSerializer.SerializeToElement(new { value = "TEA" }) };
+
         var matcherConfig = new CategoryMatcher
         {
             Type = "Contains",
             Parameters = new Dictionary<String, Object>
             {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { "COFFEE", "TEA" }),
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
+                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
             }
         };
 
@@ -49,8 +51,8 @@ public class MatcherFactoryTests
 
         Assert.NotNull(matcher);
         Assert.IsType<ContainsMatcher>(matcher);
-        Assert.True(matcher.TryMatch("STARBUCKS COFFEE"));
-        Assert.True(matcher.TryMatch("TEA SHOP"));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "STARBUCKS COFFEE", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "TEA SHOP", Amount = 0m }));
     }
 
     [Fact]
@@ -61,8 +63,7 @@ public class MatcherFactoryTests
             Type = "Regex",
             Parameters = new Dictionary<String, Object>
             {
-                ["pattern"] = JsonSerializer.SerializeToElement("^WALMART #\\d+"),
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
+                ["pattern"] = JsonSerializer.SerializeToElement("^WALMART #\\d+")
             }
         };
 
@@ -70,8 +71,8 @@ public class MatcherFactoryTests
 
         Assert.NotNull(matcher);
         Assert.IsType<RegexMatcher>(matcher);
-        Assert.True(matcher.TryMatch("WALMART #1234"));
-        Assert.False(matcher.TryMatch("TARGET #1234"));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #1234", Amount = 0m }));
+        Assert.False(matcher.TryMatch(new Transaction { Description = "TARGET #1234", Amount = 0m }));
     }
 
     [Fact]
@@ -80,7 +81,7 @@ public class MatcherFactoryTests
         var matcherConfig = new CategoryMatcher
         {
             Type = "UnknownMatcher",
-            Parameters = []
+            Parameters = new Dictionary<String, Object>()
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -97,26 +98,6 @@ public class MatcherFactoryTests
     }
 
     [Fact]
-    public void CreateMatcher_ExactMatchCaseSensitiveTrue_CreatesCaseSensitiveMatcher()
-    {
-        var matcherConfig = new CategoryMatcher
-        {
-            Type = "ExactMatch",
-            Parameters = new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { "WALMART" }),
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(true)
-            }
-        };
-
-        var matcher = MatcherFactory.CreateMatcher(matcherConfig);
-
-        Assert.NotNull(matcher);
-        Assert.True(matcher.TryMatch("WALMART"));
-        Assert.False(matcher.TryMatch("walmart")); // Case sensitive
-    }
-
-    [Fact]
     public void CreateMatcher_MissingValuesParameter_ReturnsNull()
     {
         var matcherConfig = new CategoryMatcher
@@ -124,7 +105,6 @@ public class MatcherFactoryTests
             Type = "ExactMatch",
             Parameters = new Dictionary<String, Object>
             {
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
                 // Missing "values" parameter
             }
         };
@@ -142,7 +122,6 @@ public class MatcherFactoryTests
             Type = "Regex",
             Parameters = new Dictionary<String, Object>
             {
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
                 // Missing "pattern" parameter
             }
         };
@@ -160,8 +139,7 @@ public class MatcherFactoryTests
             Type = "ExactMatch",
             Parameters = new Dictionary<String, Object>
             {
-                ["values"] = JsonSerializer.SerializeToElement(Array.Empty<String>()),
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
+                ["values"] = JsonSerializer.SerializeToElement(Array.Empty<JsonElement>())
             }
         };
 
@@ -178,8 +156,7 @@ public class MatcherFactoryTests
             Type = "Regex",
             Parameters = new Dictionary<String, Object>
             {
-                ["pattern"] = JsonSerializer.SerializeToElement("[invalid(regex"),
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
+                ["pattern"] = JsonSerializer.SerializeToElement("[invalid(regex")
             }
         };
 
@@ -189,45 +166,47 @@ public class MatcherFactoryTests
     }
 
     [Fact]
-    public void CreateMatcher_DefaultCaseSensitivity_UsesFalse()
+    public void CreateMatcher_DefaultCaseSensitivity_UsesInsensitive()
     {
-        // Missing caseSensitive parameter should default to false
+        // caseSensitive parameter removed; behavior is always case-insensitive
+        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) };
+
         var matcherConfig = new CategoryMatcher
         {
             Type = "ExactMatch",
             Parameters = new Dictionary<String, Object>
             {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { "WALMART" })
-                // Missing "caseSensitive" parameter
+                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
             }
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
 
         Assert.NotNull(matcher);
-        Assert.True(matcher.TryMatch("walmart")); // Should be case insensitive by default
+        Assert.True(matcher.TryMatch(new Transaction { Description = "walmart", Amount = 0m })); // Case-insensitive enforced
     }
 
     [Fact]
     public void CreateMatcher_MultipleValues_AllWorkCorrectly()
     {
+        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }), JsonSerializer.SerializeToElement(new { value = "TARGET" }), JsonSerializer.SerializeToElement(new { value = "COSTCO" }) };
+
         var matcherConfig = new CategoryMatcher
         {
             Type = "Contains",
             Parameters = new Dictionary<String, Object>
             {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { "WALMART", "TARGET", "COSTCO" }),
-                ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
+                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
             }
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
 
         Assert.NotNull(matcher);
-        Assert.True(matcher.TryMatch("WALMART SUPERCENTER"));
-        Assert.True(matcher.TryMatch("Shopping at TARGET"));
-        Assert.True(matcher.TryMatch("COSTCO WHOLESALE"));
-        Assert.False(matcher.TryMatch("SAFEWAY"));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART SUPERCENTER", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "Shopping at TARGET", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "COSTCO WHOLESALE", Amount = 0m }));
+        Assert.False(matcher.TryMatch(new Transaction { Description = "SAFEWAY", Amount = 0m }));
     }
 
     [Theory]
@@ -240,26 +219,28 @@ public class MatcherFactoryTests
     [InlineData("regex")]
     public void CreateMatcher_CaseInsensitiveTypeNames_WorksCorrectly(String matcherType)
     {
+        var valuesArray = matcherType.Equals("regex", StringComparison.CurrentCultureIgnoreCase)
+            ? new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) }
+            : [JsonSerializer.SerializeToElement(new { value = "WALMART" })];
+
         var matcherConfig = new CategoryMatcher
         {
             Type = matcherType,
             Parameters = matcherType.Equals("regex", StringComparison.CurrentCultureIgnoreCase)
                 ? new Dictionary<String, Object>
                 {
-                    ["pattern"] = JsonSerializer.SerializeToElement("WALMART"),
-                    ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
+                    ["pattern"] = JsonSerializer.SerializeToElement("WALMART")
                 }
                 : new Dictionary<String, Object>
                 {
-                    ["values"] = JsonSerializer.SerializeToElement(new[] { "WALMART" }),
-                    ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
+                    ["values"] = JsonSerializer.SerializeToElement(valuesArray)
                 }
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
 
         Assert.NotNull(matcher);
-        Assert.True(matcher.TryMatch("WALMART"));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART", Amount = 0m }));
     }
 
     [Fact]
@@ -270,8 +251,7 @@ public class MatcherFactoryTests
             {
                 "Type": "ExactMatch",
                 "Parameters": {
-                    "values": ["MCDONALD'S", "WENDY'S", "BURGER KING"],
-                    "caseSensitive": false
+                    "values": ["MCDONALD'S", "WENDY'S", "BURGER KING"]
                 }
             }
             """;
@@ -281,10 +261,10 @@ public class MatcherFactoryTests
 
         Assert.NotNull(matcher);
         Assert.IsType<ExactMatcher>(matcher);
-        Assert.True(matcher.TryMatch("MCDONALD'S"));
-        Assert.True(matcher.TryMatch("mcdonald's"));
-        Assert.True(matcher.TryMatch("WENDY'S"));
-        Assert.False(matcher.TryMatch("MCDONALD'S #1234")); // Exact match only
+        Assert.True(matcher.TryMatch(new Transaction { Description = "MCDONALD'S", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "mcdonald's", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "WENDY'S", Amount = 0m }));
+        Assert.False(matcher.TryMatch(new Transaction { Description = "MCDONALD'S #1234", Amount = 0m })); // Exact match only
     }
 
     [Fact]
@@ -294,8 +274,7 @@ public class MatcherFactoryTests
             {
                 "Type": "Contains",
                 "Parameters": {
-                    "values": ["COFFEE", "CAFE", "ESPRESSO"],
-                    "caseSensitive": false
+                    "values": ["COFFEE", "CAFE", "ESPRESSO"]
                 }
             }
             """;
@@ -305,9 +284,9 @@ public class MatcherFactoryTests
 
         Assert.NotNull(matcher);
         Assert.IsType<ContainsMatcher>(matcher);
-        Assert.True(matcher.TryMatch("STARBUCKS COFFEE"));
-        Assert.True(matcher.TryMatch("LOCAL CAFE"));
-        Assert.True(matcher.TryMatch("ESPRESSO BAR"));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "STARBUCKS COFFEE", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "LOCAL CAFE", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "ESPRESSO BAR", Amount = 0m }));
     }
 
     [Fact]
@@ -317,8 +296,7 @@ public class MatcherFactoryTests
             {
                 "Type": "Regex",
                 "Parameters": {
-                    "pattern": "^WALMART #\\d{4,5}",
-                    "caseSensitive": false
+                    "pattern": "^WALMART #\\d{4,5}"
                 }
             }
             """;
@@ -328,9 +306,9 @@ public class MatcherFactoryTests
 
         Assert.NotNull(matcher);
         Assert.IsType<RegexMatcher>(matcher);
-        Assert.True(matcher.TryMatch("WALMART #1234"));
-        Assert.True(matcher.TryMatch("WALMART #56789"));
-        Assert.False(matcher.TryMatch("WALMART #123")); // Too few digits
-        Assert.False(matcher.TryMatch("TARGET #1234")); // Wrong store
+        Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #1234", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #56789", Amount = 0m }));
+        Assert.False(matcher.TryMatch(new Transaction { Description = "WALMART #123", Amount = 0m })); // Too few digits
+        Assert.False(matcher.TryMatch(new Transaction { Description = "TARGET #1234", Amount = 0m })); // Wrong store
     }
 }

@@ -1,6 +1,8 @@
+using DKW.TransactionExtractor.Models;
+
 namespace DKW.TransactionExtractor.Classification;
 
 public interface ITransactionMatcher
 {
-    Boolean TryMatch(String description);
+    Boolean TryMatch(Transaction transaction);
 }

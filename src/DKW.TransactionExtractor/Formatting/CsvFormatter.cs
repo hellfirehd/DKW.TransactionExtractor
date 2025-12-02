@@ -28,7 +28,7 @@ public class CsvFormatter : ITransactionFormatter
         var sb = new StringBuilder();
 
         // Header
-        sb.AppendLine("StatementDate,TransactionDate,PostedDate,Description,Amount,Comment,CategoryId,CategoryName,InclusionStatus");
+        sb.AppendLine("StatementDate,TransactionDate,PostedDate,Description,Amount,Comment,CategoryId,CategoryName,MatcherType,InclusionStatus");
 
         // Data rows
         foreach (var ct in transactions)
@@ -36,12 +36,13 @@ public class CsvFormatter : ITransactionFormatter
             var t = ct.Transaction;
             sb.AppendLine($"{t.StatementDate:yyyy-MM-dd}," +
                           $"{t.TransactionDate:yyyy-MM-dd}," +
-                          $"{(t.PostedDate.HasValue ? t.PostedDate.Value.ToString("yyyy-MM-dd") : "")}," +
+                          $"{t.PostedDate:yyyy-MM-dd}," +
                           $"\"{EscapeCsv(t.Description)}\"," +
                           $"{t.Amount}," +
                           $"\"{EscapeCsv(ct.Comment ?? String.Empty)}\"," +
                           $"\"{EscapeCsv(ct.CategoryId)}\"," +
                           $"\"{EscapeCsv(ct.CategoryName)}\"," +
+                          $"\"{EscapeCsv(ct.MatcherType ?? String.Empty)}\"," +
                           $"{t.InclusionStatus}"
                          );
         }

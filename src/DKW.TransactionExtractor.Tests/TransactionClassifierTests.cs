@@ -14,13 +14,13 @@ namespace DKW.TransactionExtractor.Tests;
 public class TransactionClassifierTests
 {
     private readonly ICategoryService _mockCategoryService;
-    private readonly IConsoleInteraction _mockConsoleInteraction;
+    private readonly IUserInteraction _mockConsoleInteraction;
     private readonly TransactionClassifier _classifier;
 
     public TransactionClassifierTests()
     {
         _mockCategoryService = Substitute.For<ICategoryService>();
-        _mockConsoleInteraction = Substitute.For<IConsoleInteraction>();
+        _mockConsoleInteraction = Substitute.For<IUserInteraction>();
 
         _classifier = new TransactionClassifier(
             NullLogger<TransactionClassifier>.Instance,
@@ -99,7 +99,7 @@ public class TransactionClassifierTests
             RequestedExit: false
         );
 
-        _mockConsoleInteraction.PromptForCategory(Arg.Any<ClassifyTransactionContext>())
+        _mockConsoleInteraction.PromptForCategory(Arg.Any<TransactionContext>())
             .Returns(selectionResult);
 
         _mockCategoryService.CategoryExists("entertainment").Returns(true);
@@ -119,7 +119,7 @@ public class TransactionClassifierTests
         // Assert
         Assert.Single(result.ClassifiedTransactions);
         Assert.Equal("entertainment", result.ClassifiedTransactions[0].CategoryId);
-        _mockConsoleInteraction.Received(1).PromptForCategory(Arg.Any<ClassifyTransactionContext>());
+        _mockConsoleInteraction.Received(1).PromptForCategory(Arg.Any<TransactionContext>());
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class TransactionClassifierTests
             RequestedExit: true
         );
 
-        _mockConsoleInteraction.PromptForCategory(Arg.Any<ClassifyTransactionContext>())
+        _mockConsoleInteraction.PromptForCategory(Arg.Any<TransactionContext>())
             .Returns(exitResult);
 
         var transactions = new List<Transaction>
@@ -151,7 +151,7 @@ public class TransactionClassifierTests
         // Assert: When user exits, classified transactions is empty because exit happens before adding
         Assert.Empty(result.ClassifiedTransactions);
         Assert.True(result.RequestedEarlyExit);
-        _mockConsoleInteraction.Received(1).PromptForCategory(Arg.Any<ClassifyTransactionContext>());
+        _mockConsoleInteraction.Received(1).PromptForCategory(Arg.Any<TransactionContext>());
     }
 
     [Fact]
@@ -176,7 +176,7 @@ public class TransactionClassifierTests
             RequestedExit: false
         );
 
-        _mockConsoleInteraction.PromptForCategory(Arg.Any<ClassifyTransactionContext>())
+        _mockConsoleInteraction.PromptForCategory(Arg.Any<TransactionContext>())
             .Returns(selectionResult);
 
         _mockCategoryService.CategoryExists("coffee-shops").Returns(false);
@@ -223,7 +223,7 @@ public class TransactionClassifierTests
             RequestedExit: false
         );
 
-        _mockConsoleInteraction.PromptForCategory(Arg.Any<ClassifyTransactionContext>())
+        _mockConsoleInteraction.PromptForCategory(Arg.Any<TransactionContext>())
             .Returns(selectionResult);
 
         _mockCategoryService.CategoryExists("groceries").Returns(true);
@@ -366,7 +366,7 @@ public class TransactionClassifierTests
             RequestedExit: false
         );
 
-        _mockConsoleInteraction.PromptForCategory(Arg.Any<ClassifyTransactionContext>())
+        _mockConsoleInteraction.PromptForCategory(Arg.Any<TransactionContext>())
             .Returns(selectionResult);
 
         _mockCategoryService.CategoryExists("coffee-shops-cafes").Returns(true); // Normalized version
@@ -389,8 +389,8 @@ public class TransactionClassifierTests
         // Arrange
         _mockCategoryService.GetAllCategories().Returns([]);
 
-        var capturedContexts = new List<ClassifyTransactionContext>();
-        _mockConsoleInteraction.PromptForCategory(Arg.Do<ClassifyTransactionContext>(capturedContexts.Add))
+        var capturedContexts = new List<TransactionContext>();
+        _mockConsoleInteraction.PromptForCategory(Arg.Do<TransactionContext>(capturedContexts.Add))
             .Returns(new CategorySelectionResult("test", "Test", null, null, false));
 
         _mockCategoryService.CategoryExists(Arg.Any<String>()).Returns(true);

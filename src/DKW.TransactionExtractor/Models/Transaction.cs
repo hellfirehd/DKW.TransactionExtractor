@@ -1,19 +1,29 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace DKW.TransactionExtractor.Models;
 
 public class Transaction
 {
-    public DateTime TransactionDate { get; set; }
-    public DateTime? PostedDate { get; set; }
-    public String Description { get; set; } = String.Empty;
-    public Decimal Amount { get; set; }
+    /// <summary>
+    /// Gets or sets the date of the statement this transaction came from
+    /// </summary>
+    public required DateTime StatementDate { get; init; }
+    public required DateTime TransactionDate { get; init; }
+    public required DateTime PostedDate { get; init; }
+    public required String Description { get; init; } = String.Empty;
+    public required Decimal Amount { get; set; }
     public String RawText { get; set; } = String.Empty;
     public Int32 StartLineNumber { get; set; }
-    
-    /// <summary>
-    /// Indicates whether this transaction should be included in purchases total calculations.
-    /// </summary>
     public TransactionInclusionStatus InclusionStatus { get; set; } = TransactionInclusionStatus.Undetermined;
 
-    // The date of the statement this transaction came from
-    public DateTime StatementDate { get; set; }
+    // Parameterless constructor to ensure tests that use object initializers without
+    // setting the required date properties still produce a valid Transaction instance.
+    [SetsRequiredMembers]
+    public Transaction()
+    {
+        var dt = DateTime.Today;
+        StatementDate = dt;
+        TransactionDate = dt;
+        PostedDate = dt;
+    }
 }

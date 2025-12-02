@@ -1,13 +1,25 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using DKW.TransactionExtractor.Models;
 
 namespace DKW.TransactionExtractor.Classification;
 
-public class ContainsMatcher : ITransactionMatcher
+/// <summary>
+/// ContainsMatcher matches transactions whose description contains one of the configured substrings.
+/// Matching is case-insensitive. Each configured value may optionally include an <c>Amount</c> which
+/// restricts matches to transactions with that amount (rounded to 2 decimals).
+/// </summary>
+public class ContainsMatcher : TransactionMatcherBase
 {
-    private readonly String[] _values;
-    private readonly StringComparison _comparison;
+    private readonly MatcherValue[] _values;
+    private readonly StringComparison _comparison = StringComparison.OrdinalIgnoreCase; // Force case-insensitive
 
-    public ContainsMatcher([NotNull] String[] values, Boolean caseSensitive = false)
+    /// <summary>
+    /// Constructs a new ContainsMatcher with the provided values.
+    /// </summary>
+    /// <param name="values">Array of value/amount pairs to match against. Cannot be null or empty.</param>
+    public ContainsMatcher([NotNull] MatcherValue[] values)
     {
         ArgumentNullException.ThrowIfNull(values);
 
@@ -17,16 +29,31 @@ public class ContainsMatcher : ITransactionMatcher
         }
 
         _values = values;
-        _comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
     }
 
-    public Boolean TryMatch(String description)
+    /// <summary>
+    /// Core matching logic executed after base validation. Description is guaranteed non-null/non-whitespace.
+    /// </summary>
+    protected override Boolean TryMatchCore(Transaction transaction, String description)
     {
-        if (String.IsNullOrWhiteSpace(description))
+        var amount = transaction.Amount;
+
+        foreach (var mv in _values)
         {
-            return false;
+            if (description.Contains(mv.Value, _comparison))
+            {
+                if (mv.Amount.HasValue)
+                {
+                    if (AmountsEqual(mv.Amount, amount))
+                        return true;
+                }
+                else
+                {
+                    return true;
+                }
+            }
         }
 
-        return _values.Any(v => description.Contains(v, _comparison));
+        return false;
     }
 }
