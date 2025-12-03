@@ -1,6 +1,5 @@
 using DKW.TransactionExtractor.Classification;
 using DKW.TransactionExtractor.Models;
-using System.Text.Json;
 using Xunit;
 
 namespace DKW.TransactionExtractor.Tests;
@@ -35,10 +34,9 @@ public class AmountMatcherTests
         var matcherConfig = new CategoryMatcher
         {
             Type = "ExactMatch",
-            Parameters = new Dictionary<string, object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { JsonSerializer.SerializeToElement(new { value = "FOO TRANSACTION", amount = 12.34m }) })
-            }
+            Parameters = [
+                new MatcherValue("FOO TRANSACTION", 12.34m)
+            ]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -55,10 +53,7 @@ public class AmountMatcherTests
         var matcherConfig = new CategoryMatcher
         {
             Type = "Contains",
-            Parameters = new Dictionary<string, object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { JsonSerializer.SerializeToElement(new { value = "BAR", amount = -5.00m }) })
-            }
+            Parameters = [new MatcherValue("BAR", -5.00m)]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);

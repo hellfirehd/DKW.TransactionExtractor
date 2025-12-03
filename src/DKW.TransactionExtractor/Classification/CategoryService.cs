@@ -6,14 +6,7 @@ public class CategoryService(ICategoryRepository repository) : ICategoryService
 {
     private readonly ICategoryRepository _repository = repository;
 
-    public List<Category> GetAvailableCategories()
-    {
-        return _repository.Load().Categories
-            .OrderBy(c => c.Name)
-            .ToList();
-    }
-
-    public List<Category> GetAllCategories()
+    public List<Category> GetCategories()
     {
         return _repository.Load().Categories;
     }

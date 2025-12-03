@@ -1,434 +1,27 @@
 {
   "categories": [
     {
-      "id": "utilities-cell-phones",
-      "name": "Utilities - Cell Phones",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "APPLE",
-                "amount": 14.55
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "utilities-cable-streaming",
-      "name": "Utilities - Cable \u0026 Streaming",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "Amazon.ca Prime"
-              },
-              {
-                "value": "Netflix"
-              },
-              {
-                "value": "YouTubePremium"
-              },
-              {
-                "value": "PrimeVideo"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "utilities-internet",
-      "name": "Utilities - Internet",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "TELUS"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "household-supplies",
-      "name": "Household - Supplies",
+      "id": "charitable-donations",
+      "name": "Charitable Donations",
       "matchers": [
         {
           "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "CITY OF KELOWNA LANDFI KELOWNA BC"
-              },
-              {
-                "value": "ROMORYMSUSD STERLING CO"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "BCCH FOUNDATION VANCOUVER BC"
+            }
+          ]
         },
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "HOME DEPOT"
-              },
-              {
-                "value": "DOLLAR TREE"
-              },
-              {
-                "value": "PRINCESS AUTO"
-              },
-              {
-                "value": "SUN CITY LIQUIDATI"
-              },
-              {
-                "value": "DOLLARAMA"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "household-restaurants",
-      "name": "Household - Restaurants",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "BLUETAIL SUSHI"
-              },
-              {
-                "value": "RESTAURANT"
-              },
-              {
-                "value": "PAPA JOHNS"
-              },
-              {
-                "value": "BOSTON PIZZA"
-              },
-              {
-                "value": "OLD SPAGHETTI"
-              },
-              {
-                "value": "INTERNATIONAL HOUSE"
-              },
-              {
-                "value": "PIZZA HUT"
-              },
-              {
-                "value": "DOMINOS PIZZA"
-              },
-              {
-                "value": "DOZO HOUSE"
-              },
-              {
-                "value": "C-LOVERS FISH"
-              },
-              {
-                "value": "HECTORS CASA"
-              },
-              {
-                "value": "DENNYS"
-              },
-              {
-                "value": "RED SWAN PIZZA"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "household-fast-food-snacks",
-      "name": "Household - Fast Food \u0026 Snacks",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "ARBYS"
-              },
-              {
-                "value": "DAIRY QUEEN"
-              },
-              {
-                "value": "TACO BELL"
-              },
-              {
-                "value": "SUBCITY"
-              },
-              {
-                "value": "KFC"
-              },
-              {
-                "value": "7 ELEVEN"
-              },
-              {
-                "value": "BURGER KING"
-              },
-              {
-                "value": "TIM HORTONS"
-              },
-              {
-                "value": "SIZZLING WOK"
-              },
-              {
-                "value": "McDonalds"
-              },
-              {
-                "value": "A\u0026W"
-              },
-              {
-                "value": "MACS CONV"
-              },
-              {
-                "value": "Dutchmen Dairy"
-              },
-              {
-                "value": "QUESADA"
-              },
-              {
-                "value": "Subway"
-              },
-              {
-                "value": "BARBURRITO"
-              },
-              {
-                "value": "YUM YUM TREE"
-              },
-              {
-                "value": "LITTLE CAESARS"
-              },
-              {
-                "value": "WENDYS"
-              },
-              {
-                "value": "BOOSTER JUICE"
-              },
-              {
-                "value": "TACO TIME"
-              },
-              {
-                "value": "BAR BURRITO"
-              },
-              {
-                "value": "SPECIALITY BAKERY"
-              },
-              {
-                "value": "STARBUCKS"
-              },
-              {
-                "value": "BEAVERTAILS"
-              },
-              {
-                "value": "FRESHLY SQUEEZED"
-              },
-              {
-                "value": "NEW YORK FRIES"
-              },
-              {
-                "value": "ASIAN PEAR BUFFE"
-              }
-            ]
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "DQ #27051 KELOWNA BC"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "household-groceries",
-      "name": "Household - Groceries",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "SAVE ON FOODS"
-              },
-              {
-                "value": "WAL-MART"
-              },
-              {
-                "value": "COSTCO WHOLESALE"
-              },
-              {
-                "value": "IGA72"
-              },
-              {
-                "value": "SUPERSTORE"
-              },
-              {
-                "value": "BULK BARN"
-              },
-              {
-                "value": "WALMART"
-              },
-              {
-                "value": "RAYS NO FRILLS"
-              },
-              {
-                "value": "GLENMORE FRESH FRUIT"
-              },
-              {
-                "value": "BREAD ON WHEELS BAKERY"
-              },
-              {
-                "value": "INTERIOR BEVERAGES"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "household-pets",
-      "name": "Household - Pets",
-      "matchers": []
-    },
-    {
-      "id": "transportation-gas-oil",
-      "name": "Transportation - Gas \u0026 Oil",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "CDN TIRE GASBAR"
-              },
-              {
-                "value": "CHEVRON"
-              },
-              {
-                "value": "COSTCO GAS"
-              },
-              {
-                "value": "ESSO"
-              },
-              {
-                "value": "PETRO-CANADA"
-              },
-              {
-                "value": "SHELL"
-              },
-              {
-                "value": "PETRO CANADA"
-              }
-            ]
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "CHV43056 GUISACHAN CHE KELOWNA BC"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "hobbies",
-      "name": "Hobbies",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "DIGI-KEY CORP"
-              },
-              {
-                "value": "PLASTICS \u0026 PAI"
-              },
-              {
-                "value": "ALIEXPRESS"
-              }
-            ]
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "SP 3DMOUSE.CA TORONTO ON"
-              },
-              {
-                "value": "CARTOGRAPHER3D.COM TUNBRIDGE WELLND"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "personal-selfcare",
-      "name": "Personal - Self Care",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "LONDON DRUGS"
-              },
-              {
-                "value": "SHOPPERS DRUG MART"
-              },
-              {
-                "value": "HENSON SHAVING"
-              },
-              {
-                "value": "PHARMASAVE"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "gifts",
-      "name": "Gifts",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "LTT STORE"
-              },
-              {
-                "value": "UPS STORE"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "GIRL GUIDES"
+            },
+            {
+              "value": "THUNDERBIRD EMAIL"
+            }
+          ]
         }
       ]
     },
@@ -438,312 +31,379 @@
       "matchers": [
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "Astraweb"
-              },
-              {
-                "value": "ONLYFANS"
-              },
-              {
-                "value": "EVENTBRITE"
-              },
-              {
-                "value": "STEAMGAMES"
-              },
-              {
-                "value": "TICKETOWL"
-              },
-              {
-                "value": "NEXUSMODS"
-              },
-              {
-                "value": "Audible"
-              },
-              {
-                "value": "BEST BUY"
-              },
-              {
-                "value": "WORLD LITERATURE/SOL"
-              },
-              {
-                "value": "BOOKAPY/SOL"
-              },
-              {
-                "value": "RAKUTEN KOBO"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "Astraweb"
+            },
+            {
+              "value": "ONLYFANS"
+            },
+            {
+              "value": "EVENTBRITE"
+            },
+            {
+              "value": "STEAMGAMES"
+            },
+            {
+              "value": "TICKETOWL"
+            },
+            {
+              "value": "NEXUSMODS"
+            },
+            {
+              "value": "Audible"
+            },
+            {
+              "value": "BEST BUY"
+            },
+            {
+              "value": "WORLD LITERATURE/SOL"
+            },
+            {
+              "value": "BOOKAPY/SOL"
+            },
+            {
+              "value": "RAKUTEN KOBO"
+            }
+          ]
         },
         {
           "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "FS *FLIXTOOLS VANCOUVER BC"
-              },
-              {
-                "value": "LANDMARK WEB TICKETING 403-262-4255 AB"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "FS *FLIXTOOLS VANCOUVER BC"
+            },
+            {
+              "value": "LANDMARK WEB TICKETING 403-262-4255 AB"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "payment",
-      "name": "Payment",
+      "id": "gifts",
+      "name": "Gifts",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "LTT STORE"
+            },
+            {
+              "value": "UPS STORE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hobbies",
+      "name": "Hobbies",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "DIGI-KEY CORP"
+            },
+            {
+              "value": "PLASTICS \u0026 PAI"
+            },
+            {
+              "value": "ALIEXPRESS"
+            }
+          ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "SP 3DMOUSE.CA TORONTO ON"
+            },
+            {
+              "value": "CARTOGRAPHER3D.COM TUNBRIDGE WELLND"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-restaurants",
+      "name": "Household - Restaurants",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "BLUETAIL SUSHI"
+            },
+            {
+              "value": "RESTAURANT"
+            },
+            {
+              "value": "PAPA JOHNS"
+            },
+            {
+              "value": "BOSTON PIZZA"
+            },
+            {
+              "value": "OLD SPAGHETTI"
+            },
+            {
+              "value": "INTERNATIONAL HOUSE"
+            },
+            {
+              "value": "PIZZA HUT"
+            },
+            {
+              "value": "DOMINOS PIZZA"
+            },
+            {
+              "value": "DOZO HOUSE"
+            },
+            {
+              "value": "C-LOVERS FISH"
+            },
+            {
+              "value": "HECTORS CASA"
+            },
+            {
+              "value": "DENNYS"
+            },
+            {
+              "value": "RED SWAN PIZZA"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-supplies",
+      "name": "Household - Supplies",
       "matchers": [
         {
           "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "CIBC BANK PMT/PAIEMENT BCIC"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "subscriptions-software",
-      "name": "Subscriptions - Software",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "1PASSWORD"
-              },
-              {
-                "value": "FONT AWESOME"
-              },
-              {
-                "value": "SCOOTERSOFTWARE"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "subscriptions-services",
-      "name": "Subscriptions - Services",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "CLOUDFLARE"
-              },
-              {
-                "value": "GITHUB"
-              },
-              {
-                "value": "TWILIO"
-              },
-              {
-                "value": "WEALTHSIMPLE TAX"
-              },
-              {
-                "value": "Amazon Web Services"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "miscellaneous",
-      "name": "Miscellaneous",
-      "matchers": [
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "NAYAX CANADA INC MASTE FREDERICTON NB"
-              },
-              {
-                "value": "GCDS170 KELOWNA KELOWNA BC"
-              },
-              {
-                "value": "TRIANGLE SELECT 8003878803 ON"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "refund",
-      "name": "Refund",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "REFUND"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "personal-healthcare",
-      "name": "Personal - Healthcare",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "ZENNI OPTICAL"
-              },
-              {
-                "value": "CPAP CANADA"
-              },
-              {
-                "value": "VISIONFIRST"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "charitable-donations",
-      "name": "Charitable Donations",
-      "matchers": [
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "BCCH FOUNDATION VANCOUVER BC"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "CITY OF KELOWNA LANDFI KELOWNA BC"
+            },
+            {
+              "value": "ROMORYMSUSD STERLING CO"
+            },
+            {
+              "value": "AMZN Mktp CA*ZT1Y45AT0 WWW.AMAZON.CAON",
+              "amount": 35.83
+            },
+            {
+              "value": "AMZN Mktp CA*Z82W22FX0 WWW.AMAZON.CAON",
+              "amount": 57.56
+            },
+            {
+              "value": "AMZN Mktp CA*Z83T98FQ0 WWW.AMAZON.CAON",
+              "amount": 13.01
+            }
+          ]
         },
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "GIRL GUIDES"
-              },
-              {
-                "value": "THUNDERBIRD EMAIL"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "HOME DEPOT"
+            },
+            {
+              "value": "DOLLAR TREE"
+            },
+            {
+              "value": "PRINCESS AUTO"
+            },
+            {
+              "value": "SUN CITY LIQUIDATI"
+            },
+            {
+              "value": "DOLLARAMA"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "transportation-public-transit-taxi",
-      "name": "Transportation - Public Transit \u0026 Taxi",
+      "id": "household-fast-food-snacks",
+      "name": "Household - Fast Food \u0026 Snacks",
       "matchers": [
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "BC TRANSIT"
-              },
-              {
-                "value": "CURRENT TAXI"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "transportation-parking",
-      "name": "Transportation - Parking",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "IMPARK"
-              },
-              {
-                "value": "PAYBYPHONE"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "transportation-repairs-maintenance",
-      "name": "Transportation - Repairs \u0026 Maintenance",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "KELOWNA MAZDA"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "vacation",
-      "name": "Vacation",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "BEST WESTERN"
-              },
-              {
-                "value": "RED DEER"
-              },
-              {
-                "value": "REVELSTOKE"
-              },
-              {
-                "value": "GOLDEN BC"
-              },
-              {
-                "value": "THREE HILLS"
-              },
-              {
-                "value": "CALGARY"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "kids-school-fees",
-      "name": "Kids - School Fees",
-      "matchers": [
+          "parameters": [
+            {
+              "value": "ARBYS"
+            },
+            {
+              "value": "DAIRY QUEEN"
+            },
+            {
+              "value": "TACO BELL"
+            },
+            {
+              "value": "SUBCITY"
+            },
+            {
+              "value": "KFC"
+            },
+            {
+              "value": "7 ELEVEN"
+            },
+            {
+              "value": "BURGER KING"
+            },
+            {
+              "value": "TIM HORTONS"
+            },
+            {
+              "value": "SIZZLING WOK"
+            },
+            {
+              "value": "McDonalds"
+            },
+            {
+              "value": "A\u0026W"
+            },
+            {
+              "value": "MACS CONV"
+            },
+            {
+              "value": "Dutchmen Dairy"
+            },
+            {
+              "value": "QUESADA"
+            },
+            {
+              "value": "Subway"
+            },
+            {
+              "value": "BARBURRITO"
+            },
+            {
+              "value": "YUM YUM TREE"
+            },
+            {
+              "value": "LITTLE CAESARS"
+            },
+            {
+              "value": "WENDYS"
+            },
+            {
+              "value": "BOOSTER JUICE"
+            },
+            {
+              "value": "TACO TIME"
+            },
+            {
+              "value": "BAR BURRITO"
+            },
+            {
+              "value": "SPECIALITY BAKERY"
+            },
+            {
+              "value": "STARBUCKS"
+            },
+            {
+              "value": "BEAVERTAILS"
+            },
+            {
+              "value": "FRESHLY SQUEEZED"
+            },
+            {
+              "value": "NEW YORK FRIES"
+            },
+            {
+              "value": "ASIAN PEAR BUFFE"
+            }
+          ]
+        },
         {
           "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "Central Okanagan SD KELOWNA BC"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "DQ #27051 KELOWNA BC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-groceries",
+      "name": "Household - Groceries",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "SAVE ON FOODS"
+            },
+            {
+              "value": "WAL-MART"
+            },
+            {
+              "value": "COSTCO WHOLESALE"
+            },
+            {
+              "value": "IGA72"
+            },
+            {
+              "value": "SUPERSTORE"
+            },
+            {
+              "value": "BULK BARN"
+            },
+            {
+              "value": "WALMART"
+            },
+            {
+              "value": "RAYS NO FRILLS"
+            },
+            {
+              "value": "GLENMORE FRESH FRUIT"
+            },
+            {
+              "value": "BREAD ON WHEELS BAKERY"
+            },
+            {
+              "value": "INTERIOR BEVERAGES"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-pets",
+      "name": "Household - Pets",
+      "matchers": []
+    },
+    {
+      "id": "household-insurance",
+      "name": "Household - Insurance",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "SQUARE ONE INSURANCE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kids-activities",
+      "name": "Kids - Activities",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "KUNG FU ACADEMY"
+            }
+          ]
         }
       ]
     },
@@ -753,16 +413,40 @@
       "matchers": [
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "TORRID CANADA INC"
-              },
-              {
-                "value": "VALUE VILLAGE"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "TORRID CANADA INC"
+            },
+            {
+              "value": "VALUE VILLAGE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kids-gifts",
+      "name": "Kids - Gifts",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "ARTONA"
+            }
+          ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "INDIGO 916 KELOWNA BC"
+            },
+            {
+              "value": "AMZN Mktp CA*ZU1SW1CW3 WWW.AMAZON.CAON",
+              "amount": 36.95
+            }
+          ]
         }
       ]
     },
@@ -777,55 +461,11 @@
       "matchers": [
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "Microsoft*Ultimate"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "kids-activities",
-      "name": "Kids - Activities",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "KUNG FU ACADEMY"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "kids-gifts",
-      "name": "Kids - Gifts",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "ARTONA"
-              }
-            ]
-          }
-        },
-        {
-          "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "INDIGO 916 KELOWNA BC"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "Microsoft*Ultimate"
+            }
+          ]
         }
       ]
     },
@@ -835,32 +475,48 @@
       "matchers": [
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "ORTHODONTICS"
-              },
-              {
-                "value": "BLUEBIRD MEDICAL"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "ORTHODONTICS"
+            },
+            {
+              "value": "BLUEBIRD MEDICAL"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "household-insurance",
-      "name": "Household - Insurance",
+      "id": "kids-school-fees",
+      "name": "Kids - School Fees",
       "matchers": [
         {
-          "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "SQUARE ONE INSURANCE"
-              }
-            ]
-          }
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "Central Okanagan SD KELOWNA BC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "miscellaneous",
+      "name": "Miscellaneous",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "NAYAX CANADA INC MASTE FREDERICTON NB"
+            },
+            {
+              "value": "GCDS170 KELOWNA KELOWNA BC"
+            },
+            {
+              "value": "TRIANGLE SELECT 8003878803 ON"
+            }
+          ]
         }
       ]
     },
@@ -870,13 +526,11 @@
       "matchers": [
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "MARKS.COM"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "MARKS.COM"
+            }
+          ]
         }
       ]
     },
@@ -886,9 +540,102 @@
       "matchers": []
     },
     {
-      "id": "uncategorized",
-      "name": "Uncategorized",
-      "matchers": []
+      "id": "personal-healthcare",
+      "name": "Personal - Healthcare",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "ZENNI OPTICAL"
+            },
+            {
+              "value": "CPAP CANADA"
+            },
+            {
+              "value": "VISIONFIRST"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "personal-selfcare",
+      "name": "Personal - Self Care",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "LONDON DRUGS"
+            },
+            {
+              "value": "SHOPPERS DRUG MART"
+            },
+            {
+              "value": "HENSON SHAVING"
+            },
+            {
+              "value": "PHARMASAVE"
+            }
+          ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "Amazon.ca*Z83840OR0 AMAZON.CA ON",
+              "amount": 9.11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "subscriptions-services",
+      "name": "Subscriptions - Services",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "CLOUDFLARE"
+            },
+            {
+              "value": "GITHUB"
+            },
+            {
+              "value": "TWILIO"
+            },
+            {
+              "value": "WEALTHSIMPLE TAX"
+            },
+            {
+              "value": "Amazon Web Services"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "subscriptions-software",
+      "name": "Subscriptions - Software",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "1PASSWORD"
+            },
+            {
+              "value": "FONT AWESOME"
+            },
+            {
+              "value": "SCOOTERSOFTWARE"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "transportation-license-insurance",
@@ -896,25 +643,241 @@
       "matchers": [
         {
           "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              {
-                "value": "DRIVER SERVICES CENTRE KELOWNA BC"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "DRIVER SERVICES CENTRE KELOWNA BC"
+            }
+          ]
         },
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              {
-                "value": "ICBC"
-              }
-            ]
-          }
+          "parameters": [
+            {
+              "value": "ICBC"
+            }
+          ]
         }
       ]
+    },
+    {
+      "id": "utilities-cable-streaming",
+      "name": "Utilities - Cable \u0026 Streaming",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "Amazon.ca Prime"
+            },
+            {
+              "value": "Netflix"
+            },
+            {
+              "value": "YouTubePremium"
+            },
+            {
+              "value": "PrimeVideo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "utilities-cell-phones",
+      "name": "Utilities - Cell Phones",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": 32.42
+            }
+          ]
+        },
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "APPLE",
+              "amount": 14.55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "utilities-internet",
+      "name": "Utilities - Internet",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "TELUS"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transportation-gas-oil",
+      "name": "Transportation - Gas \u0026 Oil",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "CDN TIRE GASBAR"
+            },
+            {
+              "value": "CHEVRON"
+            },
+            {
+              "value": "COSTCO GAS"
+            },
+            {
+              "value": "ESSO"
+            },
+            {
+              "value": "PETRO-CANADA"
+            },
+            {
+              "value": "SHELL"
+            },
+            {
+              "value": "PETRO CANADA"
+            }
+          ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "CHV43056 GUISACHAN CHE KELOWNA BC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transportation-public-transit-taxi",
+      "name": "Transportation - Public Transit \u0026 Taxi",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "BC TRANSIT"
+            },
+            {
+              "value": "CURRENT TAXI"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transportation-parking",
+      "name": "Transportation - Parking",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "IMPARK"
+            },
+            {
+              "value": "PAYBYPHONE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transportation-repairs-maintenance",
+      "name": "Transportation - Repairs \u0026 Maintenance",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "KELOWNA MAZDA"
+            }
+          ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "AMZN Mktp CA*PZ24P5TH3 WWW.AMAZON.CAON",
+              "amount": 55.43
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vacation",
+      "name": "Vacation",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "BEST WESTERN"
+            },
+            {
+              "value": "RED DEER"
+            },
+            {
+              "value": "REVELSTOKE"
+            },
+            {
+              "value": "GOLDEN BC"
+            },
+            {
+              "value": "THREE HILLS"
+            },
+            {
+              "value": "CALGARY"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "payment",
+      "name": "Payment",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "CIBC BANK PMT/PAIEMENT BCIC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "refund",
+      "name": "Refund",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "REFUND"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "uncategorized",
+      "name": "Uncategorized",
+      "matchers": []
     }
   ]
 }

@@ -16,6 +16,16 @@ Versions are automatically managed by [GitVersion](https://gitversion.net/) base
 
 ### Added
 
+- **Matcher System Refactoring**: Comprehensive refactoring of the transaction matcher system
+  - New `MatcherValue` record type combining pattern value and optional amount constraint
+  - Shared `TransactionMatcherBase` abstract class for common matcher logic
+  - Amount-based matching for all matcher types (ExactMatch, Contains, Regex)
+  - Consolidated validation and amount comparison logic
+  - Files: `MatcherValue.cs`, `TransactionMatcherBase.cs`
+  - Updated Files: `ExactMatcher.cs`, `ContainsMatcher.cs`, `RegexMatcher.cs`, `MatcherFactory.cs`
+  - Tests: `AmountMatcherTests.cs`, `MatcherFactoryTests.cs`, `CategoryConfigTests.cs`
+  - Documentation: `docs/development/MATCHER_REFACTORING.md`
+
 - **Transaction Comments**: Add optional notes to transactions during classification
   - New "Add comment" option (option 3) in classification menu
   - Comments stored in `ClassifyTransactionContext` and `ClassifiedTransaction`
@@ -28,6 +38,28 @@ Versions are automatically managed by [GitVersion](https://gitversion.net/) base
   - Documentation: `docs/features/TRANSACTION_COMMENTS.md`
 
 ### Changed
+
+- **Matcher Configuration Format**: Simplified and improved matcher parameter structure
+  - Changed from `parameters: { values: [...] }` to `parameters: [{ value, amount? }, ...]`
+  - Each parameter is now an object with required `value` and optional `amount` properties
+  - `amount` constraint supported on all matcher types for precise matching
+  - Amounts are compared at 2 decimal place precision
+  - **Breaking Change**: Legacy configuration format no longer supported
+  - Files: `CategoryMatcher.cs`, `MatcherFactory.cs`, `CategoryRepository.cs`
+
+- **Case Sensitivity Enforcement**: All matchers are now case-insensitive by default
+  - Removed `caseSensitive` parameter from all matcher configurations
+  - ExactMatcher uses `StringComparison.OrdinalIgnoreCase`
+  - ContainsMatcher uses `StringComparison.OrdinalIgnoreCase`
+  - RegexMatcher uses `RegexOptions.IgnoreCase`
+  - **Breaking Change**: No option to enable case-sensitive matching
+  - Files: `ExactMatcher.cs`, `ContainsMatcher.cs`, `RegexMatcher.cs`
+
+- **Smart Merging Enhancement**: Updated merging logic for new parameter structure
+  - ExactMatch and Contains: Merge by (value, amount) pair with case-insensitive value comparison
+  - Values with different amounts are treated as distinct entries
+  - Regex: Still never merged (each pattern is unique)
+  - File: `CategoryRepository.cs`
 
 - **Classification Menu**: Reorganized classification menu options
   - Option 3: Changed from "Skip" to "Add comment"
@@ -47,6 +79,14 @@ Versions are automatically managed by [GitVersion](https://gitversion.net/) base
 
 ### Documentation
 
+- **Matcher Refactoring Guide**: Comprehensive documentation for matcher system changes
+  - Overview of refactoring changes and benefits
+  - Migration guide for legacy configuration format
+  - Use cases for amount-based matching
+  - Technical architecture details
+  - Testing coverage summary
+  - File: `docs/development/MATCHER_REFACTORING.md`
+
 - **Transaction Comments Guide**: Comprehensive documentation for comment feature
   - Use cases and examples
   - Comment flow and UI walkthrough
@@ -55,21 +95,48 @@ Versions are automatically managed by [GitVersion](https://gitversion.net/) base
   - Technical architecture details
   - File: `docs/features/TRANSACTION_COMMENTS.md`
 
-- **Updated Classification Guide**: Added comment documentation
-  - New option 3 description
-  - Comment use cases
-  - Updated output format examples
+- **Updated Classification Guide**: Consolidated and updated classification documentation
+  - Removed duplicate content and consolidated into single guide
+  - Updated matcher type documentation with amount parameters
+  - Added amount-based matching use cases and examples
+  - Migration instructions for legacy format
+  - Updated JSON schema examples
   - File: `docs/CLASSIFICATION_GUIDE.md`
 
-- **Updated README**: Mentioned transaction comments in features list
+- **Updated README**: Enhanced feature descriptions
+  - Added amount-based matching to features list
+  - Updated category configuration examples
+  - Added link to matcher refactoring documentation
   - File: `README.md`
 
 ### Testing
 
-- **Unit Tests Updated**: All 194 tests passing
+- **Comprehensive Test Updates**: All tests passing (194 total)
+  - New `AmountMatcherTests`: Tests amount-based matching for all matcher types
+  - New `MatcherFactoryTests`: Factory creation tests including amount parameters and real-world scenarios
+  - New `CategoryConfigTests`: JSON serialization/deserialization roundtrip tests
   - Updated `TransactionClassifierTests` for new `CategorySelectionResult` signature
-  - Tests verify comment flow and storage
-  - Files: `TransactionClassifierTests.cs`
+  - Tests verify amount comparison logic (2 decimal place rounding)
+  - Tests verify case-insensitive enforcement
+  - Tests verify invalid pattern handling
+  - Files: `AmountMatcherTests.cs`, `MatcherFactoryTests.cs`, `CategoryConfigTests.cs`
+
+### Breaking Changes
+
+1. **Configuration Format Change**: Matcher `parameters` structure has changed
+   - Old: `parameters: { values: ["FOO", "BAR"], caseSensitive: false }`
+   - New: `parameters: [{ value: "FOO" }, { value: "BAR" }]`
+   - Migration required for existing `categories.json` files
+   - See [Matcher Refactoring Guide](docs/development/MATCHER_REFACTORING.md) for migration instructions
+
+2. **Case Sensitivity Removed**: All matching is now case-insensitive
+   - `caseSensitive` parameter has been removed
+   - No option to enable case-sensitive matching
+   - Existing case-sensitive matchers will need to be reviewed
+
+3. **Backwards Compatibility**: Legacy configuration format is not supported
+   - Old configuration files must be migrated manually
+   - No automatic migration is provided
 
 ## [2025.1.0] - 2025-11-27
 
@@ -244,113 +311,3 @@ Versions are automatically managed by [GitVersion](https://gitversion.net/) base
 - **Leap Year Date Parsing**: Fixed Feb 29 transaction parsing in non-leap years
   - Added automatic fallback to previous year when date is invalid
   - Handles Feb 29 transactions from 2024 when application runs in 2025+
-  - Prevents `ArgumentOutOfRangeException` for leap year dates
-  - Resolved missing transaction and total mismatch issues
-  - File: `CtfsMastercardTransactionParser.cs` (TryParseMonthDay method)
-  - Documentation: `docs/development/LEAP_YEAR_FIX.md`
-
-### Removed
-
-- **Checksum-based Identification**: Replaced with filename-based identification
-  - Removed `Checksum` property from `ParseResult` model
-  - Removed `LogChecksum` from `LogMessages`
-  - Filename is now primary identifier for tracking and logging
-  - Files: `ParseResult.cs`, `LogMessages.cs`
-
-- **Monthly CSV Output Files**: Removed per-month transaction file generation
-  - Replaced with single consolidated output file
-  - Simpler output structure and file management
-
-### Documentation
-
-- **Comprehensive Documentation**: Added extensive feature and development documentation
-  - Feature documentation in `docs/features/`
-  - Development documentation in `docs/development/`
-  - Classification guide: `docs/CLASSIFICATION_GUIDE.md`
-  - GitHub Copilot instructions for coding standards: `.github/copilot-instructions.md`
-  - README with architecture, usage, and contributing guidelines
-
-### Technical
-
-- **.NET 10**: Project targeting .NET 10
-- **C# 14.0**: Using latest C# language features
-- **Dependency Injection**: Microsoft.Extensions.DependencyInjection
-- **Configuration**: Microsoft.Extensions.Configuration with appsettings.json
-- **iText 9.4.0**: PDF text extraction library
-- **Serilog**: Structured logging framework
-- **MSTest**: Unit testing framework
-
-### Testing
-
-- **Comprehensive Test Suite**: Unit and integration tests
-  - Transaction parsing tests
-  - Edge case handling tests
-  - Real statement validation tests
-  - Transaction exclusion pattern tests
-  - Supplemental details filtering tests
-  - 28+ passing tests, 4 skipped (future features)
-  - Files: `TransactionParserTests.cs`, `TransactionParserEdgeCasesTests.cs`
-  - Files: `TransactionExclusionTests.cs`, `ParseResultTests.cs`, `RealStatementTests.cs`
-  - Files: `SupplementalDetailsTests.cs`, `TriangleStatement2025Oct21Tests.cs`
-
----
-
-## Project Information
-
-**Repository**: https://github.com/hellfirehd/DKW.TransactionExtractor  
-**License**: AGPL License  
-**Framework**: .NET 10  
-**Language**: C# 14.0  
-**Created**: 2025-11-25
-
-## Change Categories
-
-This changelog uses the following change categories:
-
-- **Added**: New features and functionality
-- **Changed**: Changes in existing functionality
-- **Deprecated**: Soon-to-be removed features
-- **Removed**: Removed features and functionality
-- **Fixed**: Bug fixes and corrections
-- **Security**: Security vulnerability fixes
-- **Documentation**: Documentation updates
-- **Technical**: Technical infrastructure changes
-- **Testing**: Test suite updates
-
-## Breaking Changes
-
-Breaking changes are marked with **Breaking Change** in the description and include:
-
-- Configuration format changes
-- API signature changes
-- Removed functionality
-
-## Migration Notes
-
-### Migrating from Years to Date Range (Unreleased)
-
-**Old configuration:**
-
-```json
-{
-  "AppOptions": {
-    "Years": [2024, 2025]
-  }
-}
-```
-
-**New configuration:**
-
-```json
-{
-  "AppOptions": {
-    "StartDate": "2024-01-01",
-    "EndDate": null
-  }
-}
-```
-
-- `StartDate` is inclusive (>=)
-- `EndDate` is exclusive (<)
-- Both are nullable - omit for no filtering on that bound
-- File naming must use YYYY-MM-DD format at start of filename

@@ -16,11 +16,15 @@ public abstract class TransactionMatcherBase : ITransactionMatcher
     public Boolean TryMatch(Transaction transaction)
     {
         if (transaction == null)
+        {
             return false;
+        }
 
         var description = transaction.Description;
         if (String.IsNullOrWhiteSpace(description))
+        {
             return false;
+        }
 
         return TryMatchCore(transaction, description);
     }
@@ -39,7 +43,9 @@ public abstract class TransactionMatcherBase : ITransactionMatcher
     protected static Boolean AmountsEqual(Decimal? expected, Decimal actual)
     {
         if (!expected.HasValue)
+        {
             return true; // no amount requirement
+        }
 
         return Decimal.Round(actual, 2) == Decimal.Round(expected.Value, 2);
     }

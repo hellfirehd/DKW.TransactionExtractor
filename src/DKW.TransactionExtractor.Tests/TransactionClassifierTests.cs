@@ -2,7 +2,6 @@ using DKW.TransactionExtractor.Classification;
 using DKW.TransactionExtractor.Models;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using System.Text.Json;
 using Xunit;
 
 namespace DKW.TransactionExtractor.Tests;
@@ -54,16 +53,12 @@ public class TransactionClassifierTests
                 new CategoryMatcher
                 {
                     Type = "Contains",
-                    Parameters = new Dictionary<String, Object>
-                    {
-                        ["values"] = JsonSerializer.SerializeToElement(new[] { "WALMART" }),
-                        ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
-                    }
+                    Parameters = [new MatcherValue("WALMART", null)]
                 }
             ]
         };
 
-        _mockCategoryService.GetAllCategories().Returns([category]);
+        _mockCategoryService.GetCategories().Returns([category]);
 
         var transactions = new List<Transaction>
         {
@@ -90,7 +85,7 @@ public class TransactionClassifierTests
     public void ClassifyTransactions_NoMatch_PromptsUser()
     {
         // Arrange: No matching categories
-        _mockCategoryService.GetAllCategories().Returns([]);
+        _mockCategoryService.GetCategories().Returns([]);
 
         var selectionResult = new CategorySelectionResult(
             CategoryId: "entertainment",
@@ -126,7 +121,7 @@ public class TransactionClassifierTests
     public void ClassifyTransactions_UserRequestsExit_StopsProcessing()
     {
         // Arrange
-        _mockCategoryService.GetAllCategories().Returns([]);
+        _mockCategoryService.GetCategories().Returns([]);
 
         var exitResult = new CategorySelectionResult(
             CategoryId: "",
@@ -158,15 +153,11 @@ public class TransactionClassifierTests
     public void ClassifyTransactions_CreateNewCategory_AddsCategory()
     {
         // Arrange: No existing categories
-        _mockCategoryService.GetAllCategories().Returns([]);
+        _mockCategoryService.GetCategories().Returns([]);
 
         var matcherRequest = new MatcherCreationRequest(
             MatcherType: "Contains",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["values"] = new[] { "COFFEE" },
-                ["caseSensitive"] = false
-            }
+            Parameters: [new MatcherValue("COFFEE", null)]
         );
 
         var selectionResult = new CategorySelectionResult(
@@ -205,15 +196,11 @@ public class TransactionClassifierTests
     public void ClassifyTransactions_AddMatcherToExistingCategory_AddsMatcherOnly()
     {
         // Arrange: Existing category without matching rule for this transaction
-        _mockCategoryService.GetAllCategories().Returns([]);
+        _mockCategoryService.GetCategories().Returns([]);
 
         var matcherRequest = new MatcherCreationRequest(
             MatcherType: "Contains",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["values"] = new[] { "TARGET" },
-                ["caseSensitive"] = false
-            }
+            Parameters: [new MatcherValue("TARGET", null)]
         );
 
         var selectionResult = new CategorySelectionResult(
@@ -259,11 +246,7 @@ public class TransactionClassifierTests
                     new CategoryMatcher
                     {
                         Type = "Contains",
-                        Parameters = new Dictionary<String, Object>
-                        {
-                            ["values"] = JsonSerializer.SerializeToElement(new[] { "WALMART" }),
-                            ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
-                        }
+                        Parameters = [new MatcherValue("WALMART", null)]
                     }
                 ]
             },
@@ -275,17 +258,13 @@ public class TransactionClassifierTests
                     new CategoryMatcher
                     {
                         Type = "Contains",
-                        Parameters = new Dictionary<String, Object>
-                        {
-                            ["values"] = JsonSerializer.SerializeToElement(new[] { "MCDONALD" }),
-                            ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
-                        }
+                        Parameters = [new MatcherValue("MCDONALD", null)]
                     }
                 ]
             }
         };
 
-        _mockCategoryService.GetAllCategories().Returns(categories);
+        _mockCategoryService.GetCategories().Returns(categories);
 
         var transactions = new List<Transaction>
         {
@@ -316,25 +295,17 @@ public class TransactionClassifierTests
                 new CategoryMatcher
                 {
                     Type = "Contains",
-                    Parameters = new Dictionary<String, Object>
-                    {
-                        ["values"] = JsonSerializer.SerializeToElement(new[] { "WALMART" }),
-                        ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
-                    }
+                    Parameters = [new MatcherValue("WALMART", null)]
                 },
                 new CategoryMatcher
                 {
                     Type = "Contains",
-                    Parameters = new Dictionary<String, Object>
-                    {
-                        ["values"] = JsonSerializer.SerializeToElement(new[] { "SUPER" }), // Would also match
-                        ["caseSensitive"] = JsonSerializer.SerializeToElement(false)
-                    }
+                    Parameters = [new MatcherValue("SUPER", null)]
                 }
             ]
         };
 
-        _mockCategoryService.GetAllCategories().Returns([category]);
+        _mockCategoryService.GetCategories().Returns([category]);
 
         var transactions = new List<Transaction>
         {
@@ -354,40 +325,10 @@ public class TransactionClassifierTests
     }
 
     [Fact]
-    public void ClassifyTransactions_CategoryIdNormalized_UsesNormalizedId()
-    {
-        // Arrange
-        _mockCategoryService.GetAllCategories().Returns([]);
-
-        var selectionResult = new CategorySelectionResult(
-            CategoryId: "Coffee Shops & Cafes!", // Non-normalized ID
-            CategoryName: "Coffee Shops & Cafes",
-            MatcherRequest: null,
-            RequestedExit: false
-        );
-
-        _mockConsoleInteraction.PromptForCategory(Arg.Any<TransactionContext>())
-            .Returns(selectionResult);
-
-        _mockCategoryService.CategoryExists("coffee-shops-cafes").Returns(true); // Normalized version
-
-        var transactions = new List<Transaction>
-        {
-            new() { TransactionDate = DateTime.Now, Description = "STARBUCKS", Amount = 5m }
-        };
-
-        // Act
-        var result = _classifier.ClassifyTransactions(transactions);
-
-        // Assert: Should use normalized ID
-        Assert.Equal("coffee-shops-cafes", result.ClassifiedTransactions[0].CategoryId);
-    }
-
-    [Fact]
     public void ClassifyTransactions_ContextPassedCorrectly_ContainsProgressInfo()
     {
         // Arrange
-        _mockCategoryService.GetAllCategories().Returns([]);
+        _mockCategoryService.GetCategories().Returns([]);
 
         var capturedContexts = new List<TransactionContext>();
         _mockConsoleInteraction.PromptForCategory(Arg.Do<TransactionContext>(capturedContexts.Add))

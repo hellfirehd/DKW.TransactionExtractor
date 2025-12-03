@@ -52,12 +52,6 @@ public class CategoryRepositoryTests : IDisposable
     [Fact]
     public void Save_ValidConfig_WritesFileSuccessfully()
     {
-        var valuesArray = new[]
-        {
-            JsonSerializer.SerializeToElement(new { value = "WALMART" }),
-            JsonSerializer.SerializeToElement(new { value = "TARGET" })
-        };
-
         var config = new CategoryConfig
         {
             Categories =
@@ -71,10 +65,10 @@ public class CategoryRepositoryTests : IDisposable
                         new CategoryMatcher
                         {
                             Type = "ExactMatch",
-                            Parameters = new Dictionary<String, Object>
-                            {
-                                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
-                            }
+                            Parameters = [
+                                new MatcherValue("WALMART", null),
+                                new MatcherValue("TARGET", 9.00m)
+                            ]
                         }
                     ]
                 }
@@ -113,10 +107,10 @@ public class CategoryRepositoryTests : IDisposable
                         new CategoryMatcher
                         {
                             Type = "Contains",
-                            Parameters = new Dictionary<String, Object>
-                            {
-                                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
-                            }
+                            Parameters = [
+                                new MatcherValue("MCDONALD", null),
+                                new MatcherValue("WENDY", null)
+                            ]
                         }
                     ]
                 }
@@ -185,11 +179,7 @@ public class CategoryRepositoryTests : IDisposable
         var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) };
 
         var matcherRequest = new MatcherCreationRequest(
-            MatcherType: "ExactMatch",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
-            }
+            "ExactMatch", [new MatcherValue("WALMART", null)]
         );
 
         _repository.AddMatcherToCategory("groceries", matcherRequest);
@@ -202,7 +192,7 @@ public class CategoryRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void AddMatcherToCategory_RegexMatcher_AddsAsNewInstance()
+    public void AddMatcherToCategory_RegexMatcher_MergesValues()
     {
         // Arrange: Create a category with existing regex matcher
         var category = new Category
@@ -214,38 +204,35 @@ public class CategoryRepositoryTests : IDisposable
                 new CategoryMatcher
                 {
                     Type = "Regex",
-                    Parameters = new Dictionary<String, Object>
-                    {
-                        ["pattern"] = JsonSerializer.SerializeToElement("^WALMART #\\d+")
-                    }
+                    Parameters = [
+                        new MatcherValue("^WALMART #\\d+", null)
+                    ]
                 }
             ]
         };
         _repository.AddCategory(category);
 
         // Act: Add another regex matcher
-        var matcherRequest = new MatcherCreationRequest(
-            MatcherType: "Regex",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["pattern"] = JsonSerializer.SerializeToElement("^TARGET #\\d+")
-            }
-        );
+        var matcherRequest = new MatcherCreationRequest("Regex", [new MatcherValue("^TARGET #\\d+", null)]);
 
         _repository.AddMatcherToCategory("stores", matcherRequest);
 
         // Assert: Should have 2 separate regex matchers (no merging)
         var config = _repository.Load();
         var savedCategory = config.Categories.First(c => c.Id == "stores");
-        Assert.Equal(2, savedCategory.Matchers.Count);
+        Assert.Single(savedCategory.Matchers);
         Assert.All(savedCategory.Matchers, m => Assert.Equal("Regex", m.Type));
+        Assert.Equal(2, savedCategory.Matchers[0].Parameters.Count);
     }
 
     [Fact]
-    public void AddMatcherToCategory_ExactMatchWithSameCaseSensitivity_MergesValues()
+    public void AddMatcherToCategory_ExactMatchWithAmount_MergesValues()
     {
         // Arrange: Create a category with existing ExactMatch matcher
-        var existingValues = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) };
+        var existingValues = new[] {
+            JsonSerializer.SerializeToElement(new { value = "WALMART", amount = 20.00m }),
+            JsonSerializer.SerializeToElement(new { value = "COSTCO", amount = 30.00m })
+        };
         var category = new Category
         {
             Id = "groceries",
@@ -255,24 +242,17 @@ public class CategoryRepositoryTests : IDisposable
                 new CategoryMatcher
                 {
                     Type = "ExactMatch",
-                    Parameters = new Dictionary<String, Object>
-                    {
-                        ["values"] = JsonSerializer.SerializeToElement(existingValues)
-                    }
+                    Parameters = [
+                        new MatcherValue("WALMART", 20.00m),
+                        new MatcherValue("COSTCO", 30.00m)
+                    ]
                 }
             ]
         };
         _repository.AddCategory(category);
 
         // Act: Add another ExactMatch
-        var newValues = new[] { JsonSerializer.SerializeToElement(new { value = "TARGET" }), JsonSerializer.SerializeToElement(new { value = "COSTCO" }) };
-        var matcherRequest = new MatcherCreationRequest(
-            MatcherType: "ExactMatch",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(newValues)
-            }
-        );
+        var matcherRequest = new MatcherCreationRequest("ExactMatch", [new MatcherValue("TARGET", 10.00m)]);
 
         _repository.AddMatcherToCategory("groceries", matcherRequest);
 
@@ -284,63 +264,61 @@ public class CategoryRepositoryTests : IDisposable
         var matcher = savedCategory.Matchers[0];
         Assert.Equal("ExactMatch", matcher.Type);
 
-        var values = ExtractValuesFromParameters(matcher.Parameters);
-        Assert.Equal(3, values.Length);
-        Assert.Contains("WALMART", values);
-        Assert.Contains("TARGET", values);
-        Assert.Contains("COSTCO", values);
+        Assert.Equal(3, matcher.Parameters.Count);
+        Assert.Single(matcher.Parameters, p => p.Value == "WALMART");
+        Assert.Single(matcher.Parameters, p => p.Value == "TARGET");
+        Assert.Single(matcher.Parameters, p => p.Value == "COSTCO");
     }
 
     [Fact]
-    public void AddMatcherToCategory_ExactMatchWithDifferentCaseSensitivity_CreatesNewMatcher()
+    public void AddMatcherToCategory_ExactMatchWithoutAmount_MergesValues()
     {
-        // This test updated for removed caseSensitivity: adding an ExactMatch will merge since all matchers are case-insensitive
-        var existingValues = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) };
-        var category = new Category
+        var json = """
         {
-            Id = "stores",
-            Name = "Stores",
-            Matchers =
-            [
-                new CategoryMatcher
+            "categories": [
                 {
-                    Type = "ExactMatch",
-                    Parameters = new Dictionary<String, Object>
+                  "id": "kids-gifts",
+                  "name": "Kids - Gifts",
+                  "matchers": [
                     {
-                        ["values"] = JsonSerializer.SerializeToElement(existingValues)
+                        "type": "ExactMatch",
+                        "parameters": [
+                            {
+                                "value": "INDIGO 916 KELOWNA BC"
+                            }
+                        ]
                     }
+                  ]
                 }
             ]
-        };
-        _repository.AddCategory(category);
+        }
+        """;
+        _repository.LoadFromJson(json);
 
-        // Act: Add another ExactMatch (previously case-sensitive difference created new matcher)
-        var matcherRequest = new MatcherCreationRequest(
-            MatcherType: "ExactMatch",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { JsonSerializer.SerializeToElement(new { value = "TARGET" }) })
-            }
-        );
+        // Act: Add another ExactMatch
+        var matcherRequest = new MatcherCreationRequest("ExactMatch", [new MatcherValue("TARGET", null)]);
 
-        _repository.AddMatcherToCategory("stores", matcherRequest);
+        _repository.AddMatcherToCategory("kids-gifts", matcherRequest);
 
-        // Assert: Should merge into single matcher under new rules
-        var config = _repository.Load();
-        var savedCategory = config.Categories.First(c => c.Id == "stores");
+        // Assert
+        var config = _repository.GetConfig();
+
+        // Assert: Should merge into single matcher with all values
+        var savedCategory = config.Categories.First(c => c.Id == "kids-gifts");
         Assert.Single(savedCategory.Matchers);
+
+        var matcher = savedCategory.Matchers[0];
+        Assert.Equal("ExactMatch", matcher.Type);
+
+        Assert.Equal(2, matcher.Parameters.Count);
+        Assert.Single(matcher.Parameters, p => p.Value == "INDIGO 916 KELOWNA BC");
+        Assert.Single(matcher.Parameters, p => p.Value == "TARGET");
     }
 
     [Fact]
     public void AddMatcherToCategory_NonExistentCategory_DoesNotThrow()
     {
-        var matcherRequest = new MatcherCreationRequest(
-            MatcherType: "ExactMatch",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) })
-            }
-        );
+        var matcherRequest = new MatcherCreationRequest("ExactMatch", [new MatcherValue("WALMART", null)]);
 
         // Should not throw, just log warning
         _repository.AddMatcherToCategory("nonexistent", matcherRequest);
@@ -399,7 +377,6 @@ public class CategoryRepositoryTests : IDisposable
     public void AddMatcherToCategory_ContainsMatcherMerging_WorksCorrectly()
     {
         // Arrange: Create category with Contains matcher
-        var existingValues = new[] { JsonSerializer.SerializeToElement(new { value = "MCDONALD" }) };
         var category = new Category
         {
             Id = "restaurants",
@@ -409,24 +386,14 @@ public class CategoryRepositoryTests : IDisposable
                 new CategoryMatcher
                 {
                     Type = "Contains",
-                    Parameters = new Dictionary<String, Object>
-                    {
-                        ["values"] = JsonSerializer.SerializeToElement(existingValues)
-                    }
+                    Parameters = [new MatcherValue("MCDONALD", null)]
                 }
             ]
         };
         _repository.AddCategory(category);
 
         // Act: Add another Contains matcher
-        var newValues = new[] { JsonSerializer.SerializeToElement(new { value = "WENDY" }), JsonSerializer.SerializeToElement(new { value = "BURGER" }) };
-        var matcherRequest = new MatcherCreationRequest(
-            MatcherType: "Contains",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(newValues)
-            }
-        );
+        var matcherRequest = new MatcherCreationRequest("Contains", [new MatcherValue("WENDY", null)]);
 
         _repository.AddMatcherToCategory("restaurants", matcherRequest);
 
@@ -435,18 +402,15 @@ public class CategoryRepositoryTests : IDisposable
         var savedCategory = config.Categories.First(c => c.Id == "restaurants");
         Assert.Single(savedCategory.Matchers);
 
-        var values = ExtractValuesFromParameters(savedCategory.Matchers[0].Parameters);
-        Assert.Equal(3, values.Length);
-        Assert.Contains("MCDONALD", values);
-        Assert.Contains("WENDY", values);
-        Assert.Contains("BURGER", values);
+        Assert.Equal(2, savedCategory.Matchers[0].Parameters.Count);
+        Assert.Single(savedCategory.Matchers[0].Parameters, p => p.Value == "MCDONALD");
+        Assert.Single(savedCategory.Matchers[0].Parameters, p => p.Value == "WENDY");
     }
 
     [Fact]
     public void AddMatcherToCategory_DuplicateValues_DeduplicatesCorrectly()
     {
         // Arrange: Create category with matcher
-        var existingValues = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }), JsonSerializer.SerializeToElement(new { value = "TARGET" }) };
         var category = new Category
         {
             Id = "stores",
@@ -456,60 +420,30 @@ public class CategoryRepositoryTests : IDisposable
                 new CategoryMatcher
                 {
                     Type = "ExactMatch",
-                    Parameters = new Dictionary<String, Object>
-                    {
-                        ["values"] = JsonSerializer.SerializeToElement(existingValues)
-                    }
+                    Parameters = [
+                        new MatcherValue("WALMART", null),
+                        new MatcherValue("TARGET", null)
+                        ]
                 }
             ]
         };
         _repository.AddCategory(category);
 
         // Act: Add matcher with duplicate value
-        var matcherRequest = new MatcherCreationRequest(
-            MatcherType: "ExactMatch",
-            Parameters: new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }), JsonSerializer.SerializeToElement(new { value = "COSTCO" }) }) // WALMART is duplicate
-            }
-        );
+        var matcherRequest = new MatcherCreationRequest("ExactMatch", [
+            new MatcherValue("WALMART", null), // Duplicate
+            new MatcherValue("COSTCO", null)]
+            );
 
         _repository.AddMatcherToCategory("stores", matcherRequest);
 
         // Assert: WALMART should only appear once
         var config = _repository.Load();
         var savedCategory = config.Categories.First(c => c.Id == "stores");
-        var values = ExtractValuesFromParameters(savedCategory.Matchers[0].Parameters);
 
-        Assert.Equal(3, values.Length); // WALMART, TARGET, COSTCO (no duplicate)
-        Assert.Single(values, v => v == "WALMART");
-    }
-
-    private static String[] ExtractValuesFromParameters(Dictionary<String, Object> parameters)
-    {
-        if (parameters.TryGetValue("values", out var valuesObj))
-        {
-            if (valuesObj is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
-            {
-                return jsonElement.EnumerateArray()
-                    .Select(e =>
-                    {
-                        if (e.ValueKind == JsonValueKind.Object && e.TryGetProperty("value", out var v))
-                            return v.GetString() ?? String.Empty;
-                        return e.GetString() ?? String.Empty;
-                    })
-                    .ToArray();
-            }
-            else if (valuesObj is String[] stringArray)
-            {
-                return stringArray;
-            }
-            else if (valuesObj is IEnumerable<String> enumerable)
-            {
-                return enumerable.ToArray();
-            }
-        }
-
-        return Array.Empty<String>();
+        Assert.Equal(3, savedCategory.Matchers[0].Parameters.Count);// WALMART, TARGET, COSTCO (no duplicate)
+        Assert.Single(savedCategory.Matchers[0].Parameters, p => p.Value == "WALMART");
+        Assert.Single(savedCategory.Matchers[0].Parameters, p => p.Value == "TARGET");
+        Assert.Single(savedCategory.Matchers[0].Parameters, p => p.Value == "COSTCO");
     }
 }

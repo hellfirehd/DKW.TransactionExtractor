@@ -11,18 +11,23 @@ namespace DKW.TransactionExtractor.Tests;
 /// </summary>
 public class MatcherFactoryTests
 {
+    private static readonly JsonSerializerOptions JSO = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     [Fact]
     public void CreateMatcher_ExactMatchType_CreatesExactMatcher()
     {
-        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }), JsonSerializer.SerializeToElement(new { value = "TARGET" }) };
-
         var matcherConfig = new CategoryMatcher
         {
             Type = "ExactMatch",
-            Parameters = new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
-            }
+            Parameters = [
+                new MatcherValue("WALMART", null),
+                new MatcherValue("TARGET", null)
+            ]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -36,15 +41,13 @@ public class MatcherFactoryTests
     [Fact]
     public void CreateMatcher_ContainsType_CreatesContainsMatcher()
     {
-        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "COFFEE" }), JsonSerializer.SerializeToElement(new { value = "TEA" }) };
-
         var matcherConfig = new CategoryMatcher
         {
             Type = "Contains",
-            Parameters = new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
-            }
+            Parameters = [
+                new MatcherValue("COFFEE", null),
+                new MatcherValue("TEA", null)
+            ]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -61,10 +64,9 @@ public class MatcherFactoryTests
         var matcherConfig = new CategoryMatcher
         {
             Type = "Regex",
-            Parameters = new Dictionary<String, Object>
-            {
-                ["pattern"] = JsonSerializer.SerializeToElement("^WALMART #\\d+")
-            }
+            Parameters = [
+                new MatcherValue("^WALMART #\\d+", null)
+            ]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -81,7 +83,7 @@ public class MatcherFactoryTests
         var matcherConfig = new CategoryMatcher
         {
             Type = "UnknownMatcher",
-            Parameters = new Dictionary<String, Object>()
+            Parameters = []
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -98,32 +100,12 @@ public class MatcherFactoryTests
     }
 
     [Fact]
-    public void CreateMatcher_MissingValuesParameter_ReturnsNull()
-    {
-        var matcherConfig = new CategoryMatcher
-        {
-            Type = "ExactMatch",
-            Parameters = new Dictionary<String, Object>
-            {
-                // Missing "values" parameter
-            }
-        };
-
-        var matcher = MatcherFactory.CreateMatcher(matcherConfig);
-
-        Assert.Null(matcher);
-    }
-
-    [Fact]
     public void CreateMatcher_MissingPatternParameter_ReturnsNull()
     {
         var matcherConfig = new CategoryMatcher
         {
             Type = "Regex",
-            Parameters = new Dictionary<String, Object>
-            {
-                // Missing "pattern" parameter
-            }
+            Parameters = []
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -132,15 +114,12 @@ public class MatcherFactoryTests
     }
 
     [Fact]
-    public void CreateMatcher_EmptyValuesArray_ReturnsNull()
+    public void CreateMatcher_EmptyParametersArray_ReturnsNull()
     {
         var matcherConfig = new CategoryMatcher
         {
             Type = "ExactMatch",
-            Parameters = new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(Array.Empty<JsonElement>())
-            }
+            Parameters = []
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -154,10 +133,7 @@ public class MatcherFactoryTests
         var matcherConfig = new CategoryMatcher
         {
             Type = "Regex",
-            Parameters = new Dictionary<String, Object>
-            {
-                ["pattern"] = JsonSerializer.SerializeToElement("[invalid(regex")
-            }
+            Parameters = [new MatcherValue("[invalid(regex", null)]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -168,16 +144,12 @@ public class MatcherFactoryTests
     [Fact]
     public void CreateMatcher_DefaultCaseSensitivity_UsesInsensitive()
     {
-        // caseSensitive parameter removed; behavior is always case-insensitive
-        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) };
-
         var matcherConfig = new CategoryMatcher
         {
             Type = "ExactMatch",
-            Parameters = new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
-            }
+            Parameters = [
+                new MatcherValue("WALMART", null)
+            ]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -189,15 +161,14 @@ public class MatcherFactoryTests
     [Fact]
     public void CreateMatcher_MultipleValues_AllWorkCorrectly()
     {
-        var valuesArray = new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }), JsonSerializer.SerializeToElement(new { value = "TARGET" }), JsonSerializer.SerializeToElement(new { value = "COSTCO" }) };
-
         var matcherConfig = new CategoryMatcher
         {
             Type = "Contains",
-            Parameters = new Dictionary<String, Object>
-            {
-                ["values"] = JsonSerializer.SerializeToElement(valuesArray)
-            }
+            Parameters = [
+                new MatcherValue("WALMART", null),
+                new MatcherValue("TARGET", null),
+                new MatcherValue("COSTCO", null)
+            ]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -219,22 +190,14 @@ public class MatcherFactoryTests
     [InlineData("regex")]
     public void CreateMatcher_CaseInsensitiveTypeNames_WorksCorrectly(String matcherType)
     {
-        var valuesArray = matcherType.Equals("regex", StringComparison.CurrentCultureIgnoreCase)
-            ? new[] { JsonSerializer.SerializeToElement(new { value = "WALMART" }) }
-            : [JsonSerializer.SerializeToElement(new { value = "WALMART" })];
-
         var matcherConfig = new CategoryMatcher
         {
             Type = matcherType,
-            Parameters = matcherType.Equals("regex", StringComparison.CurrentCultureIgnoreCase)
-                ? new Dictionary<String, Object>
-                {
-                    ["pattern"] = JsonSerializer.SerializeToElement("WALMART")
-                }
-                : new Dictionary<String, Object>
-                {
-                    ["values"] = JsonSerializer.SerializeToElement(valuesArray)
-                }
+            Parameters = [
+                new MatcherValue("WALMART", null),
+                new MatcherValue("TARGET", null),
+                new MatcherValue("COSTCO", null)
+            ]
         };
 
         var matcher = MatcherFactory.CreateMatcher(matcherConfig);
@@ -250,13 +213,15 @@ public class MatcherFactoryTests
         var json = """
             {
                 "Type": "ExactMatch",
-                "Parameters": {
-                    "values": ["MCDONALD'S", "WENDY'S", "BURGER KING"]
-                }
+                "Parameters": [
+                    { "value":"MCDONALD'S" },
+                    { "value": "WENDY'S" },
+                    { "value":"BURGER KING" }
+                ]
             }
             """;
 
-        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json);
+        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, JSO);
         var matcher = MatcherFactory.CreateMatcher(matcherConfig!);
 
         Assert.NotNull(matcher);
@@ -271,22 +236,26 @@ public class MatcherFactoryTests
     public void CreateMatcher_RealWorldContainsConfig_WorksCorrectly()
     {
         var json = """
-            {
-                "Type": "Contains",
-                "Parameters": {
-                    "values": ["COFFEE", "CAFE", "ESPRESSO"]
+        {
+            "type": "Contains",
+            "parameters": [
+                {
+                    "value": "GIRL GUIDES"
+                },
+                {
+                    "value": "THUNDERBIRD EMAIL"
                 }
-            }
-            """;
+            ]
+        }
+        """;
 
-        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json);
+        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, JSO);
         var matcher = MatcherFactory.CreateMatcher(matcherConfig!);
 
         Assert.NotNull(matcher);
         Assert.IsType<ContainsMatcher>(matcher);
-        Assert.True(matcher.TryMatch(new Transaction { Description = "STARBUCKS COFFEE", Amount = 0m }));
-        Assert.True(matcher.TryMatch(new Transaction { Description = "LOCAL CAFE", Amount = 0m }));
-        Assert.True(matcher.TryMatch(new Transaction { Description = "ESPRESSO BAR", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "GIRL GUIDES", Amount = 0m }));
+        Assert.True(matcher.TryMatch(new Transaction { Description = "THUNDERBIRD EMAIL", Amount = 0m }));
     }
 
     [Fact]
@@ -295,13 +264,13 @@ public class MatcherFactoryTests
         var json = """
             {
                 "Type": "Regex",
-                "Parameters": {
-                    "pattern": "^WALMART #\\d{4,5}"
-                }
+                "Parameters": [
+                    {"value": "^WALMART #\\d{4,5}"}
+                ]
             }
             """;
 
-        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json);
+        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, JSO);
         var matcher = MatcherFactory.CreateMatcher(matcherConfig!);
 
         Assert.NotNull(matcher);

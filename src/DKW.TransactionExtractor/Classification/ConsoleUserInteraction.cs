@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace DKW.TransactionExtractor.Classification;
+﻿namespace DKW.TransactionExtractor.Classification;
 
 public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInteraction
 {
@@ -131,22 +129,15 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
         return input;
     }
 
-    public Decimal? PromptForOptionalAmount(String prompt)
+    public Decimal? PromptForOptionalAmount(TransactionContext context, Boolean defaultToInclude)
     {
-        Console.Write($"{prompt}: ");
-        var input = Console.ReadLine()?.Trim();
+        var response = PromptYesNo($"Include the amount {context.Transaction.Amount:c} when matching?", defaultToInclude);
 
-        if (String.IsNullOrWhiteSpace(input))
+        if (response)
         {
-            return null;
+            return context.Transaction.Amount;
         }
 
-        if (Decimal.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
-        {
-            return Decimal.Round(parsed, 2);
-        }
-
-        Console.WriteLine("Invalid amount entered. Ignoring amount.");
         return null;
     }
 
@@ -178,7 +169,10 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
 
     private CategorySelectionResult SelectExistingCategory(TransactionContext context)
     {
-        var sortedCategories = _categoryService.GetAvailableCategories();
+        var sortedCategories = _categoryService
+            .GetCategories()
+            .OrderBy(c => c.Name)
+            .ToList();
 
         Console.WriteLine();
         Console.WriteLine("Existing categories:");
@@ -272,29 +266,29 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
 
     private MatcherCreationRequest BuildExactMatcher(TransactionContext context)
     {
-        var transactionDescription = context?.Transaction.Description ?? String.Empty;
+        ArgumentNullException.ThrowIfNull(context);
 
         Console.WriteLine();
-        Console.WriteLine($"ExactMatch will match: '{transactionDescription}'");
+        Console.WriteLine($"ExactMatch will match: '{context.Transaction.Description}'");
 
-        var amount = PromptForOptionalAmount("Enter amount to match (optional, press Enter to skip). Use negative values for refunds");
+        context.MatcherText = context.Transaction.Description;
 
-        var request = MatcherCreationRequest.ExactMatch(
-            new[] { (value: transactionDescription, amount: amount) }
-        );
+        var amount = PromptForOptionalAmount(context, defaultToInclude: true);
+
+        context.IncludeAmountInMatcher = amount is not null;
+
+        var request = MatcherCreationRequest.ExactMatch(context);
 
         Console.WriteLine();
-        Console.WriteLine($"✓ Will add ExactMatch rule for '{transactionDescription}'");
+        Console.WriteLine($"Added ExactMatch rule for '{context.Transaction.Description}'");
 
         return request;
     }
 
     private MatcherCreationRequest? BuildContainsMatcher(TransactionContext context)
     {
-        var transactionDescription = context?.Transaction.Description ?? String.Empty;
-
         Console.WriteLine();
-        Console.WriteLine($"Current description: '{transactionDescription}'");
+        Console.WriteLine($"Current description: '{context.Transaction.Description}'");
 
         var substring = PromptForText("Enter the substring to match", allowEmpty: false);
 
@@ -304,14 +298,16 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
             return null;
         }
 
-        var amount = PromptForOptionalAmount("Enter amount to match (optional, press Enter to skip). Use negative values for refunds");
+        context.MatcherText = substring;
 
-        var request = MatcherCreationRequest.Contains(
-            new[] { (value: substring, amount: amount) }
-        );
+        var amount = PromptForOptionalAmount(context, defaultToInclude: false);
+
+        context.IncludeAmountInMatcher = amount is not null;
+
+        var request = MatcherCreationRequest.Contains(context);
 
         Console.WriteLine();
-        Console.WriteLine($"✓ Will add Contains rule for '{substring}'");
+        Console.WriteLine($"Added Contains rule for '{substring}'");
         Console.WriteLine("  (This will be merged with any existing Contains rules)");
 
         return request;
@@ -319,10 +315,8 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
 
     private MatcherCreationRequest? BuildRegexMatcher(TransactionContext context)
     {
-        var transactionDescription = context?.Transaction.Description ?? String.Empty;
-
         Console.WriteLine();
-        Console.WriteLine($"Current description: '{transactionDescription}'");
+        Console.WriteLine($"Current description: '{context.Transaction.Description}'");
         Console.WriteLine("Enter a regular expression pattern.");
         Console.WriteLine("Examples:");
         Console.WriteLine("  - Match Starbucks with store number: STARBUCKS\\s+#\\d+");
@@ -336,10 +330,16 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
             return null;
         }
 
-        var request = MatcherCreationRequest.Regex(pattern);
+        context.MatcherText = pattern;
+
+        var amount = PromptForOptionalAmount(context, defaultToInclude: false);
+
+        context.IncludeAmountInMatcher = amount is not null;
+
+        var request = MatcherCreationRequest.Regex(context);
 
         Console.WriteLine();
-        Console.WriteLine($"✓ Will add Regex rule for pattern '{pattern}'");
+        Console.WriteLine($"Added Regex rule for pattern '{pattern}'");
 
         return request;
     }

@@ -25,7 +25,7 @@ public class PdfCharacterSanitizationTests
     {
         // Simulate what happens in ExtractTextFromPdf: sanitize then parse
         var sanitizedText = CtfsMastercardPdfTextExtractor.SanitizeExtractedText(rawText);
-        var context = new ParseContext { Text = sanitizedText, FileName = fileName };
+        var context = new StatementContext { RawText = sanitizedText, FileName = fileName };
         return _parser.Parse(context);
     }
 

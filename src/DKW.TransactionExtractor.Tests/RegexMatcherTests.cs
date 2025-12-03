@@ -13,7 +13,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_SimplePattern_MatchesCorrectly()
     {
-        var matcher = new RegexMatcher("^WALMART", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("^WALMART", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART SUPERCENTER", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "walmart store", Amount = 0m }));
@@ -23,7 +23,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_WildcardPattern_MatchesCorrectly()
     {
-        var matcher = new RegexMatcher("WALMART.*#\\d+", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("WALMART.*#\\d+", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART SUPERCENTER #1234", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #5678", Amount = 0m }));
@@ -33,7 +33,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_AlternationPattern_MatchesEither()
     {
-        var matcher = new RegexMatcher("(WALMART|TARGET|COSTCO)", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("(WALMART|TARGET|COSTCO)", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #1234", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "TARGET STORE", Amount = 0m }));
@@ -42,19 +42,9 @@ public class RegexMatcherTests
     }
 
     [Fact]
-    public void TryMatch_CaseSensitive_OnlyMatchesCorrectCase()
-    {
-        var matcher = new RegexMatcher("^WALMART", ignoreCase: false);
-
-        Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART SUPERCENTER", Amount = 0m }));
-        Assert.False(matcher.TryMatch(new Transaction { Description = "walmart supercenter", Amount = 0m }));
-        Assert.False(matcher.TryMatch(new Transaction { Description = "Walmart Supercenter", Amount = 0m }));
-    }
-
-    [Fact]
     public void TryMatch_CaseInsensitive_MatchesAnyCase()
     {
-        var matcher = new RegexMatcher("^walmart", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("^walmart", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART SUPERCENTER", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "walmart supercenter", Amount = 0m }));
@@ -64,7 +54,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_EmptyInput_ReturnsFalse()
     {
-        var matcher = new RegexMatcher("WALMART", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.False(matcher.TryMatch(new Transaction { Description = String.Empty, Amount = 0m }));
         Assert.False(matcher.TryMatch(new Transaction { Description = "   ", Amount = 0m }));
@@ -73,7 +63,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_NullInput_ReturnsFalse()
     {
-        var matcher = new RegexMatcher("WALMART", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.False(matcher.TryMatch(null!));
     }
@@ -81,19 +71,19 @@ public class RegexMatcherTests
     [Fact]
     public void Constructor_InvalidRegexPattern_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => new RegexMatcher("[invalid(regex", ignoreCase: false));
+        Assert.Throws<ArgumentException>(() => new RegexMatcher([new MatcherValue("[invalid(regex", null)]));
     }
 
     [Fact]
     public void Constructor_NullPattern_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new RegexMatcher(null!, ignoreCase: false));
+        Assert.Throws<ArgumentNullException>(() => new RegexMatcher([new MatcherValue(null!, null)]));
     }
 
     [Fact]
     public void Constructor_EmptyPattern_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => new RegexMatcher(String.Empty, ignoreCase: false));
+        Assert.Throws<ArgumentException>(() => new RegexMatcher([new MatcherValue(String.Empty, null)]));
     }
 
     [Theory]
@@ -105,7 +95,7 @@ public class RegexMatcherTests
     [InlineData("\\d{3}-\\d{4}", "PHONE: 5551234", false)]
     public void TryMatch_VariousPatterns_WorkCorrectly(String pattern, String input, Boolean expected)
     {
-        var matcher = new RegexMatcher(pattern, ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue(pattern, null)]);
 
         var result = matcher.TryMatch(new Transaction { Description = input, Amount = 0m });
 
@@ -115,7 +105,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_StoreNumberPattern_ExtractsCorrectly()
     {
-        var matcher = new RegexMatcher("#\\d{4,5}", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("#\\d{4,5}", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #1234", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "TARGET #56789", Amount = 0m }));
@@ -126,7 +116,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_DatePattern_MatchesCorrectly()
     {
-        var matcher = new RegexMatcher("\\d{2}/\\d{2}/\\d{4}", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("\\d{2}/\\d{2}/\\d{4}", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "PAYMENT ON 10/15/2024", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "12/31/2024", Amount = 0m }));
@@ -136,7 +126,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_EmailPattern_MatchesCorrectly()
     {
-        var matcher = new RegexMatcher("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "Contact: user@example.com", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "test.email+tag@domain.co.uk", Amount = 0m }));
@@ -146,7 +136,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_WordBoundaries_RespectBoundaries()
     {
-        var matcher = new RegexMatcher("\\bWALMART\\b", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("\\bWALMART\\b", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "THE WALMART STORE", Amount = 0m }));
@@ -156,7 +146,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_AnchoredPattern_MatchesCompleteString()
     {
-        var matcher = new RegexMatcher("^WALMART #\\d+$", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("^WALMART #\\d+$", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #1234", Amount = 0m }));
         Assert.False(matcher.TryMatch(new Transaction { Description = "WALMART #1234 SUPERCENTER", Amount = 0m })); // Extra text
@@ -167,7 +157,7 @@ public class RegexMatcherTests
     public void TryMatch_NegativeLookahead_ExcludesPattern()
     {
         // Match WALMART but not WALMART NEIGHBORHOOD MARKET
-        var matcher = new RegexMatcher("WALMART(?! NEIGHBORHOOD)", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("WALMART(?! NEIGHBORHOOD)", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART SUPERCENTER", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART", Amount = 0m }));
@@ -177,7 +167,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_GroupCapture_MatchesCorrectly()
     {
-        var matcher = new RegexMatcher("(VISA|MASTERCARD|AMEX) \\d{4}", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("(VISA|MASTERCARD|AMEX) \\d{4}", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "VISA 1234", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "MASTERCARD 5678", Amount = 0m }));
@@ -189,7 +179,7 @@ public class RegexMatcherTests
     public void TryMatch_SpecialRegexCharacters_EscapedCorrectly()
     {
         // Pattern with literal special characters
-        var matcher = new RegexMatcher("PRICE: \\$\\d+\\.\\d{2}", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("PRICE: \\$\\d+\\.\\d{2}", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "PRICE: $25.99", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "TOTAL PRICE: $100.00", Amount = 0m }));
@@ -199,7 +189,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_OptionalGroups_MatchesWithOrWithout()
     {
-        var matcher = new RegexMatcher("MCDONALD'?S", ignoreCase: true);
+        var matcher = new RegexMatcher([new MatcherValue("MCDONALD'?S", null)]);
 
         Assert.True(matcher.TryMatch(new Transaction { Description = "MCDONALD'S", Amount = 0m }));
         Assert.True(matcher.TryMatch(new Transaction { Description = "MCDONALDS", Amount = 0m })); // No apostrophe
@@ -208,7 +198,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_WithAmount_MatchesOnlyWhenAmountAndPatternMatch()
     {
-        var matcher = new RegexMatcher("^WALMART #\\d+", ignoreCase: true, amount: 50.00m);
+        var matcher = new RegexMatcher([new MatcherValue("^WALMART #\\d+", 50.00m)]);
 
         // Matching description and exact amount
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #1234", Amount = 50.00m }));
@@ -223,7 +213,7 @@ public class RegexMatcherTests
     [Fact]
     public void TryMatch_WithAmount_RoundsAmountsToTwoDecimals()
     {
-        var matcher = new RegexMatcher("^WALMART #\\d+", ignoreCase: true, amount: 12.3456m);
+        var matcher = new RegexMatcher([new MatcherValue("^WALMART #\\d+", 12.3456m)]);
 
         // Matcher amount rounds to 12.35; transaction amount 12.3456 rounds to 12.35 -> match
         Assert.True(matcher.TryMatch(new Transaction { Description = "WALMART #1", Amount = 12.3456m }));

@@ -80,7 +80,7 @@ public class ExactMatcherTests
     [Fact]
     public void Constructor_EmptyValues_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => new ExactMatcher(Array.Empty<MatcherValue>()));
+        Assert.Throws<ArgumentException>(() => new ExactMatcher([]));
     }
 
     [Fact]

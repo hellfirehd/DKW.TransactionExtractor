@@ -1,5 +1,3 @@
-using DKW.TransactionExtractor.Models;
-
 namespace DKW.TransactionExtractor.Classification;
 
 /// <summary>
@@ -41,9 +39,8 @@ public interface IUserInteraction
     /// <summary>
     /// Prompts the user to enter an optional decimal amount.
     /// </summary>
-    /// <param name="prompt">The prompt to display.</param>
     /// <returns>The parsed amount, or null if user skips or enters invalid input.</returns>
-    Decimal? PromptForOptionalAmount(String prompt);
+    Decimal? PromptForOptionalAmount(TransactionContext context, Boolean defaultToInclude);
 
     /// <summary>
     /// Displays a summary line for an automatically classified transaction.

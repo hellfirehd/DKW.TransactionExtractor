@@ -1,4 +1,3 @@
-using System;
 using DKW.TransactionExtractor.Classification;
 using DKW.TransactionExtractor.Models;
 using Xunit;
@@ -19,7 +18,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_SubstringMatchCaseInsensitive_ReturnsTrue()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("WALMART", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("WALMART SUPERCENTER #1234", 0m)));
         Assert.True(matcher.TryMatch(CreateTransaction("walmart", 0m)));
@@ -29,7 +28,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_NoMatch_ReturnsFalse()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("WALMART", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.False(matcher.TryMatch(CreateTransaction("TARGET STORE", 0m)));
         Assert.False(matcher.TryMatch(CreateTransaction("COSTCO WHOLESALE", 0m)));
@@ -38,7 +37,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_MultipleValues_MatchesAny()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("WALMART", null), new MatcherValue("TARGET", null), new MatcherValue("COSTCO", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("WALMART", null), new MatcherValue("TARGET", null), new MatcherValue("COSTCO", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("WALMART #1234", 0m)));
         Assert.True(matcher.TryMatch(CreateTransaction("Shopping at TARGET", 0m)));
@@ -49,7 +48,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_EmptyInput_ReturnsFalse()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("WALMART", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.False(matcher.TryMatch(CreateTransaction(String.Empty, 0m)));
         Assert.False(matcher.TryMatch(CreateTransaction("   ", 0m)));
@@ -58,7 +57,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_NullInput_ReturnsFalse()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("WALMART", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.False(matcher.TryMatch(null!));
     }
@@ -66,7 +65,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_PartialWordMatch_ReturnsTrue()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("MART", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("MART", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("WALMART", 0m)));
         Assert.True(matcher.TryMatch(CreateTransaction("KMART", 0m)));
@@ -76,7 +75,7 @@ public class ContainsMatcherTests
     [Fact]
     public void Constructor_EmptyValues_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => new ContainsMatcher(Array.Empty<MatcherValue>()));
+        Assert.Throws<ArgumentException>(() => new ContainsMatcher([]));
     }
 
     [Fact]
@@ -93,7 +92,7 @@ public class ContainsMatcherTests
     [InlineData("SUSHI", "PIZZA HUT", false)]
     public void TryMatch_CommonScenarios_WorksCorrectly(String pattern, String input, Boolean expected)
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue(pattern, null) });
+        var matcher = new ContainsMatcher([new MatcherValue(pattern, null)]);
 
         var result = matcher.TryMatch(CreateTransaction(input, 0m));
 
@@ -103,7 +102,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_SpecialCharactersInPattern_MatchesLiterally()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("MCDONALD'S", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("MCDONALD'S", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("MCDONALD'S #40610", 0m)));
         Assert.False(matcher.TryMatch(CreateTransaction("MCDONALDS", 0m))); // No apostrophe
@@ -112,7 +111,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_NumbersInPattern_MatchesCorrectly()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("7-ELEVEN", null), new MatcherValue("7-11", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("7-ELEVEN", null), new MatcherValue("7-11", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("7-ELEVEN STORE #1234", 0m)));
         Assert.True(matcher.TryMatch(CreateTransaction("7-11", 0m)));
@@ -122,7 +121,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_WhitespaceInPattern_MatchesExactWhitespace()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("COFFEE  SHOP", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("COFFEE  SHOP", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("THE COFFEE  SHOP DOWNTOWN", 0m)));
         Assert.False(matcher.TryMatch(CreateTransaction("THE COFFEE SHOP DOWNTOWN", 0m))); // Single space
@@ -131,7 +130,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_BeginningOfString_MatchesCorrectly()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("WALMART", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("WALMART", 0m)));
         Assert.True(matcher.TryMatch(CreateTransaction("WALMART SUPERCENTER", 0m)));
@@ -140,7 +139,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_EndOfString_MatchesCorrectly()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("WALMART", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("SHOPPING AT WALMART", 0m)));
         Assert.True(matcher.TryMatch(CreateTransaction("WALMART", 0m)));
@@ -149,7 +148,7 @@ public class ContainsMatcherTests
     [Fact]
     public void TryMatch_MiddleOfString_MatchesCorrectly()
     {
-        var matcher = new ContainsMatcher(new[] { new MatcherValue("WALMART", null) });
+        var matcher = new ContainsMatcher([new MatcherValue("WALMART", null)]);
 
         Assert.True(matcher.TryMatch(CreateTransaction("THE WALMART STORE", 0m)));
     }

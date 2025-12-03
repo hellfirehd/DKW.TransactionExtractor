@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DKW.TransactionExtractor.Models;
 
+[DebuggerDisplay("{RawText}")]
 public class Transaction
 {
     /// <summary>

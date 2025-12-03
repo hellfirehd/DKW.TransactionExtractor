@@ -5,9 +5,9 @@ namespace DKW.TransactionExtractor.Classification;
 public interface ICategoryService
 {
     /// <summary>
-    /// Gets all available categories, sorted alphabetically by name.
+    /// Gets all available categories. Caller is responsible for sorting if needed.
     /// </summary>
-    List<Category> GetAvailableCategories();
+    List<Category> GetCategories();
 
     /// <summary>
     /// Adds a new category to the repository.
@@ -25,9 +25,4 @@ public interface ICategoryService
     /// Checks if a category with the specified ID exists.
     /// </summary>
     Boolean CategoryExists(String categoryId);
-
-    /// <summary>
-    /// Gets all categories without sorting (for matching operations).
-    /// </summary>
-    List<Category> GetAllCategories();
 }

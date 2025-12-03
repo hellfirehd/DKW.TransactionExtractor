@@ -16,7 +16,7 @@ Purchases 3.35
 Mar 15 Mar 15 APPLE.COM/BILL 866-712-7753 ON 3.35";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "apple-transaction-test.txt" };
+        var context = new StatementContext { RawText = text, FileName = "apple-transaction-test.txt" };
         var result = parser.Parse(context);
 
         // Output warnings and transactions for debugging
@@ -49,7 +49,7 @@ Purchases 15.00
 Oct 15 Oct 15 STORE/NAME WITH/SLASH 15.00";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "slash-test.txt" };
+        var context = new StatementContext { RawText = text, FileName = "slash-test.txt" };
         var result = parser.Parse(context);
 
         Assert.Single(result.Transactions);
@@ -65,7 +65,7 @@ Purchases 10.00
 Oct 15 Oct 15 DOMAIN.COM/BILL 10.00";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "dots-test.txt" };
+        var context = new StatementContext { RawText = text, FileName = "dots-test.txt" };
         var result = parser.Parse(context);
 
         Assert.Single(result.Transactions);
@@ -110,7 +110,7 @@ Purchases 10.00
 Mar 15 Mar 15 STORE NAME ON 10.00";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "ontario-test.txt" };
+        var context = new StatementContext { RawText = text, FileName = "ontario-test.txt" };
         var result = parser.Parse(context);
 
         if (result.Warnings.Count != 0)

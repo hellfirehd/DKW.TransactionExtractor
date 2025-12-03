@@ -1,4 +1,8 @@
+using System.Diagnostics;
+
 namespace DKW.TransactionExtractor.Models;
+
+[DebuggerDisplay("{Transaction.Description}: {Transaction.Amount} - {CategoryId}")]
 
 public class ClassifiedTransaction
 {

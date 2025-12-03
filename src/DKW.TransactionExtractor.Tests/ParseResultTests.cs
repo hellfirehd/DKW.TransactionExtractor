@@ -11,7 +11,7 @@ public class ParseResultTests
     {
         var text = TestResources.GetTriangleStatement_2025_10_21();
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "Parse_SampleFile_PurchasesMatch.txt" };
+        var context = new StatementContext { RawText = text, FileName = "Parse_SampleFile_PurchasesMatch.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(2348.84m, result.DeclaredPurchasesTotal);
@@ -27,7 +27,7 @@ public class ParseResultTests
         var tampered = text.Replace("Purchases 2,348.84", "Purchases 2,300.00");
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = tampered, FileName = "Parse_MismatchDetected_WhenDeclaredChanged.txt" };
+        var context = new StatementContext { RawText = tampered, FileName = "Parse_MismatchDetected_WhenDeclaredChanged.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(2300.00m, result.DeclaredPurchasesTotal);

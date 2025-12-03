@@ -1,6 +1,3 @@
-using System.Linq;
-using System.Text.Json;
-
 namespace DKW.TransactionExtractor.Classification;
 
 /// <summary>
@@ -9,84 +6,44 @@ namespace DKW.TransactionExtractor.Classification;
 /// </summary>
 public record MatcherCreationRequest(
     String MatcherType,
-    Dictionary<String, Object> Parameters
+    IEnumerable<MatcherValue> Parameters
 )
 {
     /// <summary>
     /// Creates an ExactMatch request with the specified values.
     /// Each value may optionally include an amount.
     /// </summary>
-    public static MatcherCreationRequest ExactMatch((String value, Decimal? amount)[] values)
+    public static MatcherCreationRequest ExactMatch(TransactionContext context)
     {
-        var valueObjects = values
-            .Select(v =>
-            {
-                var dict = new Dictionary<String, Object>
-                {
-                    ["value"] = v.value
-                };
-                if (v.amount.HasValue)
-                {
-                    dict["amount"] = Decimal.Round(v.amount.Value, 2);
-                }
-                return JsonSerializer.SerializeToElement(dict);
-            })
-            .ToArray();
-
-        var dictParams = new Dictionary<String, Object>
-        {
-            { "values", JsonSerializer.SerializeToElement(valueObjects) }
-        };
-
-        return new MatcherCreationRequest(
-            "ExactMatch",
-            dictParams
-        );
+        return CreateRequest(context);
     }
 
     /// <summary>
     /// Creates a Contains request with the specified values.
     /// Each value may optionally include an amount.
     /// </summary>
-    public static MatcherCreationRequest Contains((String value, Decimal? amount)[] values)
+    public static MatcherCreationRequest Contains(TransactionContext context)
     {
-        var valueObjects = values
-            .Select(v =>
-            {
-                var dict = new Dictionary<String, Object>
-                {
-                    ["value"] = v.value
-                };
-                if (v.amount.HasValue)
-                {
-                    dict["amount"] = Decimal.Round(v.amount.Value, 2);
-                }
-                return JsonSerializer.SerializeToElement(dict);
-            })
-            .ToArray();
-
-        var dictParams = new Dictionary<String, Object>
-        {
-            { "values", JsonSerializer.SerializeToElement(valueObjects) }
-        };
-
-        return new MatcherCreationRequest(
-            "Contains",
-            dictParams
-        );
+        return CreateRequest(context);
     }
 
     /// <summary>
     /// Creates a Regex request with the specified pattern.
     /// </summary>
-    public static MatcherCreationRequest Regex(String pattern)
+    public static MatcherCreationRequest Regex(TransactionContext context)
     {
-        return new MatcherCreationRequest(
-            "Regex",
-            new Dictionary<String, Object>
-            {
-                { "pattern", pattern }
-            }
-        );
+        return CreateRequest(context);
+    }
+
+    private static MatcherCreationRequest CreateRequest(TransactionContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        if (context.IncludeAmountInMatcher)
+        {
+            return new MatcherCreationRequest(context.MatcherType, [new(context.MatcherText, context.Transaction.Amount)]);
+        }
+
+        return new MatcherCreationRequest(context.MatcherType, [new(context.MatcherText, null)]);
     }
 }

@@ -6,7 +6,8 @@ A .NET 10 console application for extracting and validating credit card transact
 
 - **PDF Text Extraction**: Extracts text from PDF credit card statements using iText library
 - **Transaction Parsing**: Parses individual transactions with dates, descriptions, and amounts
-- **Transaction Classification**: Categorizes transactions using configurable matching rules
+- **Transaction Classification**: Categorizes transactions using configurable matching rules with optional amount constraints
+- **Amount-Based Matching**: Match transactions by description AND amount for precise categorization
 - **Transaction Comments**: Add optional notes to transactions for context and tracking (gifts, tax-deductible, etc.)
 - **Interactive Console UI**: Prompts for manual classification when needed
 - **Flexible Output Formats**: Export classified transactions as CSV or JSON
@@ -114,16 +115,67 @@ Edit `appsettings.json` to configure the application:
 
 ### Transaction Classification
 
-The application automatically categorizes transactions based on configurable rules. When a transaction cannot be automatically categorized, the console prompts for manual classification with the option to add comments for context.
+The application automatically categorizes transactions based on configurable rules. All matchers support optional amount constraints for precise matching (e.g., distinguishing between subscription tiers from the same merchant).
+
+#### Category Configuration Example
+
+```json
+{
+  "categories": [
+    {
+      "id": "groceries",
+      "name": "Groceries",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            { "value": "SAFEWAY" },
+            { "value": "WHOLE FOODS" }
+          ]
+        },
+        {
+          "type": "Contains",
+          "parameters": [
+            { "value": "GROCERY" },
+            { "value": "SUPERMARKET" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "subscriptions",
+      "name": "Subscriptions",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            { "value": "APPLE.COM/BILL", "amount": 14.55 },
+            { "value": "APPLE.COM/BILL", "amount": 32.42 }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Key Features:**
+- **ExactMatch**: Exact description matching (case-insensitive)
+- **Contains**: Substring matching (case-insensitive)
+- **Regex**: Regular expression pattern matching (case-insensitive)
+- **Amount Constraints**: Optional `amount` parameter for all matcher types
+- **Smart Merging**: ExactMatch and Contains values are automatically merged
 
 See the **[Transaction Classification Guide](docs/CLASSIFICATION_GUIDE.md)** for detailed documentation on:
 
 - Category configuration
 - Matcher types (ExactMatch, Contains, Regex)
+- Amount-based matching use cases
 - Interactive matcher creation
 - Adding transaction comments
 - Smart merging behavior
 - Output formats
+- Migration from legacy format
 
 For complete documentation, visit the **[Documentation Index](docs/README.md)**.
 
@@ -163,6 +215,7 @@ Before contributing, please review our coding standards documented in **[GitHub 
 Visit the **[Documentation Index](docs/README.md)** for:
 
 - [Transaction Classification Guide](docs/CLASSIFICATION_GUIDE.md)
+- [Matcher Refactoring Guide](docs/development/MATCHER_REFACTORING.md)
 - [Versioning Workflow](docs/development/VERSIONING_WORKFLOW.md)
 - Feature documentation in `docs/features/`
 - Development guides in `docs/development/`

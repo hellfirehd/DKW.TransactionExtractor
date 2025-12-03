@@ -11,7 +11,7 @@ public class TransactionParserTests
     {
         var text = TestResources.GetTriangleStatement_2025_10_21();
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "Parse_SampleExtractedText_Returns48Transactions" };
+        var context = new StatementContext { RawText = text, FileName = "Parse_SampleExtractedText_Returns48Transactions" };
         var result = parser.Parse(context);
 
         Assert.Equal(48, result.Transactions.Count);

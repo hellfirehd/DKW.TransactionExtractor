@@ -9,7 +9,7 @@ public class TransactionClassifier(
     IUserInteraction consoleInteraction) : ITransactionClassifier
 {
     private readonly ILogger<TransactionClassifier> _logger = logger;
-    private readonly ICategoryService _category_service = categoryService;
+    private readonly ICategoryService _categoryService = categoryService;
     private readonly IUserInteraction _consoleInteraction = consoleInteraction;
 
     public ClassificationResult ClassifyTransactions(List<Transaction> transactions)
@@ -41,8 +41,8 @@ public class TransactionClassifier(
 
     private (ClassifiedTransaction ClassifiedTransaction, Boolean RequestedExit) ClassifyTransaction(TransactionContext context)
     {
-        // Try to match against existing categories
-        var categories = _category_service.GetAllCategories();
+        // Try to match against existing unsorted categories
+        var categories = _categoryService.GetCategories();
 
         foreach (var category in categories)
         {
@@ -51,6 +51,9 @@ public class TransactionClassifier(
                 var matcher = MatcherFactory.CreateMatcher(matcherConfig);
                 if (matcher != null && matcher.TryMatch(context.Transaction))
                 {
+                    context.CategoryId = category.Id;
+                    context.CategoryName = category.Name;
+
                     _logger.LogMatchedTransaction(context.Transaction.Description, category.Name);
 
                     // Show summary for automatically classified transaction
@@ -61,7 +64,7 @@ public class TransactionClassifier(
                         Transaction = context.Transaction,
                         CategoryId = category.Id,
                         CategoryName = category.Name,
-                        Comment = null, // No comment for auto-matched transactions
+                        Comment = String.Empty, // No comment for auto-matched transactions
                         MatcherType = matcherConfig.Type
                     }, false);
                 }
@@ -84,43 +87,41 @@ public class TransactionClassifier(
             }, true);
         }
 
-        // Normalize the category ID from user selection
-        var normalizedCategoryId = CategoryIdNormalizer.Normalize(selectionResult.CategoryId);
-
         // If user chose to create a new category
-        if (!_category_service.CategoryExists(normalizedCategoryId))
+        if (!_categoryService.CategoryExists(selectionResult.CategoryId))
         {
             var newCategory = new Category
             {
-                Id = normalizedCategoryId,
+                Id = selectionResult.CategoryId,
                 Name = selectionResult.CategoryName,
                 Matchers = []
             };
 
-            if (selectionResult.HasMatcherRequest)
+            if (selectionResult.MatcherRequest is not null)
             {
                 var matcher = new CategoryMatcher
                 {
-                    Type = selectionResult.MatcherRequest!.MatcherType,
-                    Parameters = new Dictionary<String, Object>(selectionResult.MatcherRequest.Parameters)
+                    Type = selectionResult.MatcherRequest.MatcherType
                 };
+
+                matcher.Parameters.UnionWith(selectionResult.MatcherRequest.Parameters);
                 newCategory.Matchers.Add(matcher);
             }
 
-            _category_service.AddCategory(newCategory);
-            _logger.LogCreatedNewCategory(selectionResult.CategoryName, normalizedCategoryId);
+            _categoryService.AddCategory(newCategory);
+            _logger.LogCreatedNewCategory(selectionResult.CategoryName, selectionResult.CategoryId);
         }
         else if (selectionResult.HasMatcherRequest)
         {
             // Add matcher to existing category
-            _category_service.AddMatcherToCategory(normalizedCategoryId, selectionResult.MatcherRequest!);
+            _categoryService.AddMatcherToCategory(selectionResult.CategoryId, selectionResult.MatcherRequest!);
             _logger.LogAddedRuleToCategory(selectionResult.MatcherRequest!.MatcherType, selectionResult.CategoryName);
         }
 
         return (new ClassifiedTransaction
         {
             Transaction = context.Transaction,
-            CategoryId = normalizedCategoryId,
+            CategoryId = selectionResult.CategoryId,
             CategoryName = selectionResult.CategoryName,
             Comment = selectionResult.Comment,
             MatcherType = selectionResult.HasMatcherRequest ? selectionResult.MatcherRequest!.MatcherType : null

@@ -39,7 +39,7 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
         _transactionFilter = transactionFilter;
     }
 
-    public ParseResult Parse(ParseContext context)
+    public ParseResult Parse(StatementContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -49,13 +49,13 @@ public partial class CtfsMastercardTransactionParser : ITransactionParser
             StatementDate = DateTime.MinValue
         };
 
-        if (String.IsNullOrWhiteSpace(context.Text))
+        if (String.IsNullOrWhiteSpace(context.RawText))
         {
             return result;
         }
 
         // Split on newline (text should already be normalized by the PDF extractor)
-        var rawLines = context.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        var rawLines = context.RawText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         foreach (var line in rawLines)
         {

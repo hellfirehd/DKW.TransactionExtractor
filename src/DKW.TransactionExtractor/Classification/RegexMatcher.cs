@@ -1,5 +1,5 @@
-using System.Text.RegularExpressions;
 using DKW.TransactionExtractor.Models;
+using System.Text.RegularExpressions;
 
 namespace DKW.TransactionExtractor.Classification;
 
@@ -12,37 +12,58 @@ namespace DKW.TransactionExtractor.Classification;
 /// </summary>
 public class RegexMatcher : TransactionMatcherBase
 {
-    private readonly Regex _regex;
-    private readonly Decimal? _amount;
+    private readonly List<RegexMatcherEntry> _entries = [];
 
     /// <summary>
     /// Create a new RegexMatcher.
     /// </summary>
     /// <param name="pattern">Regular expression pattern to match against transaction descriptions.</param>
-    /// <param name="ignoreCase">If true, the regex uses case-insensitive matching.</param>
     /// <param name="amount">Optional amount that must match the transaction amount (rounded to 2 decimals) for a match to succeed.</param>
-    public RegexMatcher(String pattern, Boolean ignoreCase = false, Decimal? amount = null)
+    /// <param name="ignoreCase">If true, the regex uses case-insensitive matching.</param>
+    public RegexMatcher(IEnumerable<MatcherValue> parameters)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
+        var options = RegexOptions.Compiled | RegexOptions.IgnoreCase;
 
-        var options = RegexOptions.Compiled;
-        if (ignoreCase)
+        foreach (var param in parameters)
         {
-            options |= RegexOptions.IgnoreCase;
+            _entries.Add(new RegexMatcherEntry(CreateRegex(param.Value, options), param.Amount));
         }
+
+        if (_entries.Count == 0)
+        {
+            throw new ArgumentException("At least one regex pattern must be provided.", nameof(parameters));
+        }
+    }
+
+    private static Regex CreateRegex(String pattern, RegexOptions options)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(pattern);
 
         try
         {
-            _regex = new Regex(pattern, options);
+            return new Regex(pattern, options);
         }
         catch (RegexParseException ex)
         {
             throw new ArgumentException($"Invalid regex pattern: {pattern}", nameof(pattern), ex);
         }
+    }
 
-        if (amount.HasValue)
+    private record RegexMatcherEntry(Regex Regex, Decimal? Amount)
+    {
+        public Boolean Matches(Transaction transaction, String description)
         {
-            _amount = Decimal.Round(amount.Value, 2);
+            if (!Regex.IsMatch(description))
+            {
+                return false;
+            }
+
+            if (Amount.HasValue)
+            {
+                return AmountsEqual(Amount, transaction.Amount);
+            }
+
+            return true;
         }
     }
 
@@ -51,12 +72,14 @@ public class RegexMatcher : TransactionMatcherBase
     /// </summary>
     protected override Boolean TryMatchCore(Transaction transaction, String description)
     {
-        if (!_regex.IsMatch(description))
-            return false;
+        foreach (var entry in _entries)
+        {
+            if (entry.Matches(transaction, description))
+            {
+                return true;
+            }
+        }
 
-        if (_amount.HasValue)
-            return AmountsEqual(_amount, transaction.Amount);
-
-        return true;
+        return false;
     }
 }

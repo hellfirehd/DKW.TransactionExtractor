@@ -8,9 +8,11 @@ Welcome to the DKW Transaction Extractor documentation. This directory contains 
 - **[Classification Guide](CLASSIFICATION_GUIDE.md)** - Complete guide to the transaction classification system
   - Configuration and setup
   - Matcher types (ExactMatch, Contains, Regex)
+  - Amount-based matching
   - Interactive matcher creation
   - Smart merging behavior
   - Output formats
+  - Migration from legacy format
 
 ### Features
 - **[Extracted Text Feature](features/EXTRACTED_TEXT_FEATURE.md)** - Debug feature for viewing raw PDF text
@@ -23,21 +25,23 @@ Welcome to the DKW Transaction Extractor documentation. This directory contains 
 ### Architecture & Design
 - **[Category Service Refactoring](architecture/CATEGORY_SERVICE_REFACTORING.md)** - Service layer design and dependency injection
 
-### Development & Bug Fixes
+### Development & Refactoring
 - **[Leap Year Fix](development/LEAP_YEAR_FIX.md)** - Handling February 29th transactions
 - **[Line Ending Normalization Fix](development/LINE_ENDING_NORMALIZATION_FIX.md)** - PDF text extraction normalization
+- **[Matcher System Refactoring](development/MATCHER_REFACTORING.md)** - Comprehensive matcher refactoring with MatcherValue and amount-based matching
 - **[ParseContext Refactoring](development/PARSECONTEXT_REFACTORING.md)** - Parser context improvements
+- **[Versioning Workflow](development/VERSIONING_WORKFLOW.md)** - GitVersion configuration and release workflow
 
-### Technical Debt
-- **[Technical Debt Analysis](TECHNICAL_DEBT_ANALYSIS.md)** - Comprehensive analysis of 8 technical debt items
+### Technical Debt & Analysis
+- **[Technical Debt Analysis](development/TECHNICAL_DEBT_ANALYSIS.md)** - Comprehensive analysis of 8 technical debt items
   - High priority issues (extensibility, type safety)
   - Medium priority issues (complexity, coupling)
   - Low priority issues (documentation, testing)
-- **[Technical Debt Dashboard](TECHNICAL_DEBT_DASHBOARD.md)** - Visual summary with implementation roadmap
+- **[Technical Debt Dashboard](development/TECHNICAL_DEBT_DASHBOARD.md)** - Visual summary with implementation roadmap
   - Priority matrix
   - 4-phase remediation plan
   - Risk assessment
-- **[Remediation Guide](TECHNICAL_DEBT_REMEDIATION_GUIDE.md)** - Code examples and implementation details
+- **[Technical Debt Remediation Guide](development/TECHNICAL_DEBT_REMEDIATION_GUIDE.md)** - Code examples and implementation details
   - Specific code changes
   - Before/after comparisons
   - Testing examples
@@ -47,14 +51,29 @@ Welcome to the DKW Transaction Extractor documentation. This directory contains 
 ### For Users
 - [Getting Started](../README.md) - Project overview and quick start
 - [Configuration](CLASSIFICATION_GUIDE.md#configuration) - How to configure the application
+- [Amount-Based Matching](CLASSIFICATION_GUIDE.md#amount-based-matching) - Match by description and amount
 - [Output Formats](CLASSIFICATION_GUIDE.md#output-files) - CSV and JSON output formats
 - [Troubleshooting](../README.md#troubleshooting) - Common issues and solutions
+- [Migration Guide](CLASSIFICATION_GUIDE.md#migration-from-legacy-format) - Upgrading from legacy configuration
 
 ### For Developers
 - [Coding Standards](../.github/copilot-instructions.md) - Naming conventions and best practices
 - [Matcher System](CLASSIFICATION_GUIDE.md#matcher-types) - Understanding the matcher architecture
+- [Matcher Refactoring](development/MATCHER_REFACTORING.md) - Recent refactoring details and migration
 - [Extensibility](CLASSIFICATION_GUIDE.md#extensibility) - Adding new matcher types
 - [Testing Guidelines](../.github/copilot-instructions.md#testing) - Unit test standards
+
+## Recent Updates
+
+### Matcher System Refactoring (2025-11-27)
+- &#x2705; Introduced `MatcherValue` record for value + amount pairs
+- &#x2705; Added `TransactionMatcherBase` for shared matcher logic
+- &#x2705; Amount-based matching supported on all matcher types
+- &#x2705; Simplified configuration format (`parameters` is now an array)
+- &#x2705; Enforced case-insensitive matching across all matchers
+- &#x26A0;&#xFE0F; **Breaking Change**: Legacy configuration format no longer supported
+
+See **[Matcher Refactoring Guide](development/MATCHER_REFACTORING.md)** for complete details and migration instructions.
 
 ## Documentation Standards
 

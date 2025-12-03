@@ -37,7 +37,7 @@ public class TransactionExclusionTests
                    "Oct 17 Oct 17 ANOTHER STORE 25.00\n";
 
         var parser = CreateParser(["INTEREST CHARGES"]);
-        var context = new ParseContext { Text = text, FileName = "test-statement.txt" };
+        var context = new StatementContext { RawText = text, FileName = "test-statement.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(3, result.Transactions.Count);
@@ -64,7 +64,7 @@ public class TransactionExclusionTests
                    "Oct 18 Oct 18 ANNUAL FEE 120.00\n";
 
         var parser = CreateParser(["INTEREST CHARGES", "ANNUAL FEE"]);
-        var context = new ParseContext { Text = text, FileName = "multi-exclusion.txt" };
+        var context = new StatementContext { RawText = text, FileName = "multi-exclusion.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(4, result.Transactions.Count);
@@ -90,7 +90,7 @@ public class TransactionExclusionTests
                    "Oct 17 Oct 17 ANOTHER STORE 25.00\n";
 
         var parser = CreateParser([]);
-        var context = new ParseContext { Text = text, FileName = "no-exclusion.txt" };
+        var context = new StatementContext { RawText = text, FileName = "no-exclusion.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(3, result.Transactions.Count);
@@ -115,7 +115,7 @@ public class TransactionExclusionTests
                    "Oct 17 Oct 17 ANOTHER STORE 25.00\n";
 
         var parser = CreateParser(["INTEREST"]);
-        var context = new ParseContext { Text = text, FileName = "regex-pattern.txt" };
+        var context = new StatementContext { RawText = text, FileName = "regex-pattern.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(3, result.Transactions.Count);
@@ -138,7 +138,7 @@ public class TransactionExclusionTests
                    "Oct 16 Oct 16 INTEREST CHARGES REFUND -25.00\n";
 
         var parser = CreateParser(["INTEREST CHARGES"]);
-        var context = new ParseContext { Text = text, FileName = "negative-amounts.txt" };
+        var context = new StatementContext { RawText = text, FileName = "negative-amounts.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(2, result.Transactions.Count);
@@ -171,7 +171,7 @@ public class TransactionExclusionTests
                    "Nov 14 Nov 15 ELECTRONICS STORE 449.00\n";
 
         var parser = CreateParser(["INTEREST CHARGES", "ANNUAL FEE"]);
-        var context = new ParseContext { Text = text, FileName = "real-world-scenario.txt" };
+        var context = new StatementContext { RawText = text, FileName = "real-world-scenario.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(8, result.Transactions.Count);
@@ -202,7 +202,7 @@ public class TransactionExclusionTests
                    "Oct 17 Oct 17 PAYMENT -100.00\n";
 
         var parser = CreateParser(["INTEREST CHARGES"]);
-        var context = new ParseContext { Text = text, FileName = "inclusion-status.txt" };
+        var context = new StatementContext { RawText = text, FileName = "inclusion-status.txt" };
         var result = parser.Parse(context);
 
         // Verify we have all three types

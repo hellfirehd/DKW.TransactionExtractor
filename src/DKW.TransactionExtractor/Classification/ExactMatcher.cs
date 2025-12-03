@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using DKW.TransactionExtractor.Models;
 
 namespace DKW.TransactionExtractor.Classification;
@@ -17,16 +15,16 @@ public class ExactMatcher : TransactionMatcherBase
     /// Creates a new ExactMatcher.
     /// </summary>
     /// <param name="values">Array of value/amount pairs to match against. Cannot be null or empty.</param>
-    public ExactMatcher(MatcherValue[] values)
+    public ExactMatcher(IEnumerable<MatcherValue> values)
     {
         ArgumentNullException.ThrowIfNull(values);
 
-        if (values.Length == 0)
+        _values = values.ToArray();
+
+        if (_values.Length == 0)
         {
             throw new ArgumentException("Values array cannot be empty", nameof(values));
         }
-
-        _values = values;
     }
 
     /// <summary>
@@ -35,16 +33,17 @@ public class ExactMatcher : TransactionMatcherBase
     protected override Boolean TryMatchCore(Transaction transaction, String description)
     {
         var amount = transaction.Amount;
-        var comparison = StringComparison.OrdinalIgnoreCase; // Force case-insensitive
 
         foreach (var mv in _values)
         {
-            if (String.Equals(mv.Value, description, comparison))
+            if (String.Equals(mv.Value, description, StringComparison.OrdinalIgnoreCase))
             {
                 if (mv.Amount.HasValue)
                 {
                     if (AmountsEqual(mv.Amount, amount))
+                    {
                         return true;
+                    }
                 }
                 else
                 {

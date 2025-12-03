@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace DKW.TransactionExtractor.Models;
 
 /// <summary>
 /// Summary statistics for a category of transactions.
 /// </summary>
+[DebuggerDisplay("{CategoryId}: {CategoryName}")]
 public class CategorySummary
 {
     /// <summary>

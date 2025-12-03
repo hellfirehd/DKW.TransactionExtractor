@@ -4,5 +4,5 @@ namespace DKW.TransactionExtractor;
 
 public interface ITransactionParser
 {
-    ParseResult Parse(ParseContext context);
+    ParseResult Parse(StatementContext context);
 }

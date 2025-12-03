@@ -20,7 +20,7 @@ public class RealStatementTests
         }
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "2024-03-21-Triangle-WorldEliteMastercard.txt" };
+        var context = new StatementContext { RawText = text, FileName = "2024-03-21-Triangle-WorldEliteMastercard.txt" };
         var result = parser.Parse(context);
 
         // The statement shows "Total purchases $1,609.11"
@@ -61,7 +61,7 @@ public class RealStatementTests
         }
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "2024-03-21-Triangle-WorldEliteMastercard.txt" };
+        var context = new StatementContext { RawText = text, FileName = "2024-03-21-Triangle-WorldEliteMastercard.txt" };
         var result = parser.Parse(context);
 
         // Statement shows:

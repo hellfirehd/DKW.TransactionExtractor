@@ -5,7 +5,7 @@ namespace DKW.TransactionExtractor.Tests;
 
 public static class TestHelpers
 {
-    public static Transaction CreateTransaction(string description, decimal amount, DateTime? date = null)
+    public static Transaction CreateTransaction(String description, Decimal amount, DateTime? date = null)
     {
         var dt = date ?? DateTime.Today;
         return new Transaction

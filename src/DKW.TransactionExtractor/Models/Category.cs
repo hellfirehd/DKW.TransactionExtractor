@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace DKW.TransactionExtractor.Models;
 
+[DebuggerDisplay("{Id}: {Name}")]
 public class Category
 {
     public String Id { get; set; } = String.Empty;

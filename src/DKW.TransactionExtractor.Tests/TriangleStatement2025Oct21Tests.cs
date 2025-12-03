@@ -20,7 +20,7 @@ public class TriangleStatement2025Oct21Tests
         }
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "2025-10-21-Triangle-WorldEliteMasterca.txt" };
+        var context = new StatementContext { RawText = text, FileName = "2025-10-21-Triangle-WorldEliteMasterca.txt" };
         var result = parser.Parse(context);
 
         // The statement shows "Total purchases $2,348.84"
@@ -48,7 +48,7 @@ public class TriangleStatement2025Oct21Tests
         }
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "2025-10-21-Triangle-WorldEliteMasterca.txt" };
+        var context = new StatementContext { RawText = text, FileName = "2025-10-21-Triangle-WorldEliteMasterca.txt" };
         var result = parser.Parse(context);
 
         // Statement shows: Declared: $2,348.84

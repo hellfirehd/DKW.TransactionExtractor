@@ -17,7 +17,7 @@ public class TransactionParserEdgeCasesTests
                    "59.36\n";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "multiline-test.txt" };
+        var context = new StatementContext { RawText = text, FileName = "multiline-test.txt" };
         var result = parser.Parse(context);
         var tx = result.Transactions.Single();
 
@@ -33,7 +33,7 @@ public class TransactionParserEdgeCasesTests
                    "Oct 01 Oct 02 CIBC BANK PMT/PAIEMENT BCIC -3,463.00\n";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "negative-amount-test.txt" };
+        var context = new StatementContext { RawText = text, FileName = "negative-amount-test.txt" };
         var result = parser.Parse(context);
         var tx = result.Transactions.Single();
 
@@ -49,7 +49,7 @@ public class TransactionParserEdgeCasesTests
                    "Oct 01 Oct 02 APPLE.COM/BILL 866-712-7753 ON $14.16\n";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "currency-symbol-test.txt" };
+        var context = new StatementContext { RawText = text, FileName = "currency-symbol-test.txt" };
         var result = parser.Parse(context);
         var tx = result.Transactions.Single();
 
@@ -67,7 +67,7 @@ public class TransactionParserEdgeCasesTests
             """;
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "description-with-numbers.txt" };
+        var context = new StatementContext { RawText = text, FileName = "description-with-numbers.txt" };
         var result = parser.Parse(context);
         var tx = result.Transactions.Single();
 
@@ -81,7 +81,7 @@ public class TransactionParserEdgeCasesTests
                    "Dec 31 Jan 02 STORE XYZ 10.00\n";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "year-boundary-test.txt" };
+        var context = new StatementContext { RawText = text, FileName = "year-boundary-test.txt" };
         var result = parser.Parse(context);
         var tx = result.Transactions.Single();
 

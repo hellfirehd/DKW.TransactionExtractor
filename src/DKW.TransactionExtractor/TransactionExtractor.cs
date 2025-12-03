@@ -204,9 +204,9 @@ internal class TransactionExtractor(
         }
 
         // Parse transactions
-        var parseContext = new Models.ParseContext
+        var parseContext = new Models.StatementContext
         {
-            Text = text,
+            RawText = text,
             FileName = fileName
         };
 

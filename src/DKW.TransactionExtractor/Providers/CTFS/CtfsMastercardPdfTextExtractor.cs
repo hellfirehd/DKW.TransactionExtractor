@@ -151,7 +151,7 @@ public partial class CtfsMastercardPdfTextExtractor : IPdfTextExtractor
         var text = ExtractTextFromPdf(filePath);
         var fileName = Path.GetFileName(filePath);
         var usedParser = parser ?? new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = fileName };
+        var context = new StatementContext { RawText = text, FileName = fileName };
         var result = usedParser.Parse(context);
         return result.Transactions;
     }

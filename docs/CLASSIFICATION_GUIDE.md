@@ -28,22 +28,18 @@ Define categories and their matching rules:
       "matchers": [
         {
           "type": "ExactMatch",
-          "parameters": {
-            "values": [
-              { "value": "SAFEWAY" },
-              { "value": "WHOLE FOODS" },
-              { "value": "TRADER JOES" }
-            ]
-          }
+          "parameters": [
+            { "value": "SAFEWAY" },
+            { "value": "WHOLE FOODS" },
+            { "value": "TRADER JOES" }
+          ]
         },
         {
           "type": "Contains",
-          "parameters": {
-            "values": [
-              { "value": "GROCERY" },
-              { "value": "SUPERMARKET" }
-            ]
-          }
+          "parameters": [
+            { "value": "GROCERY" },
+            { "value": "SUPERMARKET" }
+          ]
         }
       ]
     }
@@ -53,27 +49,31 @@ Define categories and their matching rules:
 
 ## Matcher Types
 
+All matchers support an optional `amount` parameter that restricts matches to transactions with a specific amount (rounded to 2 decimal places). All matching is **case-insensitive**.
+
 ### ExactMatch
 Matches transaction descriptions exactly against a list of values. Multiple values are automatically merged into a single matcher.
 
 **Parameters:**
-- `values` (object[]): Array of objects, each representing an exact value to match
-  - `value` (string): The value to match
-  - `amount` (number, optional): Restricts the matcher to only match transactions with this amount (rounded to 2 decimal places)
+- Array of objects, each with:
+  - `value` (string, required): The exact value to match
+  - `amount` (number, optional): Restricts matching to transactions with this amount (rounded to 2 decimal places)
 
-**Merging Behavior:** When adding new values, they are merged into an existing ExactMatch matcher.
+**Matching Behavior:**
+- Case-insensitive exact comparison
+- If `amount` is specified, both description AND amount must match
+
+**Merging Behavior:** When adding new values, they are merged into an existing ExactMatch matcher. Values are deduplicated by (value, amount) pair.
 
 **Example:**
 ```json
 {
   "type": "ExactMatch",
-  "parameters": {
-    "values": [
-      { "value": "SAFEWAY" },
-      { "value": "WHOLE FOODS" },
-      { "value": "TRADER JOES" }
-    ]
-  }
+  "parameters": [
+    { "value": "SAFEWAY" },
+    { "value": "WHOLE FOODS" },
+    { "value": "APPLE.COM/BILL 866-712-7753 ON", "amount": 32.42 }
+  ]
 }
 ```
 
@@ -81,23 +81,25 @@ Matches transaction descriptions exactly against a list of values. Multiple valu
 Matches if the transaction description contains any of the specified substrings. Multiple values are automatically merged into a single matcher.
 
 **Parameters:**
-- `values` (object[]): Array of objects, each representing a substring to search for
-  - `value` (string): The substring to search for
-  - `amount` (number, optional): Restricts the matcher to only match transactions with this amount (rounded to 2 decimal places)
+- Array of objects, each with:
+  - `value` (string, required): The substring to search for
+  - `amount` (number, optional): Restricts matching to transactions with this amount (rounded to 2 decimal places)
 
-**Merging Behavior:** When adding new substrings, they are merged into an existing Contains matcher.
+**Matching Behavior:**
+- Case-insensitive substring search
+- If `amount` is specified, both description AND amount must match
+
+**Merging Behavior:** When adding new substrings, they are merged into an existing Contains matcher. Values are deduplicated by (value, amount) pair.
 
 **Example:**
 ```json
 {
   "type": "Contains",
-  "parameters": {
-    "values": [
-      { "value": "RESTAURANT", "amount": -50.00 },
-      { "value": "BISTRO" },
-      { "value": "CAFE", "amount": 10.99 }
-    ]
-  }
+  "parameters": [
+    { "value": "RESTAURANT" },
+    { "value": "BISTRO" },
+    { "value": "STARBUCKS", "amount": 10.99 }
+  ]
 }
 ```
 
@@ -105,8 +107,14 @@ Matches if the transaction description contains any of the specified substrings.
 Matches transaction descriptions using a regular expression pattern. Each regex pattern is always created as a separate matcher (no merging).
 
 **Parameters:**
-- `pattern` (string): Regular expression pattern
-- `amount` (number, optional): Restricts the matcher to only match transactions with this amount (rounded to 2 decimal places)
+- Array of objects, each with:
+  - `value` (string, required): Regular expression pattern
+  - `amount` (number, optional): Restricts matching to transactions with this amount (rounded to 2 decimal places)
+
+**Matching Behavior:**
+- Case-insensitive regex matching (forced with `RegexOptions.IgnoreCase`)
+- Patterns are compiled for performance
+- If `amount` is specified, both pattern AND amount must match
 
 **Merging Behavior:** Regex matchers are never merged; each pattern creates a new matcher instance.
 
@@ -114,12 +122,65 @@ Matches transaction descriptions using a regular expression pattern. Each regex 
 ```json
 {
   "type": "Regex",
-  "parameters": {
-    "pattern": "^WALMART #\\d+",
-    "amount": 50.00
-  }
+  "parameters": [
+    { "value": "^WALMART #\\d+" },
+    { "value": "STARBUCKS #\\d{4}", "amount": 5.50 }
+  ]
 }
 ```
+
+## Amount-Based Matching
+
+### Use Cases
+
+#### 1. Subscription Services
+Distinguish between different subscription tiers from the same merchant:
+
+```json
+{
+  "type": "ExactMatch",
+  "parameters": [
+    { "value": "APPLE.COM/BILL", "amount": 14.55 },  // Apple Music
+    { "value": "APPLE.COM/BILL", "amount": 32.42 }   // iCloud Storage
+  ]
+}
+```
+
+#### 2. Recurring vs. One-Time Purchases
+Separate recurring charges from occasional purchases:
+
+```json
+{
+  "type": "Contains",
+  "parameters": [
+    { "value": "AMAZON", "amount": 16.99 },  // Amazon Prime (monthly)
+    { "value": "AMAZON" }                     // All other Amazon purchases
+  ]
+}
+```
+
+#### 3. Specific Refunds
+Track specific refund amounts:
+
+```json
+{
+  "type": "Contains",
+  "parameters": [
+    { "value": "REFUND", "amount": -50.00 }
+  ]
+}
+```
+
+### Amount Comparison Logic
+
+- Amounts are rounded to **2 decimal places** before comparison
+- When `amount` is `null` or omitted, no amount filtering is applied
+- Both the configured amount and transaction amount are rounded using `Decimal.Round(value, 2)`
+
+**Example Comparisons:**
+- `32.42` matches `32.4199` (both round to `32.42`)
+- `32.42` does NOT match `32.43`
+- `null` amount matches any transaction amount
 
 ## Matching Process
 
@@ -133,13 +194,13 @@ Matches transaction descriptions using a regular expression pattern. Each regex 
 When a transaction cannot be automatically categorized, the console displays:
 
 ```
-???????????????????????????????????????????????????????????
+??????????????????????????????????????????????????????????????????????????????
 Transaction 1 of 50
 Description: UNKNOWN MERCHANT
 Amount: $123.45
 Date: 2024-01-15
 No category match found.
-???????????????????????????????????????????????????????????
+??????????????????????????????????????????????????????????????????????????????
 
 Options:
   0. Exit (stop processing)
@@ -189,7 +250,7 @@ See **[Transaction Comments Feature](features/TRANSACTION_COMMENTS.md)** for com
 
 ## Interactive Matcher Creation
 
-When adding a rule, the system prompts for matcher type. The matcher builder receives the full `Transaction` object (not just the description) so implementations can access other transaction fields such as `Amount` when constructing matcher parameters.
+When adding a rule, the system prompts for matcher type:
 
 ```
 Select matcher type:
@@ -206,9 +267,8 @@ Your choice [0-3]:
 Your choice [0-3]: 1
 
 ExactMatch will match: 'STARBUCKS #12345'
-Case-sensitive matching? [y/N]: n
 
-? Will add ExactMatch rule for 'STARBUCKS #12345'
+&#x2705; Will add ExactMatch rule for 'STARBUCKS #12345'
   (This will be merged with any existing ExactMatch rules)
 ```
 
@@ -218,9 +278,8 @@ Your choice [0-3]: 2
 
 Current description: 'STARBUCKS #12345'
 Enter the substring to match: STARBUCKS
-Case-sensitive matching? [y/N]: n
 
-? Will add Contains rule for 'STARBUCKS' (case-insensitive)
+&#x2705; Will add Contains rule for 'STARBUCKS'
   (This will be merged with any existing Contains rules)
 ```
 
@@ -234,9 +293,8 @@ Examples:
   - Match Starbucks with store number: STARBUCKS\s+#\d+
   - Match any cafe/coffee shop: (CAFE|COFFEE|STARBUCKS)
 Pattern: STARBUCKS\s+#\d+
-Case-insensitive matching? [Y/n]: y
 
-? Will add Regex rule for pattern 'STARBUCKS\s+#\d+' (case-insensitive)
+&#x2705; Will add Regex rule for pattern 'STARBUCKS\s+#\d+' (case-insensitive)
 ```
 
 ## Smart Matcher Merging
@@ -244,33 +302,29 @@ Case-insensitive matching? [Y/n]: y
 The system intelligently merges matchers to keep your configuration clean:
 
 ### ExactMatch and Contains Merging
-- Multiple values with **the same case sensitivity** are merged into a single matcher
-- Values are deduplicated (case-insensitive comparison)
-- If case sensitivity differs, separate matchers are created
+- Multiple values are merged into a single matcher
+- Values are deduplicated by (value, amount) pair using case-insensitive comparison
+- A matcher without an amount is distinct from one with an amount
 
 **Example:** Adding "TRADER JOES" to existing ExactMatch ["SAFEWAY", "WHOLE FOODS"]:
 ```json
 // Before
 {
   "type": "ExactMatch",
-  "parameters": {
-    "values": [
-      { "value": "SAFEWAY" },
-      { "value": "WHOLE FOODS" }
-    ]
-  }
+  "parameters": [
+    { "value": "SAFEWAY" },
+    { "value": "WHOLE FOODS" }
+  ]
 }
 
 // After (merged)
 {
   "type": "ExactMatch",
-  "parameters": {
-    "values": [
-      { "value": "SAFEWAY" },
-      { "value": "WHOLE FOODS" },
-      { "value": "TRADER JOES" }
-    ]
-  }
+  "parameters": [
+    { "value": "SAFEWAY" },
+    { "value": "WHOLE FOODS" },
+    { "value": "TRADER JOES" }
+  ]
 }
 ```
 
@@ -341,11 +395,12 @@ This ensures that new categories and rules added during processing are immediate
 
 The system is designed for easy extension with new matcher types. To add a new matcher:
 
-1. Create a class implementing `ITransactionMatcher`
-2. Add a case to `MatcherFactory.CreateMatcher()`
-3. Add a method to `MatcherBuilderService` for interactive creation
-4. Update the smart merging logic in `CategoryRepository` if applicable
-5. Document the new matcher type and its parameters
+1. Create a class inheriting from `TransactionMatcherBase` and implementing `ITransactionMatcher`
+2. Implement the `TryMatchCore(Transaction, String)` method
+3. Add a case to `MatcherFactory.CreateMatcher()`
+4. Add a method to `MatcherBuilderService` for interactive creation
+5. Update the smart merging logic in `CategoryRepository` if applicable
+6. Document the new matcher type and its parameters
 
 Example future matchers:
 - `StartsWithMatcher` - Match descriptions starting with specific text
@@ -353,104 +408,36 @@ Example future matchers:
 - `FuzzyMatcher` - Match using Levenshtein distance for typo tolerance
 - `AmountRangeMatcher` - Match based on transaction amount ranges
 
-# Classification Guide
+## Migration from Legacy Format
 
-This document describes the matcher configuration schema and runtime behavior for the classification subsystem (matchers) after the recent refactor.
+If you have an old configuration using the legacy format, you'll need to convert it:
 
-Key changes in this version
-
-- `values` now uses an object form for each entry: `{ "value": "...", "amount": 12.34 }`.
-  - `value` (string) is required for each entry.
-  - `amount` (number, optional) is optional and, when present, restricts the matcher to only match transactions with that amount (rounded to 2 decimal places).
-- All matchers are now forced to be case-insensitive. The previous `caseSensitive` parameter and the behaviour it implied have been removed.
-- Regex matchers may optionally include an `amount` and will only match when both the regex matches the description and the amount (when provided) equals the transaction amount to 2 decimal places.
-- Matchers now share a common base class `TransactionMatcherBase` which centralizes description validation and amount comparison logic.
-- Backwards compatibility for the legacy string-array `values` format has been intentionally removed. The repository and factory expect `values` to be an array of objects.
-
-JSON schema (example)
-
-- Example `ExactMatch` rule (no amount):
-
+**Old Format (No Longer Supported):**
 ```json
 {
   "type": "ExactMatch",
   "parameters": {
-    "values": [
-      { "value": "WALMART" },
-      { "value": "TARGET" }
-    ]
+    "values": ["WALMART", "TARGET"],
+    "caseSensitive": false
   }
 }
 ```
 
-- Example `Contains` rule where one value has an amount and another does not:
-
+**New Format:**
 ```json
 {
-  "type": "Contains",
-  "parameters": {
-    "values": [
-      { "value": "REFUND", "amount": -5.00 },
-      { "value": "STARBUCKS" }
-    ]
-  }
+  "type": "ExactMatch",
+  "parameters": [
+    { "value": "WALMART" },
+    { "value": "TARGET" }
+  ]
 }
 ```
 
-- Example `Regex` rule with amount:
+**Notes:**
+- `caseSensitive` parameter has been removed (all matching is case-insensitive)
+- `values` is now an array of objects instead of strings
+- Each value object requires a `value` property
+- Optionally include an `amount` property for amount-specific matching
 
-```json
-{
-  "type": "Regex",
-  "parameters": {
-    "pattern": "^WALMART #\\d+",
-    "amount": 50.00
-  }
-}
-```
-
-Runtime behavior summary
-
-- ExactMatch
-  - Compares the full transaction description to each `value` entry (case-insensitive).
-  - If a `value` entry includes an `amount`, the transaction must also have that amount (rounded to 2 decimals) for the match to succeed.
-
-- Contains
-  - Tests whether the transaction description contains the `value` substring (case-insensitive).
-  - If a `value` entry includes an `amount`, the transaction must also have that amount (rounded to 2 decimals) for the match to succeed.
-
-- Regex
-  - Tests the configured regular expression against the transaction description. Regexes are always executed case-insensitively in the current codebase.
-  - If an `amount` parameter is provided for the regex matcher, the transaction amount must equal it (rounded to 2 decimals) for the match to succeed.
-
-Merging rules
-
-- ExactMatch and Contains matchers are merged when a new matcher of the same `Type` is added to a category. Values are combined and deduplicated by `(value, amount)`.
-- Regex matchers are always added as separate matchers (no merging).
-- Deduplication is case-insensitive and considers `null` and absent amounts as distinct from explicit numeric amounts.
-
-Migration notes
-
-- Existing configuration files using the legacy string-array format for `values` must be migrated to the new object form. The migration is intentionally not automatic in this release.
-- Remove `caseSensitive` parameters from matcher definitions; matching is always case-insensitive.
-
-Implementation notes for developers
-
-- The shared base class `TransactionMatcherBase` provides:
-  - A `TryMatch` implementation that verifies `transaction` and `transaction.Description` are non-null and non-whitespace.
-  - An abstract `TryMatchCore(Transaction transaction, string description)` method for concrete matchers to implement.
-  - A protected helper `AmountsEqual(Decimal? expected, Decimal actual)` that rounds both sides to 2 decimal places and returns `true` when `expected` is `null` (no amount requirement).
-
-- When adding new matcher types:
-  1. Implement `ITransactionMatcher` by inheriting `TransactionMatcherBase` and implementing `TryMatchCore`.
-  2. Add creation logic in `MatcherFactory.CreateMatcher` to parse the `parameters` and construct the matcher.
-  3. If the new matcher supports per-value amounts, follow the `{ value, amount? }` shape for `values`.
-
-Testing
-
-- Unit tests were updated to construct matcher parameters using `System.Text.Json.JsonSerializer.SerializeToElement(new { value = "...", amount = ... })` for the `values` array entries.
-- Add tests for regex matchers that include an amount to ensure both pattern and amount checks are performed.
-
-Contact
-
-- If you need migration tooling or a compatibility layer for older config files, open an issue or create a PR with a migration plan.
+For detailed migration instructions, see **[Matcher Refactoring Guide](development/MATCHER_REFACTORING.md)**.

@@ -20,7 +20,7 @@ Oct 15 Oct 15 1 @ WINDSHIELD WIPERS 25.00
 Oct 15 Oct 15 1 @ AIR FRESHENER 5.00";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "test-with-details.txt" };
+        var context = new StatementContext { RawText = text, FileName = "test-with-details.txt" };
         var result = parser.Parse(context);
 
         // Should only have the 2 main transactions, not the 3 detail lines
@@ -44,7 +44,7 @@ Oct 15 Oct 15 CANADIAN TIRE #123 KELOWNA BC 75.00
 Oct 16 Oct 16 GROCERY STORE 25.00";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "test-without-details.txt" };
+        var context = new StatementContext { RawText = text, FileName = "test-without-details.txt" };
         var result = parser.Parse(context);
 
         Assert.Equal(2, result.Transactions.Count);
@@ -62,7 +62,7 @@ Oct 15 Oct 15 1 @ ITEM ONE 25.00
 Oct 15 Oct 15 1 @ ITEM TWO 25.00";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "test-no-warnings.txt" };
+        var context = new StatementContext { RawText = text, FileName = "test-no-warnings.txt" };
         var result = parser.Parse(context);
 
         // Should have only 1 main transaction
@@ -85,7 +85,7 @@ Oct 15 Oct 15 ITEM WITHOUT QUANTITY MARKER 30.00
 Oct 15 Oct 15 3 X ANOTHER ITEM FORMAT 30.00";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "test-various-formats.txt" };
+        var context = new StatementContext { RawText = text, FileName = "test-various-formats.txt" };
         var result = parser.Parse(context);
 
         // Should only have 2 main transactions (before the details section)
@@ -104,7 +104,7 @@ DETAILS OF YOUR CANADIAN TIRE STORE PURCHASES
 Oct 15 Oct 15 1 @ DETAIL ITEM 25.00";
 
         var parser = new CtfsMastercardTransactionParser();
-        var context = new ParseContext { Text = text, FileName = "test-case-insensitive.txt" };
+        var context = new StatementContext { RawText = text, FileName = "test-case-insensitive.txt" };
         var result = parser.Parse(context);
 
         Assert.Single(result.Transactions);

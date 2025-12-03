@@ -1,6 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using DKW.TransactionExtractor.Models;
 
 namespace DKW.TransactionExtractor.Classification;
@@ -19,16 +16,16 @@ public class ContainsMatcher : TransactionMatcherBase
     /// Constructs a new ContainsMatcher with the provided values.
     /// </summary>
     /// <param name="values">Array of value/amount pairs to match against. Cannot be null or empty.</param>
-    public ContainsMatcher([NotNull] MatcherValue[] values)
+    public ContainsMatcher(IEnumerable<MatcherValue> values)
     {
         ArgumentNullException.ThrowIfNull(values);
 
-        if (values.Length == 0)
+        _values = values.ToArray();
+
+        if (_values.Length == 0)
         {
             throw new ArgumentException("Values array cannot be empty", nameof(values));
         }
-
-        _values = values;
     }
 
     /// <summary>
@@ -45,7 +42,9 @@ public class ContainsMatcher : TransactionMatcherBase
                 if (mv.Amount.HasValue)
                 {
                     if (AmountsEqual(mv.Amount, amount))
+                    {
                         return true;
+                    }
                 }
                 else
                 {
