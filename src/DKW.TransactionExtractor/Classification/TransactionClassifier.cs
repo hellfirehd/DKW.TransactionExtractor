@@ -10,7 +10,7 @@ public class TransactionClassifier(
 {
     private readonly ILogger<TransactionClassifier> _logger = logger;
     private readonly ICategoryService _categoryService = categoryService;
-    private readonly IUserInteraction _consoleInteraction = consoleInteraction;
+    private readonly IUserInteraction _userInteraction = consoleInteraction;
 
     public ClassificationResult ClassifyTransactions(List<Transaction> transactions)
     {
@@ -57,7 +57,7 @@ public class TransactionClassifier(
                     _logger.LogMatchedTransaction(context.Transaction.Description, category.Name);
 
                     // Show summary for automatically classified transaction
-                    _consoleInteraction.DisplayAutoMatchSummary(context, category.Name);
+                    _userInteraction.DisplayAutoMatchSummary(context, category.Name);
 
                     return (new ClassifiedTransaction
                     {
@@ -72,7 +72,7 @@ public class TransactionClassifier(
         }
 
         // No match found, prompt user
-        var selectionResult = _consoleInteraction.PromptForCategory(context);
+        var selectionResult = _userInteraction.PromptForCategory(context);
 
         // Check for early exit
         if (selectionResult.RequestedExit)
@@ -80,8 +80,8 @@ public class TransactionClassifier(
             return (new ClassifiedTransaction
             {
                 Transaction = context.Transaction,
-                CategoryId = "uncategorized",
-                CategoryName = "Uncategorized",
+                CategoryId = CategoryConsts.UncategorizedId,
+                CategoryName = CategoryConsts.UncategorizedName,
                 Comment = selectionResult.Comment,
                 MatcherType = null
             }, true);

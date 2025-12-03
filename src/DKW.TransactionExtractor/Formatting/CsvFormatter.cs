@@ -55,7 +55,7 @@ public class CsvFormatter : ITransactionFormatter
         var sb = new StringBuilder();
 
         // Header
-        sb.AppendLine("CategoryId,CategoryName,TransactionCount,TotalAmount");
+        sb.AppendLine("CategoryId,CategoryName,TransactionCount,TotalAmount,AveragePerStatement");
 
         // Data rows - summaries are already sorted alphabetically by caller
         foreach (var summary in categorySummaries)
@@ -63,7 +63,8 @@ public class CsvFormatter : ITransactionFormatter
             sb.AppendLine($"\"{EscapeCsv(summary.CategoryId)}\"," +
                           $"\"{EscapeCsv(summary.CategoryName)}\"," +
                           $"{summary.TransactionCount}," +
-                          $"{summary.TotalAmount}");
+                          $"{summary.TotalAmount}," +
+                          $"{summary.AveragePerStatement:c}");
         }
 
         File.WriteAllText(outputPath, sb.ToString());

@@ -27,4 +27,5 @@ public class CategorySummary
     /// Gets or sets the total amount of all transactions in this category.
     /// </summary>
     public Decimal TotalAmount { get; set; }
+    public Decimal AveragePerStatement { get; set; }
 }

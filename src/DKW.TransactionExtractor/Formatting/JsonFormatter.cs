@@ -19,9 +19,10 @@ public class JsonFormatter : ITransactionFormatter
             // Include summary in the output
             outputObject = new
             {
+                StatmentCount = output.StatementCount,
                 Summary = new
                 {
-                    Categories = output.CategorySummaries
+                    Categories = output.CategorySummaries.OrderBy(cs => cs.CategoryName).ToList()
                 },
                 output.Transactions
             };

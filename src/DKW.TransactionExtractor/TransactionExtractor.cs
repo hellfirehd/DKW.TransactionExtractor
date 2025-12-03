@@ -34,7 +34,7 @@ internal class TransactionExtractor(
         }
 
         var allClassified = ProcessStatements(filteredFiles);
-        WriteOutput(allClassified);
+        WriteOutput(allClassified, filteredFiles.Length);
     }
 
     private Boolean ValidateConfiguration()
@@ -123,7 +123,7 @@ internal class TransactionExtractor(
         return allClassified;
     }
 
-    private void WriteOutput(List<Models.ClassifiedTransaction> allClassified)
+    private void WriteOutput(List<Models.ClassifiedTransaction> allClassified, Int32 statementCount)
     {
         if (allClassified.Count == 0)
         {
@@ -140,7 +140,7 @@ internal class TransactionExtractor(
 
         try
         {
-            var output = CreateTransactionOutput(transactionsToOutput);
+            var output = CreateTransactionOutput(transactionsToOutput, statementCount);
             var baseOutputPath = Path.Combine(_appConfig.OutputPath, "transactions");
 
             _formatter.WriteOutput(output, baseOutputPath);
@@ -157,15 +157,16 @@ internal class TransactionExtractor(
     {
         return _appConfig.OutputUncategorized
             ? transactions
-            : transactions.Where(ct => !String.Equals(ct.CategoryId, "uncategorized", StringComparison.OrdinalIgnoreCase)).ToList();
+            : transactions.Where(ct => !String.Equals(ct.CategoryId, CategoryConsts.UncategorizedId, StringComparison.OrdinalIgnoreCase)).ToList();
     }
 
-    private static Models.TransactionOutput CreateTransactionOutput(List<Models.ClassifiedTransaction> transactions)
+    private static Models.TransactionOutput CreateTransactionOutput(List<Models.ClassifiedTransaction> transactions, Int32 statementCount)
     {
-        var categorySummaries = GenerateCategorySummaries(transactions);
+        var categorySummaries = GenerateCategorySummaries(transactions, statementCount);
 
         return new Models.TransactionOutput
         {
+            StatementCount = statementCount,
             Transactions = transactions,
             CategorySummaries = categorySummaries,
             GeneratedAt = DateTime.Now
@@ -251,7 +252,7 @@ internal class TransactionExtractor(
         return classificationResult.RequestedEarlyExit;
     }
 
-    private static List<Models.CategorySummary> GenerateCategorySummaries(List<Models.ClassifiedTransaction> transactions)
+    private static List<Models.CategorySummary> GenerateCategorySummaries(List<Models.ClassifiedTransaction> transactions, Int32 statementCount)
     {
         var summaries = transactions
             .GroupBy(ct => new { ct.CategoryId, ct.CategoryName })
@@ -260,7 +261,8 @@ internal class TransactionExtractor(
                 CategoryId = g.Key.CategoryId,
                 CategoryName = g.Key.CategoryName,
                 TransactionCount = g.Count(),
-                TotalAmount = g.Sum(ct => ct.Transaction.Amount)
+                TotalAmount = g.Sum(ct => ct.Transaction.Amount),
+                AveragePerStatement = Math.Round(g.Sum(ct => ct.Transaction.Amount) / statementCount, 2)
             })
             .ToList();
 

@@ -261,7 +261,7 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
             }
         }
 
-        return new CategorySelectionResult("uncategorized", "Uncategorized", null, RequestedExit: true);
+        return new CategorySelectionResult(CategoryConsts.UncategorizedId, CategoryConsts.UncategorizedName, null, RequestedExit: true);
     }
 
     private MatcherCreationRequest BuildExactMatcher(TransactionContext context)
@@ -352,8 +352,8 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
 
     private static CategorySelectionResult CreateSkipResult(TransactionContext context)
     {
-        context.CategoryId = "uncategorized";
-        context.CategoryName = "Uncategorized";
-        return new CategorySelectionResult("uncategorized", "Uncategorized", null, context.Comment);
+        context.CategoryId = CategoryConsts.UncategorizedId;
+        context.CategoryName = CategoryConsts.UncategorizedName;
+        return new CategorySelectionResult(CategoryConsts.UncategorizedId, CategoryConsts.UncategorizedName, null, context.Comment);
     }
 }
