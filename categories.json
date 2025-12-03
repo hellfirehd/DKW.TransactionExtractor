@@ -9,6 +9,10 @@
           "parameters": [
             {
               "value": "BCCH FOUNDATION VANCOUVER BC"
+            },
+            {
+              "value": "Wikimedia 8776009454 CA",
+              "amount": 15.60
             }
           ]
         },
@@ -23,7 +27,8 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "entertainment",
@@ -33,16 +38,10 @@
           "type": "Contains",
           "parameters": [
             {
-              "value": "Astraweb"
-            },
-            {
               "value": "ONLYFANS"
             },
             {
               "value": "EVENTBRITE"
-            },
-            {
-              "value": "STEAMGAMES"
             },
             {
               "value": "TICKETOWL"
@@ -54,16 +53,10 @@
               "value": "Audible"
             },
             {
-              "value": "BEST BUY"
-            },
-            {
               "value": "WORLD LITERATURE/SOL"
             },
             {
               "value": "BOOKAPY/SOL"
-            },
-            {
-              "value": "RAKUTEN KOBO"
             }
           ]
         },
@@ -75,10 +68,19 @@
             },
             {
               "value": "LANDMARK WEB TICKETING 403-262-4255 AB"
+            },
+            {
+              "value": "RAKUTEN KOBO INC. TORONTO ON",
+              "amount": 20.00
+            },
+            {
+              "value": "STEAM PURCHASE SEATTLE HH",
+              "amount": 34.93
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "gifts",
@@ -95,7 +97,110 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "health-dental",
+      "name": "Health - Dental",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "HIGHLANDS FAMILY DENTI"
+            },
+            {
+              "value": "KELOWNA ORAL SURGERY"
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "health-prescriptions",
+      "name": "Health - Prescriptions",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 17.46
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 16.62
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 18.75
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 13.46
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 13.88
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 3.49
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 19.59
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 22.87
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 7.33
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 77.12
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 3.66
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 19.64
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 18.92
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 21.05
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 16.90
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 12.94
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 7.03
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 6.87
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
     },
     {
       "id": "hobbies",
@@ -123,109 +228,87 @@
             },
             {
               "value": "CARTOGRAPHER3D.COM TUNBRIDGE WELLND"
+            },
+            {
+              "value": "AMZN Mktp CA*DR1WF7F43 WWW.AMAZON.CAON",
+              "amount": 20.15
+            },
+            {
+              "value": "AMZN Mktp CA*GL37L2QI3 WWW.AMAZON.CAON",
+              "amount": 14.52
+            },
+            {
+              "value": "AMZN Mktp CA*XF2BJ4J23 WWW.AMAZON.CAON",
+              "amount": 14.55
+            },
+            {
+              "value": "AMAZON* ZP7GI9HN0 VANCOUVER BC",
+              "amount": 22.40
+            },
+            {
+              "value": "AMAZON* ZP5570PP1 VANCOUVER BC",
+              "amount": 33.82
+            },
+            {
+              "value": "AMAZON* ZD03I3AT1 VANCOUVER BC",
+              "amount": 18.69
+            },
+            {
+              "value": "AMAZON* Z50GI8PQ1 VANCOUVER BC",
+              "amount": 29.40
+            },
+            {
+              "value": "AMAZON* ZG4FN48E1 VANCOUVER BC",
+              "amount": 51.38
+            },
+            {
+              "value": "AMAZON* ZC8H25XO1 VANCOUVER BC",
+              "amount": 11.19
+            },
+            {
+              "value": "AMAZON* ZC0GP3YB0 VANCOUVER BC",
+              "amount": 12.53
+            },
+            {
+              "value": "AMAZON* UG97Q7BM3 VANCOUVER BC",
+              "amount": 14.10
+            },
+            {
+              "value": "AMAZON* UW2AI72L3 VANCOUVER BC",
+              "amount": 34.39
+            },
+            {
+              "value": "AMAZON* 8W73W0VU3 VANCOUVER BC",
+              "amount": 106.59
+            },
+            {
+              "value": "AMAZON* 2I09C0DW3 VANCOUVER BC",
+              "amount": 33.59
+            },
+            {
+              "value": "AMAZON* 5G9CH1VR3 VANCOUVER BC",
+              "amount": 20.15
+            },
+            {
+              "value": "AMAZON* BL0WX7GB3 VANCOUVER BC",
+              "amount": 141.11
+            },
+            {
+              "value": "AMAZON* XI3PE15J3 VANCOUVER BC",
+              "amount": 20.14
+            },
+            {
+              "value": "AMAZON* XX8N965N3 VANCOUVER BC",
+              "amount": 18.94
+            },
+            {
+              "value": "AMAZON* NZ5O62NX0 VANCOUVER BC",
+              "amount": 19.03
             }
           ]
         }
-      ]
-    },
-    {
-      "id": "household-restaurants",
-      "name": "Household - Restaurants",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": [
-            {
-              "value": "BLUETAIL SUSHI"
-            },
-            {
-              "value": "RESTAURANT"
-            },
-            {
-              "value": "PAPA JOHNS"
-            },
-            {
-              "value": "BOSTON PIZZA"
-            },
-            {
-              "value": "OLD SPAGHETTI"
-            },
-            {
-              "value": "INTERNATIONAL HOUSE"
-            },
-            {
-              "value": "PIZZA HUT"
-            },
-            {
-              "value": "DOMINOS PIZZA"
-            },
-            {
-              "value": "DOZO HOUSE"
-            },
-            {
-              "value": "C-LOVERS FISH"
-            },
-            {
-              "value": "HECTORS CASA"
-            },
-            {
-              "value": "DENNYS"
-            },
-            {
-              "value": "RED SWAN PIZZA"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "household-supplies",
-      "name": "Household - Supplies",
-      "matchers": [
-        {
-          "type": "ExactMatch",
-          "parameters": [
-            {
-              "value": "CITY OF KELOWNA LANDFI KELOWNA BC"
-            },
-            {
-              "value": "ROMORYMSUSD STERLING CO"
-            },
-            {
-              "value": "AMZN Mktp CA*ZT1Y45AT0 WWW.AMAZON.CAON",
-              "amount": 35.83
-            },
-            {
-              "value": "AMZN Mktp CA*Z82W22FX0 WWW.AMAZON.CAON",
-              "amount": 57.56
-            },
-            {
-              "value": "AMZN Mktp CA*Z83T98FQ0 WWW.AMAZON.CAON",
-              "amount": 13.01
-            }
-          ]
-        },
-        {
-          "type": "Contains",
-          "parameters": [
-            {
-              "value": "HOME DEPOT"
-            },
-            {
-              "value": "DOLLAR TREE"
-            },
-            {
-              "value": "PRINCESS AUTO"
-            },
-            {
-              "value": "SUN CITY LIQUIDATI"
-            },
-            {
-              "value": "DOLLARAMA"
-            }
-          ]
-        }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "household-fast-food-snacks",
@@ -325,10 +408,59 @@
           "parameters": [
             {
               "value": "DQ #27051 KELOWNA BC"
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 7.34
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "household-furnishings-equipment",
+      "name": "Household - Furnishings \u0026 Equipment",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "Amazon.ca www.amazon.caON",
+              "amount": 140.07
+            },
+            {
+              "value": "Amazon.ca www.amazon.caON",
+              "amount": 102.99
+            },
+            {
+              "value": "AMAZON.COM.CA www.amazon.coON",
+              "amount": 102.99
+            },
+            {
+              "value": "AMAZON* 3R68E7YN3 VANCOUVER BC",
+              "amount": 100.79
+            },
+            {
+              "value": "AMAZON.COM.CA www.amazon.coON",
+              "amount": 122.00
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 90.82
+            },
+            {
+              "value": "AFFIRM CANADA OTTAWA ON",
+              "amount": 130.67
+            },
+            {
+              "value": "AFFIRM CANADA OTTAWA ON",
+              "amount": 130.66
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
     },
     {
       "id": "household-groceries",
@@ -342,9 +474,6 @@
             },
             {
               "value": "WAL-MART"
-            },
-            {
-              "value": "COSTCO WHOLESALE"
             },
             {
               "value": "IGA72"
@@ -371,13 +500,122 @@
               "value": "INTERIOR BEVERAGES"
             }
           ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "WWW COSTCO CA 888-426-7826 ON",
+              "amount": 100.79
+            },
+            {
+              "value": "AMAZON.COM * B06871VZ3 VANCOUVER BC",
+              "amount": 32.20
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 206.01
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 327.37
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 44.91
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 541.62
+            },
+            {
+              "value": "TRIANGLE SELECT 8003878803 ON",
+              "amount": 99.68
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 242.98
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 160.48
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 245.08
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 104.93
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 288.17
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 462.11
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 223.54
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 189.78
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 421.21
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 308.35
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 243.96
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 250.96
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 357.28
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 478.35
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 94.58
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 631.09
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 88.06
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 74.46
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 67.75
+            },
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": 228.85
+            }
+          ]
         }
-      ]
-    },
-    {
-      "id": "household-pets",
-      "name": "Household - Pets",
-      "matchers": []
+      ],
+      "sortOrder": 0
     },
     {
       "id": "household-insurance",
@@ -391,7 +629,205 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "household-pets",
+      "name": "Household - Pets",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "RDCO WEBSITE KELOWNA BC",
+              "amount": 20.00
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "household-restaurants",
+      "name": "Household - Restaurants",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "BLUETAIL SUSHI"
+            },
+            {
+              "value": "RESTAURANT"
+            },
+            {
+              "value": "PAPA JOHNS"
+            },
+            {
+              "value": "BOSTON PIZZA"
+            },
+            {
+              "value": "OLD SPAGHETTI"
+            },
+            {
+              "value": "INTERNATIONAL HOUSE"
+            },
+            {
+              "value": "PIZZA HUT"
+            },
+            {
+              "value": "DOMINOS PIZZA"
+            },
+            {
+              "value": "DOZO HOUSE"
+            },
+            {
+              "value": "C-LOVERS FISH"
+            },
+            {
+              "value": "HECTORS CASA"
+            },
+            {
+              "value": "DENNYS"
+            },
+            {
+              "value": "RED SWAN PIZZA"
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "household-supplies",
+      "name": "Household - Supplies",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "CITY OF KELOWNA LANDFI KELOWNA BC"
+            },
+            {
+              "value": "ROMORYMSUSD STERLING CO"
+            },
+            {
+              "value": "AMZN Mktp CA*ZT1Y45AT0 WWW.AMAZON.CAON",
+              "amount": 35.83
+            },
+            {
+              "value": "AMZN Mktp CA*Z82W22FX0 WWW.AMAZON.CAON",
+              "amount": 57.56
+            },
+            {
+              "value": "AMZN Mktp CA*Z83T98FQ0 WWW.AMAZON.CAON",
+              "amount": 13.01
+            },
+            {
+              "value": "AMZN Mktp CA*4A28F6F33 WWW.AMAZON.CAON",
+              "amount": 19.02
+            },
+            {
+              "value": "AMZN Mktp CA*ZL5136JN0 WWW.AMAZON.CAON",
+              "amount": 23.20
+            },
+            {
+              "value": "AMZN Mktp CA*ZR6O13O70 WWW.AMAZON.CAON",
+              "amount": 16.62
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 33.54
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 74.56
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 19.91
+            },
+            {
+              "value": "TEMU.COM VICTORIA BC",
+              "amount": 24.90
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 22.38
+            },
+            {
+              "value": "AMAZON* NW3BK88G2 VANCOUVER BC",
+              "amount": 44.79
+            },
+            {
+              "value": "AMAZON* NI2XF18H0 VANCOUVER BC",
+              "amount": 42.55
+            },
+            {
+              "value": "AMAZON* NN62I0NK2 VANCOUVER BC",
+              "amount": 57.83
+            },
+            {
+              "value": "AMAZON* N621C8QJ0 VANCOUVER BC",
+              "amount": 37.53
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 48.98
+            },
+            {
+              "value": "AMAZON.COM.CA www.amazon.coON",
+              "amount": 74.00
+            },
+            {
+              "value": "AMAZON* NL4855H31 VANCOUVER BC",
+              "amount": 39.19
+            },
+            {
+              "value": "AMAZON.COM.CA www.amazon.coON",
+              "amount": 73.98
+            },
+            {
+              "value": "AMAZON* DI4VJ80X3 VANCOUVER BC",
+              "amount": 17.57
+            },
+            {
+              "value": "AMAZON* MY6HH5M43 VANCOUVER BC",
+              "amount": 83.98
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 26.50
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 0.00
+            }
+          ]
+        },
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "HOME DEPOT"
+            },
+            {
+              "value": "DOLLAR TREE"
+            },
+            {
+              "value": "PRINCESS AUTO"
+            },
+            {
+              "value": "SUN CITY LIQUIDATI"
+            },
+            {
+              "value": "DOLLARAMA"
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
     },
     {
       "id": "kids-activities",
@@ -405,7 +841,8 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "kids-clothing",
@@ -421,8 +858,74 @@
               "value": "VALUE VILLAGE"
             }
           ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "AMAZON* 6E8J06ZH3 VANCOUVER BC",
+              "amount": 22.39
+            }
+          ]
         }
-      ]
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "kids-entertainment",
+      "name": "Kids - Entertainment",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "Microsoft*Ultimate"
+            }
+          ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "Microsoft*Xbox Mississauga ON",
+              "amount": 16.79
+            },
+            {
+              "value": "MICROSOFT*STORE MSBILL.INFO ON",
+              "amount": 11.52
+            },
+            {
+              "value": "LM Kelowna Kelowna BC",
+              "amount": 16.65
+            },
+            {
+              "value": "MICROSOFT*STORE MISSISSAUGA ON",
+              "amount": 21.27
+            },
+            {
+              "value": "MICROSOFT*STORE MSBILL.INFO ON",
+              "amount": 20.37
+            },
+            {
+              "value": "FAMOUS PLAYER 3403QPS EDMONTON AB",
+              "amount": 43.06
+            },
+            {
+              "value": "WEM GALAXYLAND EDMONTON AB",
+              "amount": 63.00
+            },
+            {
+              "value": "MICROSOFT*XBOX GAME PA MSBILL.INFO ON",
+              "amount": 25.75
+            },
+            {
+              "value": "MICROSOFT*XBOX GAME PA HALIFAX NS",
+              "amount": 38.07
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
     },
     {
       "id": "kids-gifts",
@@ -445,29 +948,95 @@
             {
               "value": "AMZN Mktp CA*ZU1SW1CW3 WWW.AMAZON.CAON",
               "amount": 36.95
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 98.78
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 41.10
+            },
+            {
+              "value": "AMZN Mktp CA*ZX3SQ3QJ1 WWW.AMAZON.CAON",
+              "amount": 161.26
+            },
+            {
+              "value": "AMAZON* Z91PB0LU1 VANCOUVER BC",
+              "amount": 82.15
+            },
+            {
+              "value": "MICHAELS #3929 KELOWNA BC",
+              "amount": 27.99
+            },
+            {
+              "value": "AMAZON* ZD7Q563X0 VANCOUVER BC",
+              "amount": 40.86
+            },
+            {
+              "value": "AMAZON* ZC6YK3250 VANCOUVER BC",
+              "amount": 17.91
+            },
+            {
+              "value": "AMAZON* ZC1VP5GZ1 VANCOUVER BC",
+              "amount": 33.59
+            },
+            {
+              "value": "AMAZON* 5K6T14FG3 VANCOUVER BC",
+              "amount": 53.91
+            },
+            {
+              "value": "AMAZON.COM * G67OS5NF3 VANCOUVER BC",
+              "amount": 39.12
+            },
+            {
+              "value": "AMAZON.COM.CA www.amazon.coON",
+              "amount": 176.52
+            },
+            {
+              "value": "AMAZON.COM.CA www.amazon.coON",
+              "amount": 109.80
+            },
+            {
+              "value": "AMAZON* RE3M424O3 VANCOUVER BC",
+              "amount": 11.19
+            },
+            {
+              "value": "APPLE.COM/CA 800-676-2775 ON",
+              "amount": 177.45
+            },
+            {
+              "value": "AMAZON* AF9C086L3 VANCOUVER BC",
+              "amount": 20.43
+            },
+            {
+              "value": "STEAMGAMES.COM 4259522 BELLEVUE WA",
+              "amount": 59.91
+            },
+            {
+              "value": "SQ *PURDYS CHOCOLATIER Vancouver BC",
+              "amount": 73.50
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "kids-haircare",
       "name": "Kids - Hair Care",
-      "matchers": []
-    },
-    {
-      "id": "kids-entertainment",
-      "name": "Kids - Entertainment",
       "matchers": [
         {
-          "type": "Contains",
+          "type": "ExactMatch",
           "parameters": [
             {
-              "value": "Microsoft*Ultimate"
+              "value": "AMAZON.COM * FR2AI95Y3 VANCOUVER BC",
+              "amount": 39.72
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "kids-healthcare",
@@ -483,8 +1052,18 @@
               "value": "BLUEBIRD MEDICAL"
             }
           ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "AMAZON* NF76X9QE0 VANCOUVER BC",
+              "amount": 30.23
+            }
+          ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "kids-school-fees",
@@ -498,7 +1077,8 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "miscellaneous",
@@ -514,11 +1094,13 @@
               "value": "GCDS170 KELOWNA KELOWNA BC"
             },
             {
-              "value": "TRIANGLE SELECT 8003878803 ON"
+              "value": "PAYPAL *DIGITALDOWN 07786494540 GBR",
+              "amount": 7.83
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "personal-clothing",
@@ -531,13 +1113,50 @@
               "value": "MARKS.COM"
             }
           ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "AMAZON.COM * N60E62QE1 VANCOUVER BC",
+              "amount": 43.69
+            }
+          ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "personal-electronics",
       "name": "Personal - Electronics",
-      "matchers": []
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "AFFIRM CANADA OTTAWA ON",
+              "amount": 209.99
+            },
+            {
+              "value": "AMAZON.COM.CA www.amazon.coON",
+              "amount": 100.00
+            },
+            {
+              "value": "AMAZON* NJ8M53MD0 VANCOUVER BC",
+              "amount": 23.51
+            },
+            {
+              "value": "BEST BUY #914 KELOWNA BC",
+              "amount": 92.14
+            },
+            {
+              "value": "AMAZON.COM.CA TORONTO ON",
+              "amount": 100.00
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
     },
     {
       "id": "personal-healthcare",
@@ -557,7 +1176,8 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "personal-selfcare",
@@ -586,10 +1206,31 @@
             {
               "value": "Amazon.ca*Z83840OR0 AMAZON.CA ON",
               "amount": 9.11
+            },
+            {
+              "value": "AMZN Mktp CA*PQ6EB4IY3 WWW.AMAZON.CAON",
+              "amount": 195.76
+            },
+            {
+              "value": "Amazon.ca*HY84P9083 AMAZON.CA ON",
+              "amount": 9.11
+            },
+            {
+              "value": "AMAZON* ZP47U9Q01 VANCOUVER BC",
+              "amount": 8.54
+            },
+            {
+              "value": "AMAZON.COM * A94852UE3 VANCOUVER BC",
+              "amount": 8.54
+            },
+            {
+              "value": "AMAZON.CA* NM48L6GW1 VANCOUVER BC",
+              "amount": 20.88
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "subscriptions-services",
@@ -614,8 +1255,22 @@
               "value": "Amazon Web Services"
             }
           ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "COSTCO *ANNUAL RENEWAL 800-463-3783 ON",
+              "amount": 136.50
+            },
+            {
+              "value": "RAKUTEN KOBO INC. TORONTO ON",
+              "amount": 10.50
+            }
+          ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "subscriptions-software",
@@ -634,91 +1289,18 @@
               "value": "SCOOTERSOFTWARE"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "transportation-license-insurance",
-      "name": "Transportation - License \u0026 Insurance",
-      "matchers": [
+        },
         {
           "type": "ExactMatch",
           "parameters": [
             {
-              "value": "DRIVER SERVICES CENTRE KELOWNA BC"
-            }
-          ]
-        },
-        {
-          "type": "Contains",
-          "parameters": [
-            {
-              "value": "ICBC"
+              "value": "MICROSOFT*MICROSOFT 36 MISSISSAUGA ON",
+              "amount": 122.08
             }
           ]
         }
-      ]
-    },
-    {
-      "id": "utilities-cable-streaming",
-      "name": "Utilities - Cable \u0026 Streaming",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": [
-            {
-              "value": "Amazon.ca Prime"
-            },
-            {
-              "value": "Netflix"
-            },
-            {
-              "value": "YouTubePremium"
-            },
-            {
-              "value": "PrimeVideo"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "utilities-cell-phones",
-      "name": "Utilities - Cell Phones",
-      "matchers": [
-        {
-          "type": "ExactMatch",
-          "parameters": [
-            {
-              "value": "APPLE.COM/BILL 866-712-7753 ON",
-              "amount": 32.42
-            }
-          ]
-        },
-        {
-          "type": "Contains",
-          "parameters": [
-            {
-              "value": "APPLE",
-              "amount": 14.55
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "utilities-internet",
-      "name": "Utilities - Internet",
-      "matchers": [
-        {
-          "type": "Contains",
-          "parameters": [
-            {
-              "value": "TELUS"
-            }
-          ]
-        }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "transportation-gas-oil",
@@ -758,24 +1340,31 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
-      "id": "transportation-public-transit-taxi",
-      "name": "Transportation - Public Transit \u0026 Taxi",
+      "id": "transportation-license-insurance",
+      "name": "Transportation - License \u0026 Insurance",
       "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "DRIVER SERVICES CENTRE KELOWNA BC"
+            }
+          ]
+        },
         {
           "type": "Contains",
           "parameters": [
             {
-              "value": "BC TRANSIT"
-            },
-            {
-              "value": "CURRENT TAXI"
+              "value": "ICBC"
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "transportation-parking",
@@ -792,7 +1381,26 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "transportation-public-transit-taxi",
+      "name": "Transportation - Public Transit \u0026 Taxi",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "BC TRANSIT"
+            },
+            {
+              "value": "CURRENT TAXI"
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
     },
     {
       "id": "transportation-repairs-maintenance",
@@ -812,10 +1420,184 @@
             {
               "value": "AMZN Mktp CA*PZ24P5TH3 WWW.AMAZON.CAON",
               "amount": 55.43
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 1937.64
+            },
+            {
+              "value": "AMZN Mktp CA*MB5JG21A3 WWW.AMAZON.CAON",
+              "amount": 67.19
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 70.71
+            },
+            {
+              "value": "AMAZON* QE9AB0V13 VANCOUVER BC",
+              "amount": 21.27
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 156.79
+            },
+            {
+              "value": "AMAZON.COM.CA www.amazon.coON",
+              "amount": 160.00
+            },
+            {
+              "value": "CDN TIRE STORE #00353 KELOWNA BC",
+              "amount": 320.68
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "utilities-cable-streaming",
+      "name": "Utilities - Cable \u0026 Streaming",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "Amazon.ca Prime"
+            },
+            {
+              "value": "Netflix"
+            },
+            {
+              "value": "YouTubePremium"
+            },
+            {
+              "value": "Amazon Channels"
+            },
+            {
+              "value": "PrimeVideo"
+            }
+          ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "DISNEY PLUS 1 800727-1800CA",
+              "amount": 179.19
+            },
+            {
+              "value": "Astraweb Usenet Reykjavik ISL",
+              "amount": 103.18
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "utilities-cell-phones",
+      "name": "Utilities - Cell Phones",
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": 32.42
+            },
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": -6.27
+            },
+            {
+              "value": "APPLE.COM/BILL TORONTO ON",
+              "amount": -14.07
+            },
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": 49.69
+            },
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": 7.27
+            },
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": 4.58
+            },
+            {
+              "value": "APPLE.COM/BILL TORONTO ON",
+              "amount": 49.69
+            },
+            {
+              "value": "APPLE.COM/CA 800-676-2775 ON",
+              "amount": 43.68
+            },
+            {
+              "value": "AMAZON* 446AG8DQ3 VANCOUVER BC",
+              "amount": 14.55
+            },
+            {
+              "value": "APPLE.COM/CA TORONTO ON",
+              "amount": 14.56
+            },
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": 14.16
+            },
+            {
+              "value": "APPLE.COM/BILL TORONTO ON",
+              "amount": 14.16
+            },
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": 4.47
+            },
+            {
+              "value": "APPLE.COM/BILL 866-712-7753 ON",
+              "amount": 49.71
+            },
+            {
+              "value": "APPLE.COM/BILL TORONTO ON",
+              "amount": 49.71
+            }
+          ]
+        },
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "APPLE",
+              "amount": 14.55
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
+    },
+    {
+      "id": "utilities-internet",
+      "name": "Utilities - Internet",
+      "matchers": [
+        {
+          "type": "Contains",
+          "parameters": [
+            {
+              "value": "TELUS"
+            }
+          ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "RAKUTEN KOBO INC. TORONTO ON",
+              "amount": 10.49
+            }
+          ]
+        }
+      ],
+      "sortOrder": 0
     },
     {
       "id": "vacation",
@@ -843,8 +1625,34 @@
               "value": "CALGARY"
             }
           ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "SQ *DEVILLE COFFEE WEM Edmonton AB",
+              "amount": 12.23
+            },
+            {
+              "value": "MAMA PIZZA DONAIR EDMONTON AB",
+              "amount": 26.09
+            },
+            {
+              "value": "SUPER 8 MOTELS EDMONTON AB",
+              "amount": 239.97
+            },
+            {
+              "value": "CHICAGO DEEP DISH PIZZ EDMONTON AB",
+              "amount": 79.51
+            },
+            {
+              "value": "CINNZEO BAKERIES EDMONTON AB",
+              "amount": 14.47
+            }
+          ]
         }
-      ]
+      ],
+      "sortOrder": 0
     },
     {
       "id": "payment",
@@ -858,7 +1666,8 @@
             }
           ]
         }
-      ]
+      ],
+      "sortOrder": 9997
     },
     {
       "id": "refund",
@@ -871,13 +1680,34 @@
               "value": "REFUND"
             }
           ]
+        },
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "COSTCO WHOLESALE W1578 KELOWNA BC",
+              "amount": -41.43
+            }
+          ]
         }
-      ]
+      ],
+      "sortOrder": 9998
     },
     {
       "id": "uncategorized",
       "name": "Uncategorized",
-      "matchers": []
+      "matchers": [
+        {
+          "type": "ExactMatch",
+          "parameters": [
+            {
+              "value": "SegpayEU.com*EFC Pfaffikon CHE",
+              "amount": 63.69
+            }
+          ]
+        }
+      ],
+      "sortOrder": 9999
     }
   ]
 }
