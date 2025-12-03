@@ -11,13 +11,6 @@ namespace DKW.TransactionExtractor.Tests;
 /// </summary>
 public class MatcherFactoryTests
 {
-    private static readonly JsonSerializerOptions JSO = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        WriteIndented = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
     [Fact]
     public void CreateMatcher_ExactMatchType_CreatesExactMatcher()
     {
@@ -92,11 +85,9 @@ public class MatcherFactoryTests
     }
 
     [Fact]
-    public void CreateMatcher_NullConfig_ReturnsNull()
+    public void CreateMatcher_NullConfig_Throws()
     {
-        var matcher = MatcherFactory.CreateMatcher(null!);
-
-        Assert.Null(matcher);
+        Assert.Throws<ArgumentNullException>(() => MatcherFactory.CreateMatcher(null!));
     }
 
     [Fact]
@@ -221,7 +212,7 @@ public class MatcherFactoryTests
             }
             """;
 
-        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, JSO);
+        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, SerializationHelper.JSO);
         var matcher = MatcherFactory.CreateMatcher(matcherConfig!);
 
         Assert.NotNull(matcher);
@@ -249,7 +240,7 @@ public class MatcherFactoryTests
         }
         """;
 
-        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, JSO);
+        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, SerializationHelper.JSO);
         var matcher = MatcherFactory.CreateMatcher(matcherConfig!);
 
         Assert.NotNull(matcher);
@@ -270,7 +261,7 @@ public class MatcherFactoryTests
             }
             """;
 
-        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, JSO);
+        var matcherConfig = JsonSerializer.Deserialize<CategoryMatcher>(json, SerializationHelper.JSO);
         var matcher = MatcherFactory.CreateMatcher(matcherConfig!);
 
         Assert.NotNull(matcher);

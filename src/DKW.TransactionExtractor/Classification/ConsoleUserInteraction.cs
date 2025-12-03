@@ -268,6 +268,8 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
     {
         ArgumentNullException.ThrowIfNull(context);
 
+        context.MatcherType = "ExactMatch";
+
         Console.WriteLine();
         Console.WriteLine($"ExactMatch will match: '{context.Transaction.Description}'");
 
@@ -287,6 +289,8 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
 
     private MatcherCreationRequest? BuildContainsMatcher(TransactionContext context)
     {
+        context.MatcherType = "Contains";
+
         Console.WriteLine();
         Console.WriteLine($"Current description: '{context.Transaction.Description}'");
 
@@ -315,6 +319,8 @@ public class ConsoleUserInteraction(ICategoryService categoryService) : IUserInt
 
     private MatcherCreationRequest? BuildRegexMatcher(TransactionContext context)
     {
+        context.MatcherType = "Regex";
+
         Console.WriteLine();
         Console.WriteLine($"Current description: '{context.Transaction.Description}'");
         Console.WriteLine("Enter a regular expression pattern.");

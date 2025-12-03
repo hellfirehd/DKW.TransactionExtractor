@@ -46,9 +46,9 @@ public class TransactionClassifier(
 
         foreach (var category in categories)
         {
-            foreach (var matcherConfig in category.Matchers)
+            foreach (var categoryMatcher in category.Matchers)
             {
-                var matcher = MatcherFactory.CreateMatcher(matcherConfig);
+                var matcher = MatcherFactory.CreateMatcher(categoryMatcher);
                 if (matcher != null && matcher.TryMatch(context.Transaction))
                 {
                     context.CategoryId = category.Id;
@@ -65,7 +65,7 @@ public class TransactionClassifier(
                         CategoryId = category.Id,
                         CategoryName = category.Name,
                         Comment = String.Empty, // No comment for auto-matched transactions
-                        MatcherType = matcherConfig.Type
+                        MatcherType = categoryMatcher.Type
                     }, false);
                 }
             }

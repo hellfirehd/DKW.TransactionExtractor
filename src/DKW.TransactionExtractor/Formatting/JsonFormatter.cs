@@ -5,12 +5,6 @@ namespace DKW.TransactionExtractor.Formatting;
 
 public class JsonFormatter : ITransactionFormatter
 {
-    private readonly JsonSerializerOptions _options = new()
-    {
-        WriteIndented = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
     public void WriteOutput(TransactionOutput output, String baseOutputPath)
     {
         var timestamp = output.GeneratedAt.ToString("yyyyMMdd-HHmmss");
@@ -38,7 +32,7 @@ public class JsonFormatter : ITransactionFormatter
             outputObject = output.Transactions;
         }
 
-        var json = JsonSerializer.Serialize(outputObject, _options);
+        var json = JsonSerializer.Serialize(outputObject, SerializationHelper.JSO);
         File.WriteAllText(outputPath, json);
     }
 }

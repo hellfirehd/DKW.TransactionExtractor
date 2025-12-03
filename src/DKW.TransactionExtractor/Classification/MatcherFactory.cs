@@ -4,12 +4,10 @@ namespace DKW.TransactionExtractor.Classification;
 
 public class MatcherFactory
 {
-    public static ITransactionMatcher? CreateMatcher(CategoryMatcher? matcherConfig)
+    public static ITransactionMatcher? CreateMatcher(CategoryMatcher matcherConfig)
     {
-        if (matcherConfig == null)
-        {
-            return null;
-        }
+        ArgumentNullException.ThrowIfNull(matcherConfig);
+        ArgumentException.ThrowIfNullOrWhiteSpace(matcherConfig.Type);
 
         try
         {

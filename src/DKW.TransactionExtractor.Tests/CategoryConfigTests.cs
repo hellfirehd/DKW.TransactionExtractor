@@ -7,13 +7,6 @@ namespace DKW.TransactionExtractor.Tests;
 
 public class CategoryConfigTests
 {
-    private static readonly JsonSerializerOptions JSO = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        WriteIndented = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
     [Fact]
     public void Can_Serialize_and_Deserialize()
     {
@@ -42,8 +35,8 @@ public class CategoryConfigTests
         };
 
         // Act
-        var serialized = JsonSerializer.Serialize(cc, JSO);
-        var deserialized = JsonSerializer.Deserialize<CategoryConfig>(serialized, JSO);
+        var serialized = JsonSerializer.Serialize(cc, SerializationHelper.JSO);
+        var deserialized = JsonSerializer.Deserialize<CategoryConfig>(serialized, SerializationHelper.JSO);
 
         // Assert
         Assert.NotNull(deserialized);

@@ -7,13 +7,6 @@ namespace DKW.TransactionExtractor.Classification;
 
 public class CategoryRepository : ICategoryRepository
 {
-    private static readonly JsonSerializerOptions JSO = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        WriteIndented = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
     private readonly ILogger<CategoryRepository> _logger;
     private readonly String _categoryFilePath;
     private CategoryConfig _config;
@@ -54,10 +47,14 @@ public class CategoryRepository : ICategoryRepository
 
     public CategoryConfig LoadFromJson(String json)
     {
-        _config = JsonSerializer.Deserialize<CategoryConfig>(json, JSO)
+        var config = JsonSerializer.Deserialize<CategoryConfig>(json, SerializationHelper.JSO)
             ?? throw new InvalidOperationException("Unable to deserialize the JSON as CategoryConfig.");
-        _logger.LogLoadedCategories(_config.Categories.Count, _categoryFilePath);
-        return _config;
+        _logger.LogLoadedCategories(config.Categories.Count, _categoryFilePath);
+
+        return new CategoryConfig
+        {
+            Categories = config.Categories.OrderBy(c => c.SortOrder).ThenBy(c => c.Name).ToList()
+        };
     }
 
     /// <summary>
@@ -91,7 +88,7 @@ public class CategoryRepository : ICategoryRepository
     {
         try
         {
-            var json = JsonSerializer.Serialize(config, JSO);
+            var json = JsonSerializer.Serialize(config, SerializationHelper.JSO);
 
             var directory = Path.GetDirectoryName(_categoryFilePath);
             if (!String.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -126,6 +123,8 @@ public class CategoryRepository : ICategoryRepository
 
     public void AddMatcherToCategory(String categoryId, CategoryMatcher matcher)
     {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(matcher.Type);
+
         var category = _config.Categories.SingleOrDefault(c => c.Id == categoryId);
         if (category != null)
         {
